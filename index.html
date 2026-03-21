@@ -447,7 +447,8 @@
         }
 
         async function callOráculo(prompt, systemMsg = "", useSearch = false) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            // Usamos la etiqueta -latest para garantizar que nunca dé error 404
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
             
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
@@ -460,8 +461,6 @@
             
             if (!useSearch) {
                 payload.generationConfig.responseMimeType = "application/json";
-            } else {
-                payload.tools = [{ "google_search": {} }];
             }
 
             let retries = 0;
@@ -604,49 +603,53 @@
             }, 600);
         }
 
-        // --- RECITACIÓN: ENDPOINT PÚBLICO DE GOOGLE ---
+        // --- RECITACIÓN: MOTOR NATIVO DEL NAVEGADOR (ANTIBLOQUEOS) ---
         function playVoice() {
             hideError();
             const icon = document.getElementById('play-icon');
             
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-                icon.setAttribute('data-lucide', 'volume-2');
+            // Usamos la API de voz nativa, inmune a los bloqueos de red
+            if ('speechSynthesis' in window) {
+                if (window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                    icon.setAttribute('data-lucide', 'volume-2');
+                    lucide.createIcons();
+                    return;
+                }
+
+                icon.setAttribute('data-lucide', 'loader-2');
+                icon.classList.add('animate-spin');
                 lucide.createIcons();
-                return;
+
+                const utterance = new SpeechSynthesisUtterance(currentPassage.content);
+                utterance.lang = 'el-GR'; // Griego moderno como aproximación
+                utterance.rate = 0.85; // Velocidad pausada
+                utterance.pitch = 0.9; // Tono solemne
+
+                utterance.onstart = () => {
+                    icon.classList.remove('animate-spin');
+                    icon.setAttribute('data-lucide', 'square');
+                    lucide.createIcons();
+                };
+
+                utterance.onend = () => {
+                    icon.classList.remove('animate-spin');
+                    icon.setAttribute('data-lucide', 'volume-2');
+                    lucide.createIcons();
+                };
+
+                utterance.onerror = () => {
+                    icon.classList.remove('animate-spin');
+                    icon.setAttribute('data-lucide', 'volume-2');
+                    lucide.createIcons();
+                    showError("Error en el motor de voz de tu dispositivo.");
+                };
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showError("Tu navegador no soporta la recitación de voz.");
             }
-
-            icon.setAttribute('data-lucide', 'loader-2');
-            icon.classList.add('animate-spin');
-            lucide.createIcons();
-
-            const textToRead = currentPassage.content.substring(0, 180);
-            const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=el&client=tw-ob&q=${encodeURIComponent(textToRead)}`;
-            
-            currentAudio = new Audio(url);
-            
-            currentAudio.onplay = () => {
-                icon.classList.remove('animate-spin');
-                icon.setAttribute('data-lucide', 'square');
-                lucide.createIcons();
-            };
-
-            currentAudio.onended = () => {
-                currentAudio = null;
-                icon.classList.remove('animate-spin');
-                icon.setAttribute('data-lucide', 'volume-2');
-                lucide.createIcons();
-            };
-
-            currentAudio.onerror = () => {
-                currentAudio = null;
-                icon.classList.remove('animate-spin');
-                icon.setAttribute('data-lucide', 'volume-2');
-                lucide.createIcons();
-                showError("La red ha bloqueado la recitación de este pasaje.");
-            };
-
+        }
             currentAudio.play().catch(e => {
                 currentAudio.onerror();
             });

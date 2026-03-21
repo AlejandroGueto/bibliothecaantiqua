@@ -84,49 +84,187 @@
         const apiKey = parte1 + parte2;
         let currentPassage = null, audioRate = 0.85, isSpeaking = false;
 
-        const classicalIndex = [
+      const classicalIndex = [
             {
                 author: "Homero",
                 works: [
-                    { title: "Ilíada", meta: "Canto I, 1-7", content: "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος οὐλομένην, ἣ μυρί᾽ Ἀχαιοῖς ἄλγε᾽ ἔθηκε, πολλὰς δ᾽ ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν ἡρώων, αὐτοὺς δὲ ἑλώρια τεῦχε κύνεσσιν οἰωνοῖσί τε πᾶσι, Διὸς δ᾽ ἐτελείετο βουλή, ἐξ οὗ δὴ τὰ πρῶτα διαστήτην ἐρίσαντε Ἀτρεΐδης τε ἄναξ ἀνδρῶν καὶ δῖος Ἀχιλλεύς.", translations: [{lang: "ES (Gredos)", text: "Canta, oh diosa, la cólera del Pelida Aquiles...", author: "E. Crespo"}, {lang: "ES (Literal)", text: "La cólera canta, oh diosa, del Pelida Aquiles, destructora..."}] },
-                    { title: "Odisea", meta: "Canto I, 1-10", content: "Ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσε· πολλῶν δ᾽ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω, πολλὰ δ᾽ ὅ γ᾽ ἐν πόντῳ πάθεν ἄλγεα ὃν κατὰ θυμόν, ἀρνύμενος ἥν τε ψυχὴν καὶ νόστον ἑταίρων.", translations: [{lang: "ES (Gredos)", text: "Háblame, Musa, de aquel varón de multiforme ingenio...", author: "J.M. Pabón"}] }
+                    { 
+                        title: "Ilíada", meta: "Canto I, 1-7", 
+                        content: "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος οὐλομένην, ἣ μυρί᾽ Ἀχαιοῖς ἄλγε᾽ ἔθηκε, πολλὰς δ᾽ ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν ἡρώων, αὐτοὺς δὲ ἑλώρια τεῦχε κύνεσσιν οἰωνοῖσί τε πᾶσι, Διὸς δ᾽ ἐτελείετο βουλή, ἐξ οὗ δὴ τὰ πρῶτα διαστήτην ἐρίσαντε Ἀτρεΐδης τε ἄναξ ἀνδρῶν καὶ δῖος Ἀχιλλεύς.",
+                        translations: [
+                            { lang: "ES (Gredos)", text: "Canta, oh diosa, la cólera del Pelida Aquiles; cólera funesta que causó infinitos males...", author: "E. Crespo" },
+                            { lang: "EN (Oxford)", text: "Sing, goddess, the anger of Peleus' son Achilles and its devastation...", author: "Lattimore" },
+                            { lang: "FR (Belles Lettres)", text: "Chante, déesse, la colère d'Achille, le fils de Pélée; détestable colère...", author: "Mazon" },
+                            { lang: "ES (Literal)", text: "La cólera canta, oh diosa, del Pelida Aquiles, destructora..." }
+                        ]
+                    },
+                    { 
+                        title: "Odisea", meta: "Canto I, 1-10", 
+                        content: "Ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσε· πολλῶν δ᾽ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω, πολλὰ δ᾽ ὅ γ᾽ ἐν πόντῳ πάθεν ἄλγεα ὃν κατὰ θυμόν, ἀρνύμενος ἥν τε ψυχὴν καὶ νόστον ἑταίρων.",
+                        translations: [
+                            { lang: "ES (Gredos)", text: "Háblame, Musa, de aquel varón de multiforme ingenio que, después de destruir la sacra ciudad de Troya...", author: "J.M. Pabón" },
+                            { lang: "EN (Loeb)", text: "Tell me, O Muse, of the man of many devices, who wandered full many a way...", author: "A.T. Murray" },
+                            { lang: "FR (Belles Lettres)", text: "Dis-moi, Muse, cet homme aux mille tours, qui erra si longtemps...", author: "V. Bérard" }
+                        ]
+                    }
                 ]
+            },
+            {
+                author: "Hesíodo",
+                works: [{ 
+                    title: "Teogonía", meta: "1-4", 
+                    content: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ᾽ ἀείδειν, αἵ θ᾽ Ἑλικῶνος ἔχουσιν ὄρος μέγα τε ζάθεόν τε καί τε περὶ κρήνην ἰοειδέα πόσσ᾽ ἁπαλοῖσιν ὀρχεῦνται καὶ βωμὸν ἐρισθενέος Κρονίωνος·",
+                    translations: [
+                        { lang: "ES (Gredos)", text: "Comencemos a cantar a las Musas heliconíadas, que habitan el monte grande y divino del Helicón...", author: "Pérez Jiménez" },
+                        { lang: "EN (Loeb)", text: "From the Heliconian Muses let us begin to sing, who hold the great and holy mount of Helicon...", author: "H.G. Evelyn-White" },
+                        { lang: "FR (Belles Lettres)", text: "Pour commencer, chantons les Muses Héliconiennes, qui hantent la montagne grande et divine de l'Hélicon...", author: "P. Mazon" }
+                    ]
+                }]
+            },
+            {
+                author: "Safo",
+                works: [{ 
+                    title: "Himno a Afrodita", meta: "Fr. 1", 
+                    content: "Ποικιλόθρον᾽ ἀθάνατ᾽ Ἀφρόδιτα, παῖ Δίος δολόπλοκε, λίσσομαί σε, μή μ᾽ ἄσαισι μηδ᾽ ὀνíαισι δάμνα, πότνια, θῦμον.",
+                    translations: [
+                        { lang: "ES (Gual)", text: "Inmortal Afrodita, la del trono pintado, hija de Zeus, tejedora de engaños...", author: "C. García Gual" },
+                        { lang: "EN (Loeb)", text: "Deathless Aphrodite of the spangled mind, child of Zeus, who twists lures, I beg you...", author: "D. Campbell" },
+                        { lang: "FR (Belles Lettres)", text: "Aphrodite immortelle au trône étincelant, fille de Zeus, tisseuse de ruses, je t'implore...", author: "Th. Reinach" }
+                    ]
+                }]
+            },
+            {
+                author: "Píndaro",
+                works: [{ 
+                    title: "Olímpica I", meta: "1-4", 
+                    content: "Ἄριστον μὲν ὕδωρ, ὁ δὲ χρυσὸς αἰθόμενον πῦρ ἅτε διαπρέπει νυκτὶ μεγάνορος ἔξοχα πλούτου· εἰ δ᾽ ἄεθλα γαρύεν ἔλδεαι, φίλον ἦτορ.",
+                    translations: [
+                        { lang: "ES (Alianza)", text: "Lo mejor es el agua, y el oro, como fuego encendido, resplandece en la noche...", author: "A. Bernabé" },
+                        { lang: "EN (Loeb)", text: "Best is water, while gold, like fire flaming at night, gleams far beyond all lordly wealth...", author: "W.H. Race" },
+                        { lang: "FR (Belles Lettres)", text: "L'eau est le premier des biens ; l'or, tel un feu qui brûle dans la nuit, brille d'un éclat supérieur...", author: "Aimé Puech" }
+                    ]
+                }]
+            },
+            {
+                author: "Heródoto",
+                works: [{ 
+                    title: "Historias", meta: "Proemio", 
+                    content: "Ἡροδότου Ἁλικαρνησσέος ἱστορίης ἀπόδεξις ἥδε, ὡς μήτε τὰ γενόμενα ἐξ ἀνθρώπων τῷ χρόνῳ ἐξίτηλα γένηται, μήτε ἔργα μεγάλα τε καὶ θωμαστά...",
+                    translations: [
+                        { lang: "ES (Gredos)", text: "Esta es la exposición de las investigaciones de Heródoto de Halicarnaso...", author: "C. Schrader" },
+                        { lang: "EN (Oxford)", text: "What Herodotus of Halicarnassus has learnt by inquiry is here set forth...", author: "G. Rawlinson" },
+                        { lang: "FR (Belles Lettres)", text: "Hérodote d'Halicarnasse présente ici les résultats de son enquête...", author: "Ph.-E. Legrand" }
+                    ]
+                }]
+            },
+            {
+                author: "Tucídides",
+                works: [{ 
+                    title: "Guerra del Peloponeso", meta: "I, 1", 
+                    content: "Θουκυδίδης Ἀθηναῖος ξυνέγραψε τὸν πόλεμον τῶν Πελοποννησίων καὶ Ἀθηναίων, ὡς ἐπολέμησαν πρὸς ἀλλήλους, ἀρξάμενος εὐθὺς καθισταμένου.",
+                    translations: [
+                        { lang: "ES (Gredos)", text: "Tucídides de Atenas escribió la historia de la guerra entre los peloponesios y los atenienses...", author: "J.J. Torres" },
+                        { lang: "EN (Loeb)", text: "Thucydides, an Athenian, wrote the history of the war between the Peloponnesians and the Athenians...", author: "C.F. Smith" },
+                        { lang: "FR (Belles Lettres)", text: "Thucydide l'Athénien a raconté la guerre des Péloponnésiens et des Athéniens...", author: "J. de Romilly" }
+                    ]
+                }]
+            },
+            {
+                author: "Sófocles",
+                works: [{ 
+                    title: "Edipo Rey", meta: "1-5", 
+                    content: "Ὦ τέκνα, Κάδμου τοῦ πάλαι νέα τροφή, τίνας ποθ᾽ ἕδρας τάσδε μοι θοάζετε ἱκτηρίοις κλάδοισιν ἐξεστεμμένοι;",
+                    translations: [
+                        { lang: "ES (Gredos)", text: "¡Oh hijos, nueva descendencia del antiguo Cadmo! ¿Por qué estáis así ante mí...?", author: "A. Alamillo" },
+                        { lang: "EN (Oxford)", text: "My children, latest generation born from Cadmus, why are you sitting here with suppliant crowns?", author: "R. Jebb" },
+                        { lang: "FR (Belles Lettres)", text: "O mes enfants, jeune postérité de l'antique Cadmos, pourquoi vous pressez-vous ainsi autour de ces autels?", author: "P. Mazon" }
+                    ]
+                }]
+            },
+            {
+                author: "Eurípides",
+                works: [{ 
+                    title: "Medea", meta: "1-8", 
+                    content: "Εἴθ᾽ ὤφελ᾽ Ἀργοῦς μὴ διαπτάσθαι σκάφος Κόλχων ἐς αἶαν κυανέας Συμπληγάδας, μηδ᾽ ἐν νάπαισι Πηλίου πεσεῖν ποτε.",
+                    translations: [
+                        { lang: "ES (Gredos)", text: "¡Ojalá la nave Argo no hubiera volado a la tierra de los colcos a través de las Simplégades!", author: "A. Medina" },
+                        { lang: "EN (Loeb)", text: "Would that the Argo's hull had never flown between the clashing Cyanean rocks to Colchis-land!", author: "A.S. Way" },
+                        { lang: "FR (Belles Lettres)", text: "Ah ! si le navire Argo n'avait pas volé, par-delà les Symplégades bleues, vers la terre de Colchide !", author: "L. Méridier" }
+                    ]
+                }]
+            },
+            {
+                author: "Aristófanes",
+                works: [{ 
+                    title: "Lisístrata", meta: "1-4", 
+                    content: "Ἀλλ᾽ εἴ τις ἐς Βακχεῖον αὐτὰς ἐκάλεσεν, ἢ ᾽ς Πανὸς ἢ ᾽πὶ Κωλιάδ᾽ ἢ ᾽ς Γενετυλλίδος, οὐδ᾽ ἂν διελθεῖν ἦν ἂν ὑπὸ τῶν τυμπάνων.",
+                    translations: [
+                        { lang: "ES (Cátedra)", text: "¡Si alguien las hubiera invitado a una fiesta de Baco, o al santuario de Pan, o al de Colíade...!", author: "L.M. Macía" },
+                        { lang: "EN (Loeb)", text: "Now if they had been summoned to a Bacchic feast, or to a shrine of Pan or Colias or Genetyllis...", author: "J. Henderson" },
+                        { lang: "FR (Belles Lettres)", text: "Ah ! si on les avait conviées à une fête de Bacchus, ou chez Pan, ou à Colias, ou chez Génétyllis...", author: "H. Van Daele" }
+                    ]
+                }]
+            },
+            {
+                author: "Platón",
+                works: [{ 
+                    title: "Apología de Sócrates", meta: "17a", 
+                    content: "Ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι, πεπόνθατε ὑπὸ τῶν ἐμῶν κατηγόρων, οὐκ οἶδα· ἐγὼ δ᾽ οὖν καὶ αὐτὸς ὑπ᾽ αὐτῶν ὀλίγου ἐμαυτοῦ ἐπελαθόμην.",
+                    translations: [
+                        { lang: "ES (Gredos)", text: "No sé, atenienses, la sensación que habéis experimentado por las palabras de mis acusadores...", author: "J. Calonge" },
+                        { lang: "EN (Hackett)", text: "How you, men of Athens, have been affected by my accusers, I do not know...", author: "Grube" },
+                        { lang: "FR (Belles Lettres)", text: "Quelle impression mes accusateurs ont faite sur vous, Athéniens, je l'ignore ; pour moi, sous leur influence...", author: "M. Croiset" }
+                    ]
+                }]
             },
             {
                 author: "Demóstenes",
                 works: [{
-                    title: "Sobre la Corona",
-                    meta: "Discurso XVIII, 1",
-                    content: "Πρῶτον μέν, ὦ ἄνδρες Ἀθηναῖοι, τοῖς θεοῖς εὔχομαι πᾶσι καὶ πάσαις, ὅσην εὔνοιαν διατελῶ ἔχων ἐγώ τε τῇ πόλει καὶ πᾶσιν ὑμῖν, τοσαύτην ὑπάρξαι μοι παρ᾽ ὑμῶν εἰς τουτονὶ τὸν ἀγῶνα.",
+                    title: "Sobre la Corona", meta: "XVIII, 1",
+                    content: "Πρῶτον μέν, ὦ ἄνδρες Ἀθηναῖοι, τοῖς θεοῖς εὔχομαι πᾶσι καὶ πάσαις, ὅσην εὔνοιαν διατελῶ ἔχων ἐγώ τε τῇ πόλει καὶ πᾶσιν ὑμῖν.",
                     translations: [
-                        {lang: "ES (Gredos)", text: "En primer lugar, varones atenienses, ruego a todos los dioses y diosas que, cuanta benevolencia he tenido siempre hacia la ciudad y hacia todos vosotros, tanta me sea otorgada por vuestra parte para este proceso.", author: "A. López Eire"},
-                        {lang: "ES (Literal)", text: "Primero por un lado, oh varones atenienses, a los dioses ruego a todos y a todas, cuanta benevolencia continúo teniendo yo tanto por la ciudad como por todos vosotros..."}
+                        { lang: "ES (Gredos)", text: "En primer lugar, varones atenienses, ruego a todos los dioses y diosas...", author: "López Eire" },
+                        { lang: "EN (Loeb)", text: "I begin, men of Athens, by praying to every god and goddess...", author: "C.A. Vince" },
+                        { lang: "FR (Belles Lettres)", text: "Je commence, Athéniens, par prier tous les dieux et toutes les déesses...", author: "G. de Budé" }
                     ]
                 }]
             },
             {
                 author: "Estrabón",
                 works: [{
-                    title: "Geografía",
-                    meta: "Libro I, 1.1",
+                    title: "Geografía", meta: "I, 1.1",
                     content: "Τῆς τοῦ φιλοσόφου πραγματείας εἶναι νομίζομεν, εἴπερ τινὰ ἄλλην, καὶ τὴν γεωγραφικήν, ἣν νῦν προῃρήμεθα ἐπισκοπεῖν.",
                     translations: [
-                        {lang: "ES (Gredos)", text: "Consideramos que la ciencia geográfica, que ahora nos hemos propuesto examinar, pertenece a la incumbencia del filósofo tanto como cualquier otra.", author: "J.L. García Ramón"},
-                        {lang: "ES (Literal)", text: "De la del filósofo actividad ser consideramos, si es que alguna otra [lo es], también la geográfica, la cual ahora nos hemos propuesto examinar."}
+                        { lang: "ES (Gredos)", text: "Consideramos que la ciencia geográfica pertenece a la incumbencia del filósofo...", author: "García Ramón" },
+                        { lang: "EN (Loeb)", text: "The science of Geography, which I now propose to investigate, is, I think, a concern of the philosopher...", author: "H.L. Jones" },
+                        { lang: "FR (Belles Lettres)", text: "L'étude de la géographie, dont nous nous proposons ici l'examen, appartient, selon nous, au philosophe...", author: "G. Aujac" }
                     ]
                 }]
             },
-            { author: "Tucídides", works: [{ title: "Guerra del Peloponeso", meta: "Libro I, 1", content: "Θουκυδίδης Ἀθηναῖος ξυνέγραψε τὸν πόλεμον τῶν Πελοποννησίων καὶ Ἀθηναίων, ὡς ἐπολέμησαν πρὸς ἀλλήλους, ἀρξάμενος εὐθὺς καθισταμένου καὶ ἐλπίσας μέγαν τε ἔσεσθαι καὶ ἀξιολογώτατον τῶν προγεγενημένων.", translations: [{lang: "ES (Gredos)", text: "Tucídides de Atenas escribió la historia de la guerra...", author: "J.J. Torres"}] }]},
-            { author: "Heródoto", works: [{ title: "Historias", meta: "Proemio", content: "Ἡροδότου Ἁλικαρνησσέος ἱστορίης ἀπόδεξις ἥδε, ὡς μήτε τὰ γενόμενα ἐξ ἀνθρώπων τῷ χρόνῳ ἐξίτηλα γένηται, μήτε ἔργα μεγάλα τε καὶ θωμαστά...", translations: [{lang: "ES (Gredos)", text: "Esta es la exposición de las investigaciones de Heródoto...", author: "C. Schrader"}] }]},
-            { author: "Sófocles", works: [{ title: "Edipo Rey", meta: "1-5", content: "Ὦ τέκνα, Κάδμου τοῦ πάλαι νέα τροφή, τίνας ποθ᾽ ἕδρας τάσδε μοι θοάζετε ἱκτηρίοις κλάδοισιν ἐξεστεμμένοι; πόλις δ᾽ ὁμοῦ μὲν θυμιαμάτων γέμει, ὁμοῦ δὲ παιάνων τε καὶ στεναγμάτων·", translations: [{lang: "ES (Gredos)", text: "¡Oh hijos, nueva descendencia del antiguo Cadmo!...", author: "A. Alamillo"}] }]},
-            { author: "Eurípides", works: [{ title: "Medea", meta: "1-8", content: "Εἴθ᾽ ὤφελ᾽ Ἀργοῦς μὴ διαπτάσθαι σκάφος Κόλχων ἐς αἶαν κυανέας Συμπληγάδας, μηδ᾽ ἐν νáπαισι Πηλίου πεσεῖν ποτε τμηθεῖσα πεύκη, μηδ᾽ ἐρετμῶσαι χέρας ἀνδρῶν ἀρίστων.", translations: [{lang: "ES (Gredos)", text: "¡Ojalá la nave Argo no hubiera volado a la tierra de los colcos!...", author: "A. Medina"}] }]},
-            { author: "Aristófanes", works: [{ title: "Lisístrata", meta: "1-4", content: "Ἀλλ᾽ εἴ τις ἐς Βακχεῖον αὐτὰς ἐκάλεσεν, ἢ ᾽ς Πανὸς ἢ ᾽πὶ Κωλιάδ᾽ ἢ ᾽ς Γενετυλλίδος, οὐδ᾽ ἂν διελθεῖν ἦν ἂν ὑπὸ τῶν τυμπάνων.", translations: [{lang: "ES (Cátedra)", text: "¡Si alguien las hubiera invitado a una fiesta de Baco!...", author: "Macía"}] }]},
-            { author: "Safo", works: [{ title: "Himno a Afrodita", meta: "Fr. 1", content: "Ποικιλόθρον᾽ ἀθάνατ᾽ Ἀφρόδιτα, παῖ Δίος δολόπλοκε, λίσσομαί σε, μή μ᾽ ἄσαισι μηδ᾽ ὀνίαισι δάμνα, πότνια, θῦμον.", translations: [{lang: "ES (Gual)", text: "Inmortal Afrodita, la del trono pintado...", author: "C. García Gual"}] }]},
-            { author: "Marco Aurelio", works: [{ title: "Meditaciones", meta: "Libro II, 1", content: "Ἕωθεν προλέγειν ἑαυτῷ· συντεύξομαι περιέργῳ, ἀχαρίστῳ, ὑβριστῇ, δολερῷ, βασκάνῳ, ἀκοινωνήτῳ. πάντα ταῦτα συμβέβηκεν ἐκείνοις παρὰ τὴν ἄγnoιαν τῶν ἀγαθῶν καὶ κακῶν.", translations: [{lang: "ES (Gredos)", text: "Al amanecer, dite a ti mismo: me encontraré con un indiscreto...", author: "Díaz Tejera"}] }]},
-            { author: "Flavio Josefo", works: [{ title: "Antigüedades Judías", meta: "I, 1", content: "Τοῖς τὰς ἱστορίας συγγράφειν βουλομένοις οὐ μίαν οὐδὲ τὴν αὐτὴν ὁρῶ τῆς σπουδῆς αἰτίαν, ἀλλὰ πολλὰς καὶ πλεῖστον ἀλλήλων διαφερούσας.", translations: [{lang: "ES (Gredos)", text: "Para aquellos que desean escribir historias...", author: "Varlet"}] }]},
-            { author: "Platón", works: [{ title: "Apología de Sócrates", meta: "17a", content: "Ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι, πεπόνθατε ὑπὸ τῶν ἐμῶν κατηγόρων, οὐκ οἶδα· ἐγὼ δ᾽ οὖν καὶ αὐτὸς ὑπ᾽ αὐτῶν ὀλίγου ἐμαυτοῦ ἐπελαθόμην, οὕτω πιθανῶς ἔλεγον.", translations: [{lang: "ES (Gredos)", text: "No sé, atenienses, la sensación que habéis experimentado...", author: "J. Calonge"}] }]},
-            { author: "Hesíodo", works: [{ title: "Teogonía", meta: "1-4", content: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ᾽ ἀείδειν, αἵ θ᾽ Ἑλικῶνος ἔχουσιν ὄρος μέγα τε ζάθεόν τε καί τε περὶ κρήνην ἰοειδέα πόσσ᾽ ἁπαλοῖσιν ὀρχεῦνται.", translations: [{lang: "ES (Gredos)", text: "Comencemos a cantar a las Musas heliconíadas...", author: "Pérez Jiménez"}] }]},
-            { author: "Píndaro", works: [{ title: "Olímpica I", meta: "1-4", content: "Ἄριστον μὲν ὕδωρ, ὁ δὲ χρυσὸς αἰθόμενον πῦρ ἅτε διαπρέπει νυκτὶ μεγάνορος ἔξοχα πλούτου· εἰ δ᾽ ἄεθλα γαρύεν ἔλδεαι, φίλον ἦτορ.", translations: [{lang: "ES (Alianza)", text: "Lo mejor es el agua, y el oro, como fuego encendido...", author: "A. Bernabé"}] }]}
+            {
+                author: "Marco Aurelio",
+                works: [{ 
+                    title: "Meditaciones", meta: "II, 1", 
+                    content: "Ἕωθεν προλέγειν ἑαυτῷ· συντεύξομαι περιέργῳ, ἀχαρίστῳ, ὑβριστῇ, δολερῷ, βασκάνῳ, ἀκοινωνήτῳ.",
+                    translations: [
+                        { lang: "ES (Gredos)", text: "Al amanecer, dite a ti mismo: me encontraré con un indiscreto, un ingrato...", author: "Díaz Tejera" },
+                        { lang: "EN (Hays)", text: "When you wake up in the morning, tell yourself: The people I deal with today will be meddling, ungrateful...", author: "G. Hays" },
+                        { lang: "FR (Belles Lettres)", text: "Dès l'aurore, dis-toi par avance : Je vais rencontrer un indiscret, un ingrat, un insolent...", author: "A. Trannoy" }
+                    ]
+                }]
+            },
+            {
+                author: "Flavio Josefo",
+                works: [{ 
+                    title: "Antigüedades Judías", meta: "I, 1", 
+                    content: "Τοῖς τὰς ἱστορίας συγγράφειν βουλομένοις οὐ μίαν οὐδὲ τὴν αὐτὴν ὁρῶ τῆς σπουδῆς αἰτίαν, ἀλλὰ πολλὰς καὶ πλεῖστον ἀλλήλων διαφερούσας.",
+                    translations: [
+                        { lang: "ES (Gredos)", text: "Para aquellos que desean escribir historias, no veo una sola causa ni la misma...", author: "Varlet" },
+                        { lang: "EN (Loeb)", text: "Those who assign to themselves the task of writing histories, do not, I observe, all arrive at it from the same motive...", author: "H.St.J. Thackeray" },
+                        { lang: "FR", text: "Ceux qui entreprennent d'écrire l'histoire n'ont pas tous, je le vois, le même motif de zèle...", author: "J. Weill" }
+                    ]
+                }]
+            }
         ];
         window.onload = () => { lucide.createIcons(); renderIndex(); loadNotes(); resetApp(); };
 

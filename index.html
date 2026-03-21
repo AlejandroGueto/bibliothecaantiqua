@@ -16,7 +16,7 @@
         .word-token { display: inline-block; padding: 2px 4px; cursor: pointer; transition: all 0.2s; border-radius: 4px; }
         .word-token:hover { background: rgba(139, 50, 44, 0.1); color: var(--terracotta); }
         .active-word { color: var(--terracotta) !important; font-weight: 700; background: rgba(139, 50, 44, 0.08); box-shadow: 0 2px 0 var(--gold); }
-        .reading-now { background: var(--gold); color: white !important; border-radius: 4px; }
+        .reading-now { background: var(--gold); color: white !important; border-radius: 4px; transform: scale(1.05); }
         .drawer { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .trans-card { background: white; padding: 1.25rem; border-radius: 1.5rem; border-top: 3px solid var(--terracotta); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     </style>
@@ -36,7 +36,7 @@
 
     <main id="reader-view" class="flex-1 p-4 md:p-12 max-w-5xl mx-auto w-full">
         <header class="mb-8 text-center">
-            <h2 id="view-title" class="greek-display text-4xl md:text-6xl font-black text-stone-900 italic tracking-tight">Cargando Bibliotheca...</h2>
+            <h2 id="view-title" class="greek-display text-4xl md:text-6xl font-black text-stone-900 italic tracking-tight italic">Cargando...</h2>
             <p id="view-meta" class="text-stone-400 ancient text-[10px] mt-2 uppercase tracking-[0.2em]"></p>
         </header>
 
@@ -94,7 +94,7 @@
                             { lang: "FR (Belles Lettres)", text: "Chante, déesse, la colère d'Achille, le fils de Pélée; détestable colère...", author: "Mazon" }
                         ]
                     },
-                    { title: "Odisea", meta: "Canto I, 1-10", content: "Ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσε· πολλῶν δ᾽ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω, πολλὰ δ᾽ ὅ γ᾽ ἐν πόντῳ πάθεν ἄλγεα ὃν κατὰ θυμόν, ἀρνύμενος ἥν τε ψυχὴν καὶ νόστον ἑταίρων.", translations: [{lang: "ES (Gredos)", text: "Háblame, Musa, de aquel varón de multiforme ingenio...", author: "J.M. Pabón"}] }
+                    { title: "Odisea", meta: "Canto I, 1-10", content: "Ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσε· πολλῶν δ᾽ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω, πολλὰ δ᾽ ὅ γ᾽ ἐν πόντῳ πάθεν ἄλγεα ὃν κατὰ θυμόν, ἀρνύμενος ἥν τε ψυχὴν καὶ νόστον ἑταíρων.", translations: [{lang: "ES (Gredos)", text: "Háblame, Musa, de aquel varón de multiforme ingenio...", author: "J.M. Pabón"}] }
                 ]
             },
             { author: "Demóstenes", works: [{ title: "Sobre la Corona", meta: "XVIII, 1", content: "Πρῶτον μέν, ὦ ἄνδρες Ἀθηναῖοι, τοῖς θεοῖς εὔχομαι πᾶσι καὶ πάσαις, ὅσην εὔνοιαν διατελῶ ἔχων ἐγώ τε τῇ πόλει καὶ πᾶσιν ὑμῖν, τοσαύτην ὑπάρξαι μοι παρ᾽ ὑμῶν εἰς τουτονὶ τὸν ἀγῶνα.", translations: [{lang: "ES (Gredos)", text: "En primer lugar, varones atenienses, ruego a todos los dioses...", author: "López Eire"}] }]},
@@ -104,7 +104,7 @@
             { author: "Sófocles", works: [{ title: "Edipo Rey", meta: "1-5", content: "Ὦ τέκνα, Κάδμου τοῦ πάλαι νέα τροφή, τίνας ποθ᾽ ἕδρας τάσδε μοι θοάζετε ἱκτηρίοις κλάδοισιν ἐξεστεμμένοι;", translations: [{lang: "ES (Gredos)", text: "¡Oh hijos, nueva descendencia del antiguo Cadmo!...", author: "A. Alamillo"}] }]},
             { author: "Eurípides", works: [{ title: "Medea", meta: "1-8", content: "Εἴθ᾽ ὤφελ᾽ Ἀργοῦς μὴ διαπτάσθαι σκάφος Κόλχων ἐς αἶαν κυανέας Συμπληγάδας, μηδ᾽ ἐν νάπαισι Πηλίου πεσεῖν ποτε.", translations: [{lang: "ES (Gredos)", text: "¡Ojalá la nave Argo no hubiera volado a la tierra de los colcos!", author: "A. Medina"}] }]},
             { author: "Aristófanes", works: [{ title: "Lisístrata", meta: "1-4", content: "Ἀλλ᾽ εἴ τις ἐς Βακχεῖον αὐτὰς ἐκάλεσεν, ἢ ᾽ς Πανὸς ἢ ᾽πὶ Κωλιάδ᾽ ἢ ᾽ς Γενετυλλίδος, οὐδ᾽ ἂν διελθεῖν ἦν ἂν ὑπὸ τῶν τυμπάνων.", translations: [{lang: "ES (Cátedra)", text: "¡Si alguien las hubiera invitado a una fiesta de Baco!", author: "Macía"}] }]},
-            { author: "Safo", works: [{ title: "Himno a Afrodita", meta: "Fr. 1", content: "Ποικιλόθρον᾽ ἀθάνατ᾽ Ἀφρόδιτα, παῖ Δίος δολόπλοκε, λίσσομαί σε, μή μ᾽ ἄσαισι μηδ᾽ ὀνίαισι δάμνα, πότνια, θῦμον.", translations: [{lang: "ES (Gual)", text: "Inmortal Afrodita, la del trono pintado...", author: "C. García Gual"}] }]},
+            { author: "Safo", works: [{ title: "Himno a Afrodita", meta: "Fr. 1", content: "Ποικιλόθρον᾽ ἀθάνατ᾽ Ἀφρόδιτα, παῖ Δίος δολόπλοκε, λίσσομαί σε, μή μ᾽ ἄσαισι μηδ᾽ ὀνíαισι δáμνα, πότνια, θῦμον.", translations: [{lang: "ES (Gual)", text: "Inmortal Afrodita, la del trono pintado...", author: "C. García Gual"}] }]},
             { author: "Marco Aurelio", works: [{ title: "Meditaciones", meta: "II, 1", content: "Ἕωθεν προλέγειν ἑαυτῷ· συντεύξομαι περιέργῳ, ἀχαρίστῳ, ὑβριστῇ, δολερῷ, βασκάνῳ, ἀκοινωνήτῳ.", translations: [{lang: "ES (Gredos)", text: "Al amanecer, dite a ti mismo: me encontraré con un indiscreto...", author: "Díaz Tejera"}] }]},
             { author: "Flavio Josefo", works: [{ title: "Antigüedades Judías", meta: "I, 1", content: "Τοῖς τὰς ἱστορίας συγγράφειν βουλομένοις οὐ μίαν οὐδὲ τὴν αὐτὴν ὁρῶ τῆς σπουδῆς αἰτίαν, ἀλλὰ πολλὰς καὶ πλεῖστον ἀλλήλων διαφερούσας.", translations: [{lang: "ES (Gredos)", text: "Para aquellos que desean escribir historias...", author: "Varlet"}] }]},
             { author: "Platón", works: [{ title: "Apología de Sócrates", meta: "17a", content: "Ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι, πεπόνθατε ὑπὸ τῶν ἐμῶν κατηγόρων, οὐκ οἶδα· ἐγὼ δ᾽ οὖν καὶ αὐτὸς ὑπ᾽ αὐτῶν ὀλίγου ἐμαυτοῦ ἐπελαθόμην.", translations: [{lang: "ES (Gredos)", text: "No sé, atenienses, la sensación que habéis experimentado...", author: "J. Calonge"}] }]},
@@ -122,9 +122,13 @@
         }
 
         async function callOráculo(prompt) {
-           const url = \https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;`
-            generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
-            const res = await fetch(url, { method: 'POST', body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.1, responseMimeType: "application/json" } }) });
+            // MODELO 1.5-FLASH PARA ESTABILIDAD TOTAL
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const res = await fetch(url, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.1, responseMimeType: "application/json" } }) 
+            });
             const data = await res.json();
             return JSON.parse(data.candidates[0].content.parts[0].text);
         }
@@ -143,7 +147,7 @@
                         <div class="bg-red-50 p-8 rounded-[32px] border border-red-100 shadow-inner"><p class="text-4xl italic text-stone-900 font-black">"${res.traduccion}"</p></div>
                         <div class="p-6 bg-stone-50 rounded-2xl"><p class="text-[10px] ancient uppercase mb-2 text-stone-400 text-xs">Huella en Español</p><p class="text-sm text-stone-600 font-serif">${res.etimologia}</p></div>
                     </div>`;
-            } catch (e) { document.getElementById('drawer-content').innerHTML = "Fallo en la conexión del Oráculo."; }
+            } catch (e) { document.getElementById('drawer-content').innerHTML = "Error Oráculo. Verifica tu Clave API."; }
         }
 
         function playVoice() {
@@ -175,7 +179,7 @@
         }
 
         async function generateExercise() {
-            const area = document.getElementById('exercise-area'); area.classList.remove('hidden'); area.innerHTML = "<p class='animate-pulse text-center'>El Oráculo prepara un reto...</p>";
+            const area = document.getElementById('exercise-area'); area.classList.remove('hidden'); area.innerHTML = "<p class='animate-pulse text-center text-xs uppercase ancient'>El Oráculo prepara un reto...</p>";
             try {
                 const res = await callOráculo(`Crea un ejercicio corto de este texto: "${currentPassage.content}". Devuelve JSON: {"pregunta":"","opciones":["","",""],"correcta":0}`);
                 area.innerHTML = `<p class="mb-4 font-bold text-lg">${res.pregunta}</p><div class="grid gap-2">${res.opciones.map((o, i) => `<button onclick="checkAnswer(${i},${res.correcta})" class="p-3 bg-stone-800 hover:bg-stone-700 rounded-xl text-left transition-colors">${o}</button>`).join('')}</div>`;

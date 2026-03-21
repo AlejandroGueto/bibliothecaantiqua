@@ -323,18 +323,35 @@
         }
 
         async function callOráculo(prompt, systemMsg = "") {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const payload = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.1, responseMimeType: "application/json" } };
-            if (systemMsg) payload.systemInstruction = { parts: [{ text: systemMsg }] };
+            // Modelo clásico universal (inmune a restricciones europeas y bloqueos 404)
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+            
+            // Combinamos las instrucciones para que este modelo más antiguo lo entienda perfecto
+            const finalPrompt = systemMsg ? `${systemMsg}\n\n${prompt}` : prompt;
+            
+            const payload = {
+                contents: [{ parts: [{ text: finalPrompt }] }],
+                generationConfig: { temperature: 0.1 }
+            };
 
             let retries = 0, delay = 1000;
             while (retries < 3) {
                 try {
-                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    const response = await fetch(url, { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify(payload) 
+                    });
+                    
                     if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
                     const data = await response.json();
                     if (!data.candidates || data.candidates.length === 0) throw new Error('El Oráculo no devolvió datos.');
-                    return parseRobustJSON(data.candidates[0].content.parts[0].text);
+                    
+                    // Limpiamos posibles formatos de texto del modelo clásico
+                    let text = data.candidates[0].content.parts[0].text;
+                    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+                    
+                    return parseRobustJSON(text);
                 } catch (e) {
                     retries++; if (retries === 3) throw e;
                     await new Promise(r => setTimeout(r, delay)); delay *= 2;

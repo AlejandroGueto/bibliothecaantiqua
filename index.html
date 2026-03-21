@@ -76,11 +76,6 @@
     </div>
 
     <script>
-       let apiKey = localStorage.getItem('gemini_key');
-if (!apiKey) {
-    apiKey = prompt("🏛️ Para despertar al Oráculo, pega aquí tu Clave API de Google. Solo tendrás que hacerlo una vez y se guardará en tu navegador de forma segura:");
-    if (apiKey) localStorage.setItem('gemini_key', apiKey.trim());
-}
         let currentPassage = null, audioRate = 0.8, isSpeaking = false;
 
         const classicalIndex = [
@@ -123,14 +118,30 @@ if (!apiKey) {
             `).join('');
         }
 
-        async function callOráculo(prompt) {
-            // MODELO 1.5-FLASH PARA ESTABILIDAD TOTAL
+        async function callOráculo(promptText) {
+            let apiKey = localStorage.getItem('gemini_key');
+            
+            // Si no hay clave en memoria, la pedimos
+            if (!apiKey) {
+                apiKey = prompt("🏛️ Pega tu Clave API de Google AI Studio (empieza por AIzaSy):");
+                if (!apiKey) throw new Error("Cancelado");
+                localStorage.setItem('gemini_key', apiKey.trim());
+            }
+
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            
             const res = await fetch(url, { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.1, responseMimeType: "application/json" } }) 
+                body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }], generationConfig: { temperature: 0.1, responseMimeType: "application/json" } }) 
             });
+
+            if (!res.ok) {
+                // SI LA CLAVE FALLA, LA BORRAMOS AUTOMÁTICAMENTE PARA QUE NO TE ATASQUES
+                localStorage.removeItem('gemini_key');
+                throw new Error("Clave rechazada");
+            }
+
             const data = await res.json();
             return JSON.parse(data.candidates[0].content.parts[0].text);
         }
@@ -139,6 +150,7 @@ if (!apiKey) {
             document.querySelectorAll('.word-token').forEach(x => x.classList.remove('active-word')); el.classList.add('active-word');
             document.getElementById('drawer').classList.remove('translate-x-full');
             document.getElementById('drawer-content').innerHTML = "<div class='py-20 text-center animate-pulse ancient text-stone-300'>Consultando Escolios...</div>";
+            
             try {
                 const res = await callOráculo(`Analiza "${word}" en "${currentPassage.content}". Devuelve JSON: {"lema":"","morfologia":"","traduccion":"","etimologia":""}`);
                 document.getElementById('drawer-content').innerHTML = `
@@ -149,7 +161,15 @@ if (!apiKey) {
                         <div class="bg-red-50 p-8 rounded-[32px] border border-red-100 shadow-inner"><p class="text-4xl italic text-stone-900 font-black">"${res.traduccion}"</p></div>
                         <div class="p-6 bg-stone-50 rounded-2xl"><p class="text-[10px] ancient uppercase mb-2 text-stone-400 text-xs">Huella en Español</p><p class="text-sm text-stone-600 font-serif">${res.etimologia}</p></div>
                     </div>`;
-            } catch (e) { document.getElementById('drawer-content').innerHTML = "Error Oráculo. Verifica tu Clave API."; }
+            } catch (e) { 
+                if (e.message === "Clave rechazada") {
+                    document.getElementById('drawer-content').innerHTML = "<div class='py-10 text-center'><p class='text-red-600 font-bold mb-4'>Google ha rechazado la clave.</p><p class='text-stone-600 text-sm'>La he borrado de la memoria para que puedas meter otra.</p><br><p class='font-bold underline cursor-pointer' onclick='closeDrawer()'>Cierra este panel, vuelve a pulsar la palabra e introduce una clave NUEVA.</p></div>";
+                } else if (e.message === "Cancelado") {
+                    document.getElementById('drawer-content').innerHTML = "<p class='text-center py-10'>Necesitas una clave para usar el Oráculo.</p>";
+                } else {
+                    document.getElementById('drawer-content').innerHTML = "<p class='text-center py-10'>Error de conexión.</p>";
+                }
+            }
         }
 
         function playVoice() {
@@ -185,7 +205,7 @@ if (!apiKey) {
             try {
                 const res = await callOráculo(`Crea un ejercicio corto de este texto: "${currentPassage.content}". Devuelve JSON: {"pregunta":"","opciones":["","",""],"correcta":0}`);
                 area.innerHTML = `<p class="mb-4 font-bold text-lg">${res.pregunta}</p><div class="grid gap-2">${res.opciones.map((o, i) => `<button onclick="checkAnswer(${i},${res.correcta})" class="p-3 bg-stone-800 hover:bg-stone-700 rounded-xl text-left transition-colors">${o}</button>`).join('')}</div>`;
-            } catch (e) { area.innerHTML = "No se pudo generar el ejercicio."; }
+            } catch (e) { area.innerHTML = "No se pudo generar el ejercicio. Comprueba la clave API."; }
         }
 
         function checkAnswer(i, correct) {

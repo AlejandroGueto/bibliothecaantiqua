@@ -48,29 +48,28 @@
     <main id="home-view" class="flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full animate-in fade-in duration-500 no-print">
         <header class="text-center mb-16">
             <h2 class="greek-display text-6xl md:text-8xl font-black mb-4 dark:text-white italic tracking-tighter">Bibliotheca Graeca</h2>
-            <p class="text-terracotta ancient text-xs md:text-sm uppercase tracking-[0.5em] font-bold dark:text-red-500">Entorno de Aprendizaje Crítico</p>
+            <p class="text-terracotta ancient text-xs md:text-sm uppercase tracking-[0.5em] font-bold dark:text-red-500">Personal Learning Environment</p>
         </header>
 
         <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             <div class="p-8 bg-stone-900 text-white rounded-[2.5rem] border border-white/10 shadow-2xl space-y-6">
                 <h3 class="ancient text-gold text-lg font-bold flex items-center gap-3"><i data-lucide="volume-2"></i> Voice / Voz / Voix</h3>
                 <div class="space-y-4 text-[11px] leading-relaxed font-serif opacity-90">
-                    <p class="border-l-2 border-gold pl-4"><b>ES:</b> Si la lectura no suena, instale el sintetizador griego (Google Greek) en su sistema (Accesibilidad > Voces).</p>
-                    <p class="opacity-70 border-l-2 border-stone-500 pl-4"><b>EN:</b> If reading is silent, please install the Greek voice synthesizer in your OS Accessibility settings.</p>
-                    <p class="opacity-70 border-l-2 border-stone-500 pl-4"><b>FR:</b> Si la lecture ne fonctionne pas, veuillez installer el synthétiseur grec dans vos paramètres.</p>
+                    <p><b>ES:</b> Para el audiolibro, instale el sintetizador de voz de Google en griego moderno (Google TTS) en su sistema (Accesibilidad > Voces).</p>
+                    <p class="opacity-70"><b>EN:</b> For audiobook functions, please install the Google Greek voice synthesizer in your OS Accessibility settings.</p>
+                    <p class="opacity-70"><b>FR:</b> Pour l'audio, veuillez installer le synthétiseur de voix grecque moderne de Google dans vos paramètres.</p>
                 </div>
             </div>
             <div class="p-8 bg-white rounded-[2.5rem] border border-gold/20 shadow-inner dark:bg-stone-900 transition-all">
                 <h3 class="ancient text-xl font-bold mb-3 dark:text-stone-100 flex items-center gap-3"><i data-lucide="sparkles"></i> ORACULUS</h3>
                 <div class="bg-red-50 dark:bg-stone-800 p-3 rounded-xl border border-red-100 dark:border-stone-700 mb-4 text-[10px] text-red-800 dark:text-red-400 font-bold uppercase">
-                    ⚠ Requiere Clave API de Groq / Groq API Key Required.
+                    ⚠ Clavis API Groq Necessaria / API Key Required.
                 </div>
-                <p class="text-sm text-stone-500 mb-6 dark:text-stone-400 italic">Análisis morfosintáctico trilingüe. / Advanced philological dissection.</p>
+                <p class="text-sm text-stone-500 mb-6 dark:text-stone-400 italic">Análisis morfosintáctico y etimológico trilingüe (Llama 3.3). / Advanced philological dissection.</p>
                 <button onclick="toggleApiTutorial()" class="px-6 py-2 bg-stone-900 text-white dark:bg-stone-800 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-gold transition-all">Configuratio</button>
                 <div id="api-tutorial-content" class="hidden mt-4 text-[11px] text-stone-400 border-t pt-4 space-y-2">
-                    <p>1. Visite <a href="https://console.groq.com/keys" target="_blank" class="text-gold underline">Groq Console</a>.</p>
-                    <p>2. Genere una clave 'gsk_...'.</p>
-                    <p>3. Péguela cuando el sistema la solicite.</p>
+                    <p>1. Get your key at <a href="https://console.groq.com/keys" target="_blank" class="text-gold underline">Groq Console</a>.</p>
+                    <p>2. Paste the 'gsk_...' code when prompted by the platform.</p>
                 </div>
             </div>
         </section>
@@ -78,24 +77,24 @@
         <section class="mb-16 p-10 bg-red-50/30 dark:bg-stone-900 rounded-[3rem] border-2 border-dashed border-red-200 dark:border-stone-700">
             <div class="text-center mb-8">
                 <h3 class="ancient text-2xl font-bold text-red-800 dark:text-red-500 uppercase tracking-widest">Interpretatio Externa</h3>
-                <p class="text-sm text-stone-500 italic mt-2">Analice cualquier fragmento de internet. / Analyze any Greek fragment instantly.</p>
+                <p class="text-sm text-stone-500 italic mt-2">Analice fragmentos de Perseus, Logeion o Scaife. / Analyze any Greek text from internet instantly.</p>
             </div>
             <div class="flex flex-col gap-4">
                 <textarea id="external-input" class="w-full h-32 p-6 rounded-2xl border bg-white dark:bg-stone-950 dark:border-stone-800 font-serif text-lg" placeholder="Pega el texto griego aquí..."></textarea>
-                <button onclick="loadExternalText()" class="w-full py-4 bg-stone-900 text-white rounded-2xl ancient font-black uppercase tracking-widest hover:bg-red-800 transition-all">Interpretari</button>
+                <button onclick="loadExternalText()" class="w-full py-4 bg-stone-900 text-white rounded-2xl ancient font-black uppercase tracking-widest hover:bg-red-800 transition-all uppercase font-black">Interpretatio</button>
             </div>
         </section>
 
         <section class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20 font-serif">
             <div class="home-card space-y-4">
                 <h4 class="font-bold text-2xl text-red-800 uppercase dark:text-red-500 tracking-tighter ancient">Philologia Digitalis</h4>
-                <p class="text-stone-500 text-sm leading-relaxed text-justify dark:text-stone-400 italic"><b>ES:</b> Integración premium inspirada en Logeion y Scaife Viewer. Lectura inmersiva con soporte crítico total.</p>
-                <p class="text-stone-400 text-[12px] leading-relaxed italic"><b>EN:</b> Immersive reading environment with full philological support. <b>FR:</b> Lecture immersive avec support critique complet.</p>
+                <p class="text-stone-500 text-sm leading-relaxed text-justify dark:text-stone-400"><b>ES:</b> Plataforma inspirada en Perseus, Logeion y Scaife Viewer. Lectura inmersiva tipo Legentibus.</p>
+                <p class="text-stone-400 text-[12px] leading-relaxed italic"><b>EN:</b> Immersive PLE inspired by the best world-class classical resources. <b>FR:</b> Environnement d'apprentissage numérique inspiré par Perseus et Logeion.</p>
             </div>
             <div class="home-card space-y-4">
                 <h4 class="font-bold text-2xl text-red-800 uppercase dark:text-red-500 tracking-tighter ancient">Exegesis Trilinguis</h4>
-                <p class="text-stone-500 text-sm leading-relaxed text-justify dark:text-stone-400 italic"><b>ES:</b> Análisis de raíz indoeuropea y morfología en tres idiomas. Traducciones literal y literaria.</p>
-                <p class="text-stone-400 text-[12px] leading-relaxed italic"><b>EN:</b> Trilingual root analysis and morphology. <b>FR:</b> Analyse morphologique et étymologique trilingue.</p>
+                <p class="text-stone-500 text-sm leading-relaxed text-justify dark:text-stone-400"><b>ES:</b> Disección morfológica, sintáctica y etimológica en tres idiomas mediante IA avanzada.</p>
+                <p class="text-stone-400 text-[12px] leading-relaxed italic"><b>EN:</b> Trilingual syntactic and etymological dissection via Llama 3.3. <b>FR:</b> Analyse morphosyntaxique et étymologique trilingue.</p>
             </div>
         </section>
 
@@ -103,18 +102,18 @@
             <div class="text-center md:text-left">
                 <p class="font-bold uppercase ancient text-sm mb-4 dark:text-stone-200">Alejandro Güeto • A.D. MMXXVI</p>
                 <div class="flex gap-6">
-                    <button onclick="toggleLegal(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Aviso Legal</button>
-                    <button onclick="togglePrivacy(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Privacidad</button>
+                    <button onclick="toggleLegal(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Aviso Legal / Legal / Mentions</button>
+                    <button onclick="togglePrivacy(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Privacidad / Privacy</button>
                 </div>
             </div>
-            <button onclick="localStorage.removeItem('groq_key'); location.reload();" class="text-[10px] ancient font-bold text-red-800 border-2 border-red-100 p-4 rounded-2xl hover:bg-red-50 uppercase tracking-widest">Reset Master Data</button>
+            <button onclick="localStorage.removeItem('groq_key'); location.reload();" class="text-[10px] ancient font-bold text-red-800 border-2 border-red-100 p-4 rounded-2xl hover:bg-red-50 uppercase">Reset Data</button>
         </footer>
     </main>
 
     <main id="reader-view" class="hidden flex-1 p-4 md:p-12 max-w-[1500px] mx-auto w-full no-print">
         <header class="text-center mb-16 relative">
             <button onclick="saveToCodex()" class="absolute right-0 top-0 p-5 bg-white text-terracotta rounded-full shadow-2xl border dark:bg-stone-800 transition-all hover:scale-110 active:scale-90 z-50"><i data-lucide="bookmark" id="bookmark-icon"></i></button>
-            <h2 id="view-title" class="greek-display text-5xl md:text-8xl font-black italic dark:text-stone-100 tracking-tighter">Lectio</h2>
+            <h2 id="view-title" class="greek-display text-5xl md:text-8xl font-black italic dark:text-stone-100">Lectio</h2>
             <p id="view-meta" class="text-red-800 ancient text-[11px] uppercase tracking-[0.4em] font-black mt-6 border-y border-stone-100 py-2 inline-block dark:border-stone-800"></p>
         </header>
 
@@ -143,9 +142,7 @@
     <div id="sidebar" class="fixed inset-y-0 left-0 w-full md:w-[500px] bg-white shadow-2xl -translate-x-full drawer p-12 overflow-y-auto no-print dark:bg-stone-900 border-r dark:border-stone-800">
         <div class="flex justify-between items-center mb-10 border-b pb-6">
             <h2 class="ancient text-2xl font-black dark:text-white uppercase tracking-tighter">BIBLIOTHECA GRAECA</h2>
-            <button onclick="toggleSidebar(false)" class="p-3 bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-400 rounded-full hover:bg-red-800 hover:text-white transition-all">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
+            <button onclick="toggleSidebar(false)" class="p-3 bg-red-50 text-red-800 dark:bg-red-900/20 rounded-full hover:bg-red-800 hover:text-white transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
         </div>
         <div id="author-list" class="space-y-12"></div>
     </div>
@@ -160,18 +157,18 @@
         <div class="space-y-12 font-serif text-sm dark:text-stone-400 leading-relaxed text-justify">
             <div class="legal-sect border-red-800 pl-6 border-l-4">
                 <span class="lang-tag bg-es mb-4">ES</span>
-                <p>Textos del dominio público. El análisis por IA (Oraculus) es experimental. Esta herramienta es para fines educativos exclusivamente.</p>
+                <p><b>Autoría y Propósito:</b> Latinitatis PRO es un Entorno Personal de Aprendizaje (PLE) creado por Alejandro Güeto (profesor en Andalucía). Textos del dominio público. El análisis por IA es experimental y educativo.</p>
             </div>
             <div class="legal-sect opacity-80 border-stone-500 pl-6 border-l-4">
                 <span class="lang-tag bg-en mb-4">EN</span>
-                <p>Public domain texts. AI analysis is experimental and provided for research and educational purposes only.</p>
+                <p><b>Intellectual Property:</b> Original texts are public domain. AI-generated analysis is provided for educational research purposes. Users must verify outputs against critical editions.</p>
             </div>
             <div class="legal-sect opacity-80 border-stone-500 pl-6 border-l-4">
                 <span class="lang-tag bg-fr mb-4">FR</span>
-                <p>Textes du domaine public. L'analyse par l'IA est expérimentale et destinée à un usage éducatif.</p>
+                <p><b>Propriété:</b> Textes originaux du domaine public. Analyse IA expérimentale. Plateforme conçue pour la recherche philologique.</p>
             </div>
         </div>
-        <button onclick="toggleLegal(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase">Cerrar</button>
+        <button onclick="toggleLegal(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase font-black">Close</button>
     </div>
 
     <div id="privacy-drawer" class="fixed inset-y-0 right-0 w-full md:w-[800px] bg-white shadow-2xl translate-x-full drawer p-16 overflow-y-auto border-l dark:bg-stone-900">
@@ -179,14 +176,14 @@
         <div class="space-y-12 font-serif text-sm dark:text-stone-400 leading-relaxed text-justify">
             <div class="legal-sect border-red-800 pl-6 border-l-4">
                 <span class="lang-tag bg-es mb-4">ES</span>
-                <p>No usamos cookies. Su API Key y Códice se guardan localmente en su navegador (LocalStorage). Sus datos son privados.</p>
+                <p><b>Privacidad Total:</b> No hay cuentas ni registros. Sus datos y su clave API residen exclusivamente en su dispositivo mediante LocalStorage. No recolectamos información personal.</p>
             </div>
             <div class="legal-sect opacity-80 border-stone-500 pl-6 border-l-4">
                 <span class="lang-tag bg-en mb-4">EN</span>
-                <p>No tracking cookies. Your API Key and Codex stay in your LocalStorage. We do not harvest user data.</p>
+                <p><b>Technical Privacy:</b> No cookies or tracking. API keys and Codex items are stored locally in your browser's LocalStorage. Data is not sent to external clouds.</p>
             </div>
         </div>
-        <button onclick="togglePrivacy(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase">Cerrar</button>
+        <button onclick="togglePrivacy(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase font-black">Close</button>
     </div>
 
     <div id="print-area" class="hidden print-only p-24 font-serif"></div>
@@ -200,14 +197,14 @@
 
         async function callAI(p) {
             let k = localStorage.getItem('groq_key'); 
-            if (!k) { k = prompt("🏛️ Clavis API (Groq):"); if (k) localStorage.setItem('groq_key', k.trim()); else throw new Error("Key requerida."); }
+            if (!k) { k = prompt("🏛️ Clavis API (Groq):"); if (k) localStorage.setItem('groq_key', k.trim()); else throw new Error("Key Required."); }
             const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { 
                 method: 'POST', headers: { 'Authorization': `Bearer ${k}`, 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ 
                     model: "llama-3.3-70b-versatile", 
                     messages: [{ 
                         role: "system", 
-                        content: "Experto Filólogo Clásico. JSON fields: lema, es(morph, def, etym, trans_lit, trans_literal), en(morph, def, etym), fr(morph, def, etym). Etymology trilingual and deep." 
+                        content: "Expert Philologist. JSON ONLY. Format: lema, es(morph, syntax, def, etym, trans_lit, trans_literal), en(morph, syntax, def, etym), fr(morph, syntax, def, etym). Syntactic function is mandatory." 
                     }, { role: "user", content: p }], 
                     temperature: 0.1, response_format: { type: "json_object" } 
                 }) 
@@ -218,11 +215,10 @@
         async function analyze(word) {
             openOracle(); const c = document.getElementById('oracle-content'); c.innerHTML = "<p class='py-48 text-center animate-pulse ancient text-stone-300 uppercase tracking-widest'>Consultatio Oraculi...</p>";
             try {
-                const res = JSON.parse(await callAI(`Analiza: "${word}" de ${currentWork.author}. Incluye morfología, etimología trilingüe y traducciones (literaria y literal) en español.`));
+                const res = JSON.parse(await callAI(`Analyze Greek word: "${word}" in ${currentWork.author}. Include morphological and syntactic analysis, etymology, and Spanish translations (literary and literal).`));
                 c.innerHTML = `
                     <h3 class="greek-display text-8xl my-10 font-black border-b pb-12 text-center dark:text-white tracking-tighter">${word}</h3>
                     <p class="text-4xl font-black text-gold text-center italic mb-20 font-serif">${res.lema}</p>
-                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
                         <div class="bg-stone-50 dark:bg-stone-800 p-6 rounded-3xl border border-stone-200 dark:border-stone-700">
                             <p class="ancient text-[9px] text-red-800 mb-2 uppercase">Interpretatio Litteraria (ES)</p>
@@ -233,27 +229,18 @@
                             <p class="text-lg font-serif">"${res.es.trans_literal}"</p>
                         </div>
                     </div>
-
                     <div class="space-y-24">` + 
-                    ['es','en','fr'].map(l => `<div class="border-l-[10px] border-stone-800 dark:border-gold pl-12"><span class="lang-tag bg-${l} mb-8 font-black uppercase">${l==='es'?'Español':l==='en'?'English':'Français'}</span><p class="text-lg font-bold uppercase dark:text-stone-300 tracking-wide mb-6">${res[l].morph}</p><p class="text-4xl italic font-serif dark:text-white mb-10 leading-tight">"${res[l].def}"</p><div class="bg-stone-100/50 dark:bg-stone-800 p-10 rounded-[2.5rem] text-sm italic leading-relaxed text-stone-500 dark:text-stone-400"><b>Etymologia:</b><br>${res[l].etym}</div></div>`).join('') + `</div>`;
+                    ['es','en','fr'].map(l => `<div class="border-l-[10px] border-stone-800 dark:border-gold pl-12"><span class="lang-tag bg-${l} mb-8 font-black uppercase">${l==='es'?'Español':l==='en'?'English':'Français'}</span><p class="text-lg font-bold uppercase dark:text-stone-300 mb-2 tracking-wide">${res[l].morph}</p><p class="text-sm font-bold text-terracotta dark:text-red-400 mb-6 uppercase italic">Sintaxis: ${res[l].syntax}</p><p class="text-4xl italic font-serif dark:text-white mb-10 leading-tight">"${res[l].def}"</p><div class="bg-stone-100/50 dark:bg-stone-800 p-10 rounded-[2.5rem] text-sm italic leading-relaxed text-stone-500 dark:text-stone-400"><b>Etymologia:</b><br>${res[l].etym}</div></div>`).join('') + `</div>`;
             } catch (e) { c.innerHTML = `<p class='p-16 bg-red-50 text-red-800 rounded-3xl font-black ancient uppercase'>Error: ${e.message}</p>`; }
         }
 
         function toggleAudio() {
             if (isReading) { synth.cancel(); isReading = false; updatePlayBtn(false); return; }
-            // FILTRO DE AUDIO: Solo caracteres griegos y espacios para evitar lectura de signos
             const cleanText = currentWork.content.replace(/[^\u0370-\u03FF\s]/g, ' ').replace(/\s+/g, ' ').trim();
             if(!cleanText) return;
-            utterance = new SpeechSynthesisUtterance(cleanText); 
-            utterance.voice = getBestGreekVoice(); utterance.lang = 'el-GR'; utterance.rate = readingRate;
+            utterance = new SpeechSynthesisUtterance(cleanText); utterance.voice = getBestGreekVoice(); utterance.lang = 'el-GR'; utterance.rate = readingRate;
             let idx = 0; const tokens = document.querySelectorAll('.word-token');
-            utterance.onboundary = (e) => { 
-                if (e.name === 'word') { 
-                    tokens.forEach(t => t.classList.remove('reading-now')); 
-                    const el = document.getElementById(`token-${idx}`); 
-                    if (el) { el.classList.add('reading-now'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); document.getElementById('progress-fill').style.width = `${((idx+1)/tokens.length)*100}%`; idx++; } 
-                } 
-            };
+            utterance.onboundary = (e) => { if (e.name === 'word') { tokens.forEach(t => t.classList.remove('reading-now')); const el = document.getElementById(`token-${idx}`); if (el) { el.classList.add('reading-now'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); document.getElementById('progress-fill').style.width = `${((idx+1)/tokens.length)*100}%`; idx++; } } };
             utterance.onend = () => { isReading = false; updatePlayBtn(false); };
             isReading = true; updatePlayBtn(true); synth.speak(utterance);
         }
@@ -271,9 +258,9 @@
                 let uniqueTitles = [...new Set(a.works.map(w => w.title))];
                 return `<div class="mb-12"><h3 class="ancient text-red-800 text-[11px] uppercase border-b pb-6 mb-8 font-black tracking-widest dark:text-red-500">${dispAuthor}</h3><div class="space-y-6">` + 
                     uniqueTitles.map(title => {
-                        let variants = a.works.filter(w => w.title === title);
-                        let titleES = variants[0].title_es ? ` (${variants[0].title_es})` : "";
-                        return `<button onclick="loadWork(${ai}, ${a.works.indexOf(variants[0])})" class="w-full text-left py-5 px-8 rounded-2xl hover:bg-stone-50 dark:hover:bg-stone-800 font-serif text-xl group flex justify-between items-center transition-all dark:text-stone-300"><span>${title}${titleES}</span><i data-lucide="chevron-right" class="opacity-0 group-hover:opacity-100"></i></button>`;
+                        let w = a.works.find(work => work.title === title);
+                        let sub = (w.title_es || w.title_en || w.title_fr) ? ` (${[w.title_es, w.title_en, w.title_fr].filter(Boolean).join(' / ')})` : "";
+                        return `<button onclick="loadWork(${ai}, ${a.works.indexOf(w)})" class="w-full text-left py-5 px-8 rounded-2xl hover:bg-stone-50 dark:hover:bg-stone-800 font-serif text-xl group flex justify-between items-center transition-all dark:text-stone-300"><span>${title}${sub}</span><i data-lucide="chevron-right" class="opacity-0 group-hover:opacity-100"></i></button>`;
                     }).join('') + `</div></div>`;
             }).join(''); lucide.createIcons();
         }
@@ -317,12 +304,12 @@
         function toggleTranslations() { 
             const grid = document.getElementById('trans-grid'); grid.classList.toggle('hidden'); 
             if (!grid.classList.contains('hidden')) { 
-                if (!currentWork.translations || currentWork.translations.length === 0) { grid.innerHTML = "<p class='col-span-full text-center ancient opacity-50 p-20'>Fragmenta Vacua.</p>"; return; } 
+                if (!currentWork.translations || currentWork.translations.length === 0) { grid.innerHTML = "<p class='col-span-full text-center ancient opacity-50 p-20'>FRAGMENTUM VACUUM</p>"; return; } 
                 grid.innerHTML = currentWork.translations.map(t => `<div class="trans-card border-t-4 shadow-xl dark:bg-stone-900 dark:border-gold p-10 rounded-[3rem] border dark:border-stone-800"><p class="ancient text-[10px] uppercase text-stone-400 mb-8 tracking-widest font-black">${t.lang}</p><p class="text-3xl italic font-serif dark:text-stone-300 leading-relaxed text-stone-800">"${t.text}"</p><p class="mt-12 text-[10px] font-bold text-stone-400 text-right pt-6 border-t">— ${t.author}</p></div>`).join(''); 
                 lucide.createIcons(); grid.scrollIntoView({ behavior: 'smooth' }); 
             } 
         }
-        function printCodex() { const s = JSON.parse(localStorage.getItem('latinitatis_codex')||'[]'); if(s.length===0) return; const a = document.getElementById('print-area'); a.innerHTML = `<h1 style="font-family:Cinzel; text-align:center;">MI CÓDICE GRIEGO</h1>` + s.map(i => `<div style="margin:40pt 0; page-break-inside:avoid;"><p style="color:#8B322C; font-family:Cinzel;">${i.author.toUpperCase()}</p><h2>${i.title}</h2><p style="font-size:18pt; line-height:1.8; text-align:justify;">${canon.find(a=>a.author===i.author).works.find(w=>w.title===i.title).content}</p></div>`).join(''); window.print(); }
+        function printCodex() { const s = JSON.parse(localStorage.getItem('latinitatis_codex')||'[]'); if(s.length===0) return; const a = document.getElementById('print-area'); a.innerHTML = `<h1 style="font-family:Cinzel; text-align:center;">BIBLIOTHECA GRAECA PERSONALIS</h1>` + s.map(i => `<div style="margin:40pt 0; page-break-inside:avoid;"><p style="color:#8B322C; font-family:Cinzel;">${i.author.toUpperCase()}</p><h2>${i.title}</h2><p style="font-size:18pt; line-height:1.8; text-align:justify;">${canon.find(a=>a.author===i.author).works.find(w=>w.title===i.title).content}</p></div>`).join(''); window.print(); }
     </script>
 </body>
 </html>

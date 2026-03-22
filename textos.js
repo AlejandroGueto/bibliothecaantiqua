@@ -112,11 +112,7 @@ const canon = [
                 title: "Antígona", 
                 meta: "Prólogo", 
                 content: "Ὦ κοινὸν αὐτάδελφον Ἰσμήνης κάρα...", 
-                translations: [
-                    { lang: "Español", text: "", author: "" },
-                    { lang: "Français", text: "", author: "" },
-                    { lang: "English", text: "", author: "" }
-                ] 
+                translations: [] 
             }
         ]
     },
@@ -149,89 +145,85 @@ const canon = [
                 title: "El Banquete", 
                 meta: "Prólogo", 
                 content: "Δοκῶ μοι περὶ ὧν πυνθάνεσθε οὐκ ἀμελέτητος εἶναι...", 
-                translations: [
-                    { lang: "Español", text: "", author: "" },
-                    { lang: "Français", text: "", author: "" },
-                    { lang: "English", text: "", author: "" }
-                ] 
+                translations: [] 
             }
         ]
     },
     { 
         author: "Hesíodo", 
         works: [
-            { title: "Teogonía", meta: "Proemio", content: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ᾽ ἀείδειν...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Trabajos y Días", meta: "Proemio", content: "Μοῦσαι Πιερίηθεν ἀοιδῇσι κλείουσαι δεῦτε...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Teogonía", meta: "Proemio", content: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ᾽ ἀείδειν...", translations: [] },
+            { title: "Trabajos y Días", meta: "Proemio", content: "Μοῦσαι Πιερίηθεν ἀοιδῇσι κλείουσαι δεῦτε...", translations: [] }
         ]
     },
     { 
         author: "Safo", 
         works: [
-            { title: "Himno a Afrodita", meta: "Fr. 1", content: "Ποικιλόθρον᾽ ἀθάνατ᾽ Ἀφρόδιτα...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Fragmento 31", meta: "Fr. 31", content: "Φαίνεταί μοι κῆνος ἴσος θέοισιν...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Himno a Afrodita", meta: "Fr. 1", content: "Ποικιλόθρον᾽ ἀθάνατ᾽ Ἀφρόδιτα...", translations: [] },
+            { title: "Fragmento 31", meta: "Fr. 31", content: "Φαίνεταί μοι κῆνος ἴσος θέοισιν...", translations: [] }
         ]
     },
     { 
         author: "Heródoto", 
         works: [
-            { title: "Historias", meta: "Proemio", content: "Ἡροδότου Ἁλικαρνησσέος ἱστορίης ἀπόδεξις ἥδε...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Sobre Egipto", meta: "Libro II", content: "Ἔρχομαι δὲ περὶ Αἰγύπτου μηκυνέων...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Historias", meta: "Proemio", content: "Ἡροδότου Ἁλικαρνησσέος ἱστορίης ἀπόδεξις ἥδε...", translations: [] },
+            { title: "Sobre Egipto", meta: "Libro II", content: "Ἔρχομαι δὲ περὶ Αἰγύπτου μηκυνέων...", translations: [] }
         ]
     },
     { 
         author: "Tucídides", 
         works: [
-            { title: "Guerra del Peloponeso", meta: "Libro I", content: "Θουκυδίδης Ἀθηναῖος ξυνέγραψε...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Oración Fúnebre", meta: "Libro II", content: "Χρώμεθα γὰρ πολιτείᾳ οὐ ζηλούσῃ...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Guerra del Peloponeso", meta: "Libro I", content: "Θουκυδίδης Ἀθηναῖος ξυνέγραψε...", translations: [] },
+            { title: "Oración Fúnebre", meta: "Libro II", content: "Χρώμεθα γὰρ πολιτείᾳ οὐ ζηλούσῃ...", translations: [] }
         ]
     },
     { 
         author: "Eurípides", 
         works: [
-            { title: "Medea", meta: "Prólogo", content: "Εἴθ᾽ ὤφελ᾽ Ἀργοῦς μὴ διαπτάσθαι σκάφος...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Bacantes", meta: "Prólogo", content: "Ἥκω Διὸς παῖς τήνδε Θηβαίων χθόνα...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Medea", meta: "Prólogo", content: "Εἴθ᾽ ὤφελ᾽ Ἀργοῦς μὴ διαπτάσθαι σκάφος...", translations: [] },
+            { title: "Bacantes", meta: "Prólogo", content: "Ἥκω Διὸς παῖς τήνδε Θηβαίων χθόνα...", translations: [] }
         ]
     },
     { 
         author: "Aristófanes", 
         works: [
-            { title: "Lisístrata", meta: "Prólogo", content: "Ἀλλ᾽ εἴ τις ἐς Βακχεῖον αὐτὰς ἐκάλεσεν...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Las Nubes", meta: "Prólogo", content: "Ἰοὺ ἰού· ὦ Ζεῦ βασιλεῦ...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Lisístrata", meta: "Prólogo", content: "Ἀλλ᾽ εἴ τις ἐς Βακχεῖον αὐτὰς ἐκάλεσεν...", translations: [] },
+            { title: "Las Nubes", meta: "Prólogo", content: "Ἰοὺ ἰού· ὦ Ζεῦ βασιλεῦ...", translations: [] }
         ]
     },
     { 
         author: "Aristóteles", 
         works: [
-            { title: "Metafísica", meta: "Libro I", content: "Πάντες ἄνθρωποι τοῦ εἰδέναι ὀρέγονται φύσει...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Ética a Nicómaco", meta: "Libro I", content: "Πᾶσα τέχνη καὶ πᾶσα μέθοδος...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Metafísica", meta: "Libro I", content: "Πάντες ἄνθρωποι τοῦ εἰδέναι ὀρέγονται φύσει...", translations: [] },
+            { title: "Ética a Nicómaco", meta: "Libro I", content: "Πᾶσα τέχνη καὶ πᾶσα μέθοδος...", translations: [] }
         ]
     },
     { 
         author: "Demóstenes", 
         works: [
-            { title: "Sobre la Corona", meta: "Exordio", content: "Πρῶτον μέν, ὦ ἄνδρες Ἀθηναῖοι, τοῖς θεοῖς εὔχομαι...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Filípica I", meta: "Exordio", content: "Εἰ μὲν περὶ καινοῦ τινὸς πράγματος προυτίθετ...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Sobre la Corona", meta: "Exordio", content: "Πρῶτον μέν, ὦ ἄνδρες Ἀθηναῖοι, τοῖς θεοῖς εὔχομαι...", translations: [] },
+            { title: "Filípica I", meta: "Exordio", content: "Εἰ μὲν περὶ καινοῦ τινὸς πράγματος προυτίθετ...", translations: [] }
         ]
     },
     { 
         author: "Píndaro", 
         works: [
-            { title: "Olímpica I", meta: "Estrofa I", content: "Ἄριστον μὲν ὕδωρ, ὁ δὲ χρυσὸς...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Pítica I", meta: "Estrofa I", content: "Χρυσέα φόρμιγξ, Ἀπόλλωνος καὶ ἰοπλοκάμων...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Olímpica I", meta: "Estrofa I", content: "Ἄριστον μὲν ὕδωρ, ὁ δὲ χρυσὸς...", translations: [] },
+            { title: "Pítica I", meta: "Estrofa I", content: "Χρυσέα φόρμιγξ, Ἀπόλλωνος καὶ ἰοπλοκάμων...", translations: [] }
         ]
     },
     { 
         author: "Estrabón", 
         works: [
-            { title: "Geografía", meta: "Libro I", content: "Τῆς τοῦ φιλοσόφου πραγματείας εἶναι νομίζομεν...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Sobre Iberia", meta: "Libro III", content: "Μετὰ δὲ τὴν προεκτεθεῖσαν χωρογραφίαν...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Geografía", meta: "Libro I", content: "Τῆς τοῦ φιλοσόφου πραγματείας εἶναι νομίζομεν...", translations: [] },
+            { title: "Sobre Iberia", meta: "Libro III", content: "Μετὰ δὲ τὴν προεκτεθεῖσαν χωρογραφίαν...", translations: [] }
         ]
     },
     { 
         author: "Marco Aurelio", 
         works: [
-            { title: "Meditaciones", meta: "Libro II", content: "Ἕωθεν προλέγειν ἑαυτῷ· συντεύξομαι περιέργῳ...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] },
-            { title: "Meditaciones", meta: "Libro IV", content: "Εἰ τὸ νοερὸν ἡμῖν κοινόν, καὶ ὁ λόγος...", translations: [{ lang: "Español", text: "", author: "" }, { lang: "Français", text: "", author: "" }, { lang: "English", text: "", author: "" }] }
+            { title: "Meditaciones", meta: "Libro II", content: "Ἕωθεν προλέγειν ἑαυτῷ· συντεύξομαι περιέργῳ...", translations: [] },
+            { title: "Meditaciones", meta: "Libro IV", content: "Εἰ τὸ νοερὸν ἡμῖν κοινόν, καὶ ὁ λόγος...", translations: [] }
         ]
     }
 ];

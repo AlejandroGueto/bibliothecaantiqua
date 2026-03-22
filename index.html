@@ -50,7 +50,7 @@
         <header class="text-center mb-16">
             <h2 class="greek-display text-6xl md:text-8xl font-black mb-4 dark:text-white italic tracking-tighter">Bibliotheca Graeca</h2>
             <p class="text-terracotta ancient text-xs md:text-sm uppercase tracking-[0.5em] font-bold dark:text-red-500">Personal Learning Environment (PLE)</p>
-            <p class="mt-8 text-stone-500 max-w-3xl mx-auto font-serif dark:text-stone-400">Latinitatis PRO es una plataforma de aprendizaje crítico de griego antiguo y latín, gratuita y de código abierto. Inspirada en los mejores recursos mundiales a través de su convergencia: Perseus Digital Library, Logeion, Scaife Viewer, Dicciogriego y Legentibus.</p>
+            <p class="mt-8 text-stone-500 max-w-3xl mx-auto font-serif dark:text-stone-400">Latinitatis PRO es una plataforma de aprendizaje crítico de griego antiguo y latín, gratuita y de código abierto. Inspirada en los mejores recursos mundiales: Perseus Digital Library, Logeion, Scaife Viewer, Dicciogriego y Legentibus.</p>
         </header>
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 font-serif">
@@ -103,8 +103,8 @@
             <div class="text-center md:text-left">
                 <p class="font-bold uppercase ancient text-sm mb-4 dark:text-stone-200">Alejandro Güeto • A.D. MMXXVI</p>
                 <div class="flex flex-wrap gap-4 justify-center md:justify-start">
-                    <button onclick="toggleLegal(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Aviso Legal</button>
-                    <button onclick="togglePrivacy(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Privacidad</button>
+                    <button onclick="toggleLegal(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Aviso Legal / Legal Notice / Mentions Légales</button>
+                    <button onclick="togglePrivacy(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Privacidad / Privacy / Confidentialité</button>
                 </div>
             </div>
             <div class="flex flex-col items-center gap-2">
@@ -192,23 +192,43 @@
         <div id="oracle-content"></div>
     </div>
 
-    <div id="legal-drawer" class="fixed inset-y-0 right-0 w-full md:w-[800px] bg-white shadow-2xl translate-x-full drawer p-16 overflow-y-auto border-l dark:bg-stone-900">
-        <h2 class="ancient text-4xl font-black mb-12 border-b pb-8 text-red-800 uppercase dark:text-red-500">Aviso Legal</h2>
+    <div id="legal-drawer" class="fixed inset-y-0 right-0 w-full md:w-[850px] bg-white shadow-2xl translate-x-full drawer p-16 overflow-y-auto border-l dark:bg-stone-900">
+        <h2 class="ancient text-4xl font-black mb-12 border-b pb-8 text-red-800 uppercase dark:text-red-500">Aviso Legal / Legal Notice / Mentions Légales</h2>
         <div class="space-y-8 font-serif text-sm dark:text-stone-400 leading-relaxed text-justify">
-            <p>Latinitatis PRO es una plataforma de aprendizaje crítico de griego antiguo y latín gratuita y de código abierto inspirada en Perseus, Logeion, Scaife Viewer y Legentibus.</p>
-            <p>Esta plataforma ha sido creada y programada en exclusiva por Alejandro Güeto (profesor de latín y griego en Andalucía). Ha requerido una inversión y un esfuerzo considerable, por lo que se agradecen donaciones.</p>
-            <p>Textos originales en dominio público. Dudas a: alejandroruizgueto@hotmail.es</p>
+            <div class="legal-sect border-red-800 pl-6 border-l-4">
+                <span class="lang-tag bg-es mb-4">ES</span>
+                <p><b>Autoría y Propósito:</b> Latinitatis PRO es un Entorno Personal de Aprendizaje (PLE) gratuito y de código abierto. Esta plataforma ha sido creada y programada en exclusiva por Alejandro Güeto (profesor de latín y griego en Andalucía). Ha requerido una inversión y un esfuerzo considerable, por lo que se agradecen donaciones vía PayPal.</p>
+                <p>Textos originales en dominio público. Dudas a: alejandroruizgueto@hotmail.es</p>
+            </div>
+            <div class="legal-sect border-stone-400 pl-6 border-l-4 opacity-80">
+                <span class="lang-tag bg-en mb-4">EN</span>
+                <p><b>Legal Notice:</b> Latinitatis PRO is a free, open-source Personal Learning Environment (PLE) created exclusively by Alejandro Güeto (teacher in Andalusia). Original texts are public domain. Donations via PayPal are appreciated. Contact: alejandroruizgueto@hotmail.es</p>
+            </div>
+            <div class="legal-sect border-stone-400 pl-6 border-l-4 opacity-80">
+                <span class="lang-tag bg-fr mb-4">FR</span>
+                <p><b>Mentions Légales:</b> Cet environnement d'apprentissage (PLE) a été conçu par Alejandro Güeto. Les textes originaux appartiennent au domaine public. Merci pour votre soutien via PayPal. Contact: alejandroruizgueto@hotmail.es</p>
+            </div>
         </div>
-        <button onclick="toggleLegal(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase font-black">Cerrar</button>
+        <button onclick="toggleLegal(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase font-black">Cerrar / Close</button>
     </div>
 
-    <div id="privacy-drawer" class="fixed inset-y-0 right-0 w-full md:w-[800px] bg-white shadow-2xl translate-x-full drawer p-16 overflow-y-auto border-l dark:bg-stone-900">
-        <h2 class="ancient text-4xl font-black mb-12 border-b pb-8 text-red-800 uppercase dark:text-red-500">Privacidad</h2>
+    <div id="privacy-drawer" class="fixed inset-y-0 right-0 w-full md:w-[850px] bg-white shadow-2xl translate-x-full drawer p-16 overflow-y-auto border-l dark:bg-stone-900">
+        <h2 class="ancient text-4xl font-black mb-12 border-b pb-8 text-red-800 uppercase dark:text-red-500">Privacidad / Privacy / Confidentialité</h2>
         <div class="space-y-8 font-serif text-sm dark:text-stone-400 leading-relaxed text-justify">
-            <p><b>Memoria Permanente y Privacidad Total:</b> Gracias al sistema de LocalStorage, aunque recargues la página, tus lecturas, notas y vocabulario guardado no se borrarán (están en tu navegador).</p>
-            <p>No hay cuentas ni registros y tu información personal o API Key no se guarda en ningún servidor o nube; todo reside en tu propio dispositivo.</p>
+            <div class="legal-sect border-red-800 pl-6 border-l-4">
+                <span class="lang-tag bg-es mb-4">ES</span>
+                <p><b>Memoria Permanente y Privacidad Total:</b> Gracias al sistema de LocalStorage, aunque recargues la página, tus lecturas, notas y vocabulario guardado no se borrarán (están en tu navegador). No hay cuentas ni registros y tu información personal o API Key no se guarda en ningún servidor o nube; todo reside en tu propio dispositivo.</p>
+            </div>
+            <div class="legal-sect border-stone-400 pl-6 border-l-4 opacity-80">
+                <span class="lang-tag bg-en mb-4">EN</span>
+                <p><b>Data Privacy:</b> No cookies or tracking. Your API keys, notes, and reading history stay in your browser's LocalStorage. No user data is harvested or sent to external clouds.</p>
+            </div>
+            <div class="legal-sect border-stone-400 pl-6 border-l-4 opacity-80">
+                <span class="lang-tag bg-fr mb-4">FR</span>
+                <p><b>Confidentialité:</b> Aucun cookie. Vos clés API, notes et historique sont stockés localement dans votre navigateur. Aucune donnée n'est envoyée vers des serveurs externes.</p>
+            </div>
         </div>
-        <button onclick="togglePrivacy(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase font-black">Cerrar</button>
+        <button onclick="togglePrivacy(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase font-black">Cerrar / Close</button>
     </div>
 
     <script src="textos.js"></script>
@@ -232,7 +252,7 @@
                     model: "llama-3.3-70b-versatile", 
                     messages: [{ 
                         role: "system", 
-                        content: "You are an Expert Philologist. You must respond in valid JSON format. Provide the dictionary lemma in lowercase as 'enunciado'. IMPORTANT: For 'syntax', strictly identify the grammatical case and its syntactical function in the sentence (e.g., 'Acusativo, Complemento Directo' / 'Accusative, Direct Object'). Fields: enunciado (lowercase lemma, e.g. μῆνις, -ιος, ἡ), es(morph, syntax, def, etym, trans_lit, trans_linealis), en(morph, syntax, def, etym), fr(morph, syntax, def, etym)." 
+                        content: "You are an Expert Philologist. You must respond in valid JSON format. Provide the FULL dictionary lemma in lowercase including genitive and article for nouns (e.g. μῆνις, -ιος, ἡ) as 'enunciado'. IMPORTANT: For 'syntax', strictly identify the grammatical case and its syntactical function in the sentence (e.g., 'Acusativo, Complemento Directo' / 'Accusative, Direct Object'). Fields: enunciado, es(morph, syntax, def, etym, trans_lit, trans_linealis), en(morph, syntax, def, etym), fr(morph, syntax, def, etym)." 
                     }, { role: "user", content: p }], 
                     temperature: 0.1, response_format: { type: "json_object" } 
                 }) 
@@ -243,7 +263,7 @@
         async function analyze(word) {
             openOracle(); const c = document.getElementById('oracle-content'); c.innerHTML = "<p class='py-48 text-center animate-pulse ancient text-stone-300 uppercase tracking-widest'>Consultatio Oraculi...</p>";
             try {
-                const res = JSON.parse(await callAI(`Analyze Greek word: "${word}" in context of ${currentWork.author}. Be extremely precise with the syntax: identify the case and its syntactic role (e.g. if the word is Μῆνιν, it is Accusative and Direct Object). Provide the dictionary lemma in lowercase.`));
+                const res = JSON.parse(await callAI(`Analyze Greek word: "${word}" in context of ${currentWork.author}. Be extremely precise with the syntax: identify the case and its syntactic role (e.g. if the word is Μῆνιν, it is Accusative and Direct Object). Provide the full dictionary lemma in lowercase (with genitive and article if it's a noun).`));
                 c.innerHTML = `
                     <div class="flex justify-between items-center mb-10 border-b pb-6">
                         <h3 class="greek-display text-7xl font-black dark:text-white tracking-tighter">${word}</h3>
@@ -255,7 +275,6 @@
                     ['es','en','fr'].map(l => {
                         if(!res[l]) return '';
                         
-                        // Añadimos las traducciones en español solo en el bloque de español, sin etiquetas superfluas
                         let extraTrans = '';
                         if(l === 'es') {
                             extraTrans = `

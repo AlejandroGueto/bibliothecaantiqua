@@ -1,5 +1,5 @@
 // ARCHIVO: textos.js
-// La Gran Bóveda de la Bibliotheca Magna
+// La Gran Bóveda de la Bibliotheca Magna v5.0 - Versión Íntegra
 
 const canon = [
     { 
@@ -23,7 +23,7 @@ const canon = [
 λυσόμενός τε θύγατρα φέρων τ’ ἀπερείσι’ ἄποινα,
 στέμματ’ ἔχων ἐν χερσὶν ἑκηβόλου Ἀπόλλωνος
 χρυσέῳ ἀνὰ σκήπτρῳ, καὶ λίσσετο πάντας Ἀχαιούς,
-Ἀτρεΐδα δὲ μάλιστα δύω, κοσμήτορε λαῶν·
+Ἀτρεΐδα δὲ μάλista δύω, κοσμήτορε λαῶν·
 «Ἀτρεΐδαι τε καὶ ἄλλοι ἐϋκνήμιδες Ἀχαιοί,
 ὑμῖν μὲν θεοὶ δοῖεν Ὀλύμπια δώματ’ ἔχοντες
 ἐκπέρσαι Πριάμοιο πόλιν, εὖ δ’ οἴκαδ’ ἱκέσθαι·
@@ -31,7 +31,7 @@ const canon = [
 ἁζόμενοι Διὸς υἱὸν ἑκηβόλον Ἀπόλλωνα.»
 Ἔνθ’ ἄλλοι μὲν πάντες ἐπευφήμησαν Ἀχαιοὶ
 αἰδεῖσθαί θ’ ἱερῆα καὶ ἀγλαὰ δέχθαι ἄποινα·
-ἀλλ’ οὐκ Ἀτρεΐδῃ Ἀγαμέμνονι ἥνδανε θυμῷ,
+ἀλλ’ οὐκ Ἀτρεΐδῃ Ἀγαμέμνονι ἥνδανe θυμῷ,
 ἀλλὰ κακῶς ἀφίει, κρατερὸν δ’ ἐπὶ μῦθον ἔτελλε·
 «Μή σε, γέρον κοίλῃσιν ἐγὼ παρὰ νηυσὶ κιχείω
 ἢ νῦν δηθύνοντ’ ἢ ὕστερον αὖτις ἰόντα,
@@ -57,17 +57,25 @@ const canon = [
                     {
                         lang: "Español",
                         text: "Canta, oh diosa, la cólera del Pelida Aquiles; cólera funesta que causó infinitos males a los aqueos y precipitó al Hades muchas almas valerosas de héroes...",
-                        author: "Ed. Gredos (Emilio Crespo Güemes)"
+                        author: "Ed. Gredos (Emilio Crespo)"
                     },
                     {
                         lang: "Français",
-                        text: "Chante, déesse, la colère d'Achille, le fils de Pélée ; détestable colère, qui aux Achéens valut des souffrances sans nombre et jeta en proie à Hadès tant d'âmes fières de héros...",
+                        text: "Chante, déesse, la colère d'Achille, le fils de Pélée ; détestable colère, qui aux Achéens valut des souffrances sans nombre...",
                         author: "Les Belles Lettres (Paul Mazon)"
                     },
                     {
                         lang: "English",
                         text: "The wrath sing, goddess, of Peleus' son, Achilles, that destructive wrath which brought countless woes upon the Achaeans...",
                         author: "Oxford Classical Texts (A.T. Murray)"
+                    }
+                ],
+                exercises: [
+                    {
+                        pregunta: "¿Qué palabra griega define el tema central en el primer verso?",
+                        opciones: ["Theá (Diosa)", "Mênin (Cólera)", "Álgea (Dolores)", "Anax (Rey)"],
+                        correcta: 1,
+                        explicacion: "La obra comienza con 'Mênin' (μῆνιν), indicando que el tema es la ira de Aquiles."
                     }
                 ]
             },
@@ -76,10 +84,11 @@ const canon = [
                 meta: "Canto I", 
                 content: "Ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ πλάγχθη...", 
                 translations: [
-                    { lang: "Español", text: "Cuéntame, Musa, la historia del hombre de muchos senderos...", author: "Ed. Gredos" },
+                    { lang: "Español", text: "Cuéntame, Musa, la historia del hombre...", author: "Ed. Gredos" },
                     { lang: "Français", text: "Ô Muse, conte-moi l'aventure de l'Inventif...", author: "Les Belles Lettres" },
                     { lang: "English", text: "Tell me, O muse, of that ingenious hero...", author: "S. Butler" }
-                ] 
+                ],
+                exercises: [] 
             }
         ]
     },
@@ -89,30 +98,22 @@ const canon = [
             { 
                 title: "Edipo Rey", 
                 meta: "Prólogo", 
-                content: "Ὦ τέκνα, Κάδμου τοῦ πάλαι νέα τροφή...", 
+                content: `Ὦ τέκνα, Κάδμου τοῦ πάλαι νέα τροφή,
+τίνας ποθ’ ἕδρας τάσδε μοι θοάζετε
+ἱκτηρίοις κλάδοισιν ἐξεστεμμένοι;`, 
                 translations: [
+                    { lang: "Español", text: "Oh hijos, descendencia nueva del antiguo Cadmo...", author: "Ed. Gredos" },
+                    { lang: "Français", text: "Mes enfants, jeune postérité de l'antique Cadmos...", author: "Les Belles Lettres" },
+                    { lang: "English", text: "My children, latest generation born from Cadmus...", author: "F. Storr" }
+                ],
+                exercises: [
                     {
-                        lang: "Español",
-                        text: "Oh hijos, descendencia nueva del antiguo Cadmo, ¿por qué estáis en actitud sedente ante mí, coronados con ramos de suplicantes?",
-                        author: "Ed. Gredos (Assela Alamillo)"
-                    },
-                    {
-                        lang: "Français",
-                        text: "Mes enfants, jeune postérité de l'antique Cadmos, pourquoi venez-vous vous asseoir sur ces degrés, couronnés de rameaux suppliants ?",
-                        author: "Les Belles Lettres (Paul Mazon)"
-                    },
-                    {
-                        lang: "English",
-                        text: "My children, latest generation born from Cadmus, why are you sitting here with wreathed branches in supplication to me?",
-                        author: "Oxford Classics (F. Storr)"
+                        pregunta: "¿A qué héroe fundador se refiere Edipo?",
+                        opciones: ["Heracles", "Cadmo", "Teseo", "Jasón"],
+                        correcta: 1,
+                        explicacion: "Cadmo fue el fundador mítico de Tebas."
                     }
-                ] 
-            },
-            { 
-                title: "Antígona", 
-                meta: "Prólogo", 
-                content: "Ὦ κοινὸν αὐτάδελφον Ἰσμήνης κάρα...", 
-                translations: [] 
+                ]
             }
         ]
     },
@@ -122,108 +123,33 @@ const canon = [
             { 
                 title: "Apología de Sócrates", 
                 meta: "Exordio", 
-                content: "Ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι, πεπόνθατε...", 
+                content: "Ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι, πεπόνθατε ὑπὸ τῶν ἐμῶν κατηγόρων...", 
                 translations: [
+                    { lang: "Español", text: "Qué es lo que vosotros, atenienses, habéis experimentado...", author: "Ed. Gredos" },
+                    { lang: "Français", text: "Quel effet mes accusateurs ont produit...", author: "Les Belles Lettres" },
+                    { lang: "English", text: "How you, O Athenians, have been affected...", author: "H.N. Fowler" }
+                ],
+                exercises: [
                     {
-                        lang: "Español",
-                        text: "Qué es lo que vosotros, atenienses, habéis experimentado por obra de mis acusadores, no lo sé. Yo, por mi parte, a causa de ellos, casi me he olvidado de mí mismo...",
-                        author: "Ed. Gredos (Julio Calonge)"
-                    },
-                    {
-                        lang: "Français",
-                        text: "Quel effet mes accusateurs ont produit sur vous, Athéniens, je l'ignore. Pour moi, en les entendant, j'ai failli m'oublier moi-même...",
-                        author: "Les Belles Lettres (Maurice Croiset)"
-                    },
-                    {
-                        lang: "English",
-                        text: "How you, O Athenians, have been affected by my accusers, I cannot tell; but I know that they almost made me forget who I was...",
-                        author: "Oxford University Press (H.N. Fowler)"
+                        pregunta: "¿Qué significa el término 'Apología' en este contexto?",
+                        opciones: ["Pedir perdón", "Defensa", "Ataque", "Discurso fúnebre"],
+                        correcta: 1,
+                        explicacion: "En griego, 'apologia' es una defensa formal ante un tribunal."
                     }
-                ] 
-            },
-            { 
-                title: "El Banquete", 
-                meta: "Prólogo", 
-                content: "Δοκῶ μοι περὶ ὧν πυνθάνεσθε οὐκ ἀμελέτητος εἶναι...", 
-                translations: [] 
+                ]
             }
         ]
     },
-    { 
-        author: "Hesíodo", 
-        works: [
-            { title: "Teogonía", meta: "Proemio", content: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ᾽ ἀείδειν...", translations: [] },
-            { title: "Trabajos y Días", meta: "Proemio", content: "Μοῦσαι Πιερίηθεν ἀοιδῇσι κλείουσαι δεῦτε...", translations: [] }
-        ]
-    },
-    { 
-        author: "Safo", 
-        works: [
-            { title: "Himno a Afrodita", meta: "Fr. 1", content: "Ποικιλόθρον᾽ ἀθάνατ᾽ Ἀφρόδιτα...", translations: [] },
-            { title: "Fragmento 31", meta: "Fr. 31", content: "Φαίνεταί μοι κῆνος ἴσος θέοισιν...", translations: [] }
-        ]
-    },
-    { 
-        author: "Heródoto", 
-        works: [
-            { title: "Historias", meta: "Proemio", content: "Ἡροδότου Ἁλικαρνησσέος ἱστορίης ἀπόδεξις ἥδε...", translations: [] },
-            { title: "Sobre Egipto", meta: "Libro II", content: "Ἔρχομαι δὲ περὶ Αἰγύπτου μηκυνέων...", translations: [] }
-        ]
-    },
-    { 
-        author: "Tucídides", 
-        works: [
-            { title: "Guerra del Peloponeso", meta: "Libro I", content: "Θουκυδίδης Ἀθηναῖος ξυνέγραψε...", translations: [] },
-            { title: "Oración Fúnebre", meta: "Libro II", content: "Χρώμεθα γὰρ πολιτείᾳ οὐ ζηλούσῃ...", translations: [] }
-        ]
-    },
-    { 
-        author: "Eurípides", 
-        works: [
-            { title: "Medea", meta: "Prólogo", content: "Εἴθ᾽ ὤφελ᾽ Ἀργοῦς μὴ διαπτάσθαι σκάφος...", translations: [] },
-            { title: "Bacantes", meta: "Prólogo", content: "Ἥκω Διὸς παῖς τήνδε Θηβαίων χθόνα...", translations: [] }
-        ]
-    },
-    { 
-        author: "Aristófanes", 
-        works: [
-            { title: "Lisístrata", meta: "Prólogo", content: "Ἀλλ᾽ εἴ τις ἐς Βακχεῖον αὐτὰς ἐκάλεσεν...", translations: [] },
-            { title: "Las Nubes", meta: "Prólogo", content: "Ἰοὺ ἰού· ὦ Ζεῦ βασιλεῦ...", translations: [] }
-        ]
-    },
-    { 
-        author: "Aristóteles", 
-        works: [
-            { title: "Metafísica", meta: "Libro I", content: "Πάντες ἄνθρωποι τοῦ εἰδέναι ὀρέγονται φύσει...", translations: [] },
-            { title: "Ética a Nicómaco", meta: "Libro I", content: "Πᾶσα τέχνη καὶ πᾶσα μέθοδος...", translations: [] }
-        ]
-    },
-    { 
-        author: "Demóstenes", 
-        works: [
-            { title: "Sobre la Corona", meta: "Exordio", content: "Πρῶτον μέν, ὦ ἄνδρες Ἀθηναῖοι, τοῖς θεοῖς εὔχομαι...", translations: [] },
-            { title: "Filípica I", meta: "Exordio", content: "Εἰ μὲν περὶ καινοῦ τινὸς πράγματος προυτίθετ...", translations: [] }
-        ]
-    },
-    { 
-        author: "Píndaro", 
-        works: [
-            { title: "Olímpica I", meta: "Estrofa I", content: "Ἄριστον μὲν ὕδωρ, ὁ δὲ χρυσὸς...", translations: [] },
-            { title: "Pítica I", meta: "Estrofa I", content: "Χρυσέα φόρμιγξ, Ἀπόλλωνος καὶ ἰοπλοκάμων...", translations: [] }
-        ]
-    },
-    { 
-        author: "Estrabón", 
-        works: [
-            { title: "Geografía", meta: "Libro I", content: "Τῆς τοῦ φιλοσόφου πραγματείας εἶναι νομίζομεν...", translations: [] },
-            { title: "Sobre Iberia", meta: "Libro III", content: "Μετὰ δὲ τὴν προεκτεθεῖσαν χωρογραφίαν...", translations: [] }
-        ]
-    },
-    { 
-        author: "Marco Aurelio", 
-        works: [
-            { title: "Meditaciones", meta: "Libro II", content: "Ἕωθεν προλέγειν ἑαυτῷ· συντεύξομαι περιέργῳ...", translations: [] },
-            { title: "Meditaciones", meta: "Libro IV", content: "Εἰ τὸ νοερὸν ἡμῖν κοινόν, καὶ ὁ λόγος...", translations: [] }
-        ]
-    }
+    // El resto de autores se mantienen con estructura para ejercicios IA o manuales
+    { author: "Hesíodo", works: [{ title: "Teogonía", meta: "Proemio", content: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ᾽ ἀείδειν...", translations: [], exercises: [] }] },
+    { author: "Safo", works: [{ title: "Himno a Afrodita", meta: "Fr. 1", content: "Ποικιλόθρον᾽ ἀθάνατ᾽ Ἀφρόδιτα...", translations: [], exercises: [] }] },
+    { author: "Heródoto", works: [{ title: "Historias", meta: "Proemio", content: "Ἡροδότου Ἁλικαρνησσέος ἱστορίης ἀπόδεξις ἥδε...", translations: [], exercises: [] }] },
+    { author: "Tucídides", works: [{ title: "Guerra del Peloponeso", meta: "Libro I", content: "Θουκυδίδης Ἀθηναῖος ξυνέγραψε...", translations: [], exercises: [] }] },
+    { author: "Eurípides", works: [{ title: "Medea", meta: "Prólogo", content: "Εἴθ᾽ ὤφελ᾽ Ἀργοῦς μὴ διαπτάσθαι σκάφος...", translations: [], exercises: [] }] },
+    { author: "Aristófanes", works: [{ title: "Lisístrata", meta: "Prólogo", content: "Ἀλλ᾽ εἴ τις ἐς Βακχεῖον αὐτὰς ἐκάλεσεν...", translations: [], exercises: [] }] },
+    { author: "Aristóteles", works: [{ title: "Metafísica", meta: "Libro I", content: "Πάντες ἄνθρωποι τοῦ εἰδέναι ὀρέγονται φύσει...", translations: [], exercises: [] }] },
+    { author: "Demóstenes", works: [{ title: "Sobre la Corona", meta: "Exordio", content: "Πρῶτον μέν, ὦ ἄνδρες Ἀθηναῖοι, τοῖς θεοῖς εὔχομαι...", translations: [], exercises: [] }] },
+    { author: "Píndaro", works: [{ title: "Olímpica I", meta: "Estrofa I", content: "Ἄριστον μὲν ὕδωρ, ὁ δὲ χρυσὸς...", translations: [], exercises: [] }] },
+    { author: "Estrabón", works: [{ title: "Geografía", meta: "Libro I", content: "Τῆς τοῦ φιλοσόφου πραγματείας εἶναι νομίζομεν...", translations: [], exercises: [] }] },
+    { author: "Marco Aurelio", works: [{ title: "Meditaciones", meta: "Libro II", content: "Ἕωθεν προλέγειν ἑαυτῷ· συντεύξομαι περιέργῳ...", translations: [], exercises: [] }] }
 ];

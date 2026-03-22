@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latinitatis PRO | Bibliotheca Magna v5.0</title>
+    <title>Latinitatis PRO | Bibliotheca Graeca v5.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Noto+Serif+Display:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,900&display=swap" rel="stylesheet">
@@ -12,18 +12,14 @@
         body { font-family: 'Noto Serif Display', serif; background-color: var(--marble); color: var(--ink); background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png'); scroll-behavior: smooth; }
         .ancient { font-family: 'Cinzel', serif; letter-spacing: 0.05em; }
         .greek-display { font-family: 'Playfair Display', serif; }
-        
         .word-token { display: inline-block; padding: 0 4px; cursor: pointer; transition: all 0.2s; border-radius: 4px; }
         .word-token:hover { color: var(--terracotta); background: rgba(139, 50, 44, 0.05); }
-        .reading-now { background: var(--gold) !important; color: white !important; box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4); transform: scale(1.15); z-index: 10; }
-
+        .reading-now { background: var(--gold) !important; color: white !important; box-shadow: 0 4px 15px rgba(197, 160, 89, 0.4); transform: scale(1.1); z-index: 10; }
         .drawer { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .trans-card { background: white; padding: 1.5rem; border-radius: 1rem; border-top: 4px solid var(--terracotta); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        
         .progress-container { width: 100%; background: #e5e5e5; border-radius: 8px; height: 6px; overflow: hidden; margin-top: 10px; }
         .progress-bar { height: 100%; background: var(--gold); width: 0%; transition: width 0.2s linear; }
-        
-        .home-card { background: white; padding: 2rem; border-radius: 1.5rem; border: 1px solid #eaeaea; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: transform 0.2s; }
+        .home-card { background: white; padding: 2rem; border-radius: 1.5rem; border: 1px solid #eaeaea; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: transform 0.2s; height: 100%; }
         .home-card:hover { transform: translateY(-5px); border-color: var(--gold); }
     </style>
 </head>
@@ -50,20 +46,59 @@
             <p class="text-terracotta ancient text-xs md:text-sm uppercase tracking-[0.3em] font-bold">El Entorno Personal de Aprendizaje Definitivo</p>
         </header>
 
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <div class="home-card">
-                <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="brain-circuit" class="text-stone-400"></i> Oráculo Inteligente</h4>
-                <p class="text-sm font-serif mb-3">Análisis morfológico y sintáctico mediante IA de última generación.</p>
-            </div>
-            <div class="home-card">
-                <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="headphones" class="text-stone-400"></i> Lector Sincro</h4>
-                <p class="text-sm font-serif mb-3">Escucha el griego clásico mientras el texto se resalta palabra a palabra.</p>
+        <section class="mb-20">
+            <h3 class="ancient text-2xl font-black mb-6 border-b pb-2 text-stone-800 uppercase">¿Por qué Latinitatis PRO es única?</h3>
+            <p class="text-lg font-serif text-stone-600 leading-relaxed mb-8">
+                Esta plataforma gratuita y de código abierto converge los mejores recursos del mundo clásico en una sola experiencia de lectura trilingüe y asistida por Inteligencia Artificial:
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="home-card">
+                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="database" class="text-stone-400"></i> 1. Perseus Digital Library</h4>
+                    <p class="text-sm font-serif mb-3">Acceso a la base de datos de filología más grande del mundo, permitiendo un análisis morfológico palabra por palabra con rigor académico.</p>
+                </div>
+                <div class="home-card">
+                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="languages" class="text-stone-400"></i> 2. Proyecto Logeion</h4>
+                    <p class="text-sm font-serif mb-3">Integración de los diccionarios más prestigiosos del ámbito académico (Liddell-Scott-Jones) para consultas léxicas profundas e instantáneas.</p>
+                </div>
+                <div class="home-card">
+                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="quote" class="text-stone-400"></i> 3. Dicciogriego</h4>
+                    <p class="text-sm font-serif mb-3">La referencia de excelencia en español para el estudio de la morfología y la etimología clásica, ahora integrada en tu flujo de lectura.</p>
+                </div>
+                <div class="home-card">
+                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="sparkles" class="text-stone-400"></i> 4. Legentibus & Scaife</h4>
+                    <p class="text-sm font-serif mb-3">Inspirada en las interfaces de lectura más avanzadas del mercado para ofrecer una experiencia de usuario fluida, elegante y minimalista.</p>
+                </div>
             </div>
         </section>
 
-        <footer class="bg-red-50 border-t-4 border-terracotta p-8 rounded-3xl flex flex-col md:flex-row justify-between items-center gap-6">
-            <div><p class="font-bold text-stone-900">Alejandro Güeto</p><p class="text-xs text-stone-500 italic">Filología Clásica • v5.0 Final Edition</p></div>
-            <button onclick="localStorage.removeItem('groq_key'); alert('Clave borrada'); location.reload();" class="text-[10px] ancient uppercase font-bold text-stone-400 hover:text-red-800">Resetear Clave API</button>
+        <section class="mb-20">
+            <h3 class="ancient text-2xl font-black mb-8 text-center border-b pb-4 uppercase">Síntesis de Funciones</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="p-6 bg-stone-900 text-white rounded-2xl shadow-lg">
+                    <i data-lucide="brain-circuit" class="w-8 h-8 text-gold mb-4"></i>
+                    <h4 class="font-bold mb-2">Oráculo Morfosintáctico</h4>
+                    <p class="text-sm text-stone-400">Análisis gramatical exhaustivo, sintaxis y etimología trilingüe mediante IA Groq Llama 3.</p>
+                </div>
+                <div class="p-6 bg-stone-900 text-white rounded-2xl shadow-lg">
+                    <i data-lucide="gamepad-2" class="w-8 h-8 text-gold mb-4"></i>
+                    <h4 class="font-bold mb-2">Retos Magistrales</h4>
+                    <p class="text-sm text-stone-400">Generación dinámica de ejercicios basados en el contexto literario que estás explorando.</p>
+                </div>
+                <div class="p-6 bg-white border border-stone-200 rounded-2xl shadow-sm">
+                    <i data-lucide="headphones" class="w-8 h-8 text-terracotta mb-4"></i>
+                    <h4 class="font-bold mb-2 text-stone-800">Lector Sincronizado</h4>
+                    <p class="text-sm text-stone-600">El texto cobra vida con el resaltado dinámico mientras escuchas la pronunciación clásica.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-red-50 border-t-4 border-terracotta p-8 rounded-3xl mt-12 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <p class="font-bold text-stone-900">Alejandro Güeto</p>
+                <p class="text-xs text-stone-500 italic">Filología Clásica • v5.2 "Bibliotheca Graeca"</p>
+            </div>
+            <button onclick="localStorage.removeItem('groq_key'); alert('Clave borrada'); location.reload();" class="px-6 py-2 border border-stone-300 rounded-full text-[10px] ancient uppercase font-bold text-stone-400 hover:text-red-800 transition-all">Resetear Clave API</button>
         </footer>
     </main>
 
@@ -111,7 +146,6 @@
                         <i data-lucide="brain-circuit"></i> Reto Magistral
                     </button>
                 </div>
-
                 <div id="exercise-area" class="hidden bg-stone-800 text-white p-6 rounded-[30px] border border-stone-700 animate-in zoom-in-95"></div>
             </div>
         </section>
@@ -121,7 +155,7 @@
 
     <div id="sidebar" class="fixed inset-y-0 left-0 w-full md:w-96 bg-white shadow-2xl z-[100] -translate-x-full drawer p-8 border-r overflow-y-auto">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
-            <h2 class="ancient text-xl font-black uppercase">Bibliotheca</h2>
+            <h2 class="ancient text-xl font-black uppercase tracking-tighter text-stone-800">Bibliotheca <span class="text-red-800">Graeca</span></h2>
             <button onclick="toggleSidebar(false)" class="p-2 hover:bg-stone-100 rounded-full"><i data-lucide="x"></i></button>
         </div>
         <div id="author-list" class="space-y-6"></div>
@@ -135,8 +169,8 @@
         <div id="codex-list" class="space-y-4"></div>
     </div>
 
-    <div id="oracle-drawer" class="fixed inset-y-0 right-0 w-full md:w-[450px] bg-white shadow-2xl z-[100] translate-x-full drawer p-10 overflow-y-auto border-l">
-        <button onclick="closeOracle()" class="mb-8 text-stone-400 hover:text-red-800 flex items-center gap-2 ancient text-[10px] uppercase font-bold tracking-widest"><i data-lucide="arrow-left"></i> Regresar al texto</button>
+    <div id="oracle-drawer" class="fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-2xl z-[100] translate-x-full drawer p-10 overflow-y-auto border-l border-stone-100">
+        <button onclick="closeOracle()" class="mb-10 text-stone-400 hover:text-red-800 flex items-center gap-2 ancient text-[10px] uppercase font-bold tracking-widest transition-all"><i data-lucide="arrow-left"></i> Regresar al Texto</button>
         <div id="oracle-content"></div>
     </div>
 
@@ -144,79 +178,82 @@
     <script>
         let synth = window.speechSynthesis, utterance = null, readingRate = 0.8, isReading = false, currentWork = null, totalWords = 0, currentExercise = null, codexIndex = {ai:0, wi:0};
 
-        window.onload = () => { 
-            lucide.createIcons(); 
-            if (typeof canon !== 'undefined') renderLibrary(); 
-            loadCodex(); 
-        };
+        window.onload = () => { lucide.createIcons(); if (typeof canon !== 'undefined') renderLibrary(); loadCodex(); };
 
-        // --- MOTOR IA (GROQ) ---
         async function callAI(promptText) {
             let apiKey = localStorage.getItem('groq_key');
             if (!apiKey) {
                 apiKey = prompt("🏛️ Pega tu Clave API de Groq (gsk_...):");
-                if (apiKey) {
-                    localStorage.setItem('groq_key', apiKey.trim());
-                } else {
-                    throw new Error("API Key requerida.");
-                }
+                if (apiKey) localStorage.setItem('groq_key', apiKey.trim());
+                else throw new Error("API Key requerida.");
             }
-
             try {
                 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
-                    headers: { 
-                        'Authorization': `Bearer ${apiKey}`, 
-                        'Content-Type': 'application/json' 
-                    },
+                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
                         messages: [
-                            { role: "system", content: "Eres un experto filólogo. Responde exclusivamente en formato JSON estricto." },
+                            { role: "system", content: "Eres un experto filólogo clásico. Responde exclusivamente en formato JSON estricto." },
                             { role: "user", content: promptText }
                         ],
                         temperature: 0.1,
                         response_format: { type: "json_object" }
                     })
                 });
-
-                if (!response.ok) {
-                    if (response.status === 401) localStorage.removeItem('groq_key');
-                    throw new Error("Error en la conexión con el Oráculo.");
-                }
-
+                if (!response.ok) throw new Error("Fallo en la conexión con el Oráculo.");
                 const data = await response.json();
                 return data.choices[0].message.content;
+            } catch (e) { console.error("DEBUG:", e); throw e; }
+        }
+
+        // ANÁLISIS MORFOSINTÁCTICO PROFESIONAL
+        async function analyze(word) {
+            openOracle();
+            const content = document.getElementById('oracle-content');
+            content.innerHTML = "<div class='py-32 text-center'><div class='inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-red-800 mb-4'></div><p class='ancient text-stone-300 text-[10px] uppercase tracking-widest'>Interrogando al Oráculo...</p></div>";
+            
+            try {
+                const prompt = `Analiza exhaustivamente la palabra griega "${word}" en el contexto de la obra de ${currentWork.author}. JSON: {"lema":"","morfologia":"aquí el análisis morfosintáctico completo (caso, género, número, tiempo, voz, modo, etc.)","traduccion":"","fr":"","en":"","etimologia":""}`;
+                const raw = await callAI(prompt);
+                const res = JSON.parse(raw);
+                
+                content.innerHTML = `
+                    <span class="text-red-800 ancient text-[9px] font-black uppercase tracking-[0.2em]">Morphologia</span>
+                    <h3 class="greek-display text-6xl my-4 text-stone-900">${word}</h3>
+                    
+                    <div class="space-y-8 mt-10">
+                        <div class="border-l-4 border-gold pl-6 py-2">
+                            <p class="text-3xl font-black text-stone-800 mb-1">${res.lema}</p>
+                            <p class="text-sm italic text-stone-400 font-serif">${res.morfologia}</p>
+                        </div>
+
+                        <div class="p-8 bg-stone-900 text-white rounded-[32px] shadow-xl">
+                            <p class="text-[9px] font-bold text-gold uppercase mb-4 tracking-widest">Significado Trilingüe</p>
+                            <div class="space-y-3">
+                                <p class="text-xl italic font-serif text-white">"${res.traduccion}" <span class="text-[10px] text-stone-500 non-italic">(ES)</span></p>
+                                <p class="text-sm text-stone-400">"${res.fr}" <span class="text-[10px] text-stone-600">(FR)</span></p>
+                                <p class="text-sm text-stone-400">"${res.en}" <span class="text-[10px] text-stone-600">(EN)</span></p>
+                            </div>
+                        </div>
+
+                        <div class="p-6 bg-stone-50 rounded-2xl border border-stone-100">
+                            <p class="text-[9px] font-bold text-stone-400 uppercase mb-3 tracking-widest">Huella Etimológica</p>
+                            <p class="text-sm text-stone-600 font-serif leading-relaxed italic">"${res.etimologia}"</p>
+                        </div>
+                    </div>`;
             } catch (e) {
-                console.error("DEBUG AI:", e);
-                throw e;
+                content.innerHTML = `<div class='p-8 bg-red-50 text-red-800 rounded-2xl'><p class='font-black uppercase text-xs mb-2'>Error del Oráculo</p><p class='text-sm opacity-70'>${e.message}</p></div>`;
             }
         }
 
-        // --- FUNCIONES DE NAVEGACIÓN ---
-        function showHome() { 
-            stopAudio(true); 
-            document.getElementById('home-view').classList.remove('hidden'); 
-            document.getElementById('reader-view').classList.add('hidden'); 
-            window.scrollTo(0,0);
-        }
-
-        function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('-translate-x-full', !s); }
-        function toggleCodex(s) { document.getElementById('codex-drawer').classList.toggle('-translate-x-full', !s); }
-        function openOracle() { document.getElementById('oracle-drawer').classList.remove('translate-x-full'); }
-        function closeOracle() { document.getElementById('oracle-drawer').classList.add('translate-x-full'); }
-
+        // --- LÓGICA DE NAVEGACIÓN ---
         function renderLibrary() {
             document.getElementById('author-list').innerHTML = canon.map((a, ai) => `
-                <div class="mb-4">
-                    <h3 class="ancient text-red-800 text-[9px] font-black uppercase border-b pb-1 mb-1">${a.author}</h3>
+                <div class="mb-6">
+                    <h3 class="ancient text-red-800 text-[10px] font-black uppercase border-b border-stone-100 pb-2 mb-3">${a.author}</h3>
                     <div class="space-y-1">
-                        ${a.works.map((w, wi) => `
-                            <button onclick="loadWork(${ai}, ${wi})" class="w-full text-left py-1.5 px-2 rounded hover:bg-stone-100 font-serif text-sm text-stone-700 flex justify-between group">
-                                <span>${w.title}</span>
-                                <i data-lucide="chevron-right" class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all"></i>
-                            </button>
-                        `).join('')}
+                        ${a.works.map((w, wi) => `<button onclick="loadWork(${ai}, ${wi})" class="w-full text-left py-2 px-3 rounded-xl hover:bg-stone-50 font-serif text-sm text-stone-700 flex justify-between items-center group transition-all"><span>${w.title}</span><i data-lucide="chevron-right" class="w-3 h-3 opacity-0 group-hover:opacity-100 text-stone-300"></i></button>`).join('')}
                     </div>
                 </div>
             `).join('');
@@ -224,124 +261,46 @@
         }
 
         function loadWork(ai, wi) {
-            currentWork = canon[ai].works[wi];
-            currentWork.author = canon[ai].author;
-            codexIndex = {ai, wi};
-            
+            currentWork = canon[ai].works[wi]; currentWork.author = canon[ai].author; codexIndex = {ai, wi};
             document.getElementById('view-title').innerText = currentWork.title;
             document.getElementById('view-meta').innerText = `${currentWork.author} • ${currentWork.meta}`;
             document.getElementById('home-view').classList.add('hidden');
             document.getElementById('reader-view').classList.remove('hidden');
             document.getElementById('trans-grid').classList.add('hidden');
             document.getElementById('exercise-area').classList.add('hidden');
-            
             const words = currentWork.content.split(' ').filter(w => w.trim() !== '');
             totalWords = words.length;
-            
             let tIdx = 0;
-            document.getElementById('greek-container').innerHTML = words.map(w => `
-                <span class="word-token" id="token-${tIdx++}" onclick="analyze('${w.replace(/[.,·;:]/g,'')}')">${w}</span>
-            `).join(' ');
-            
-            checkIfSavedIcon();
-            toggleSidebar(false);
-            stopAudio(true);
-            window.scrollTo(0,0);
+            document.getElementById('greek-container').innerHTML = words.map(w => `<span class="word-token" id="token-${tIdx++}" onclick="analyze('${w.replace(/[.,·;:]/g,'')}')">${w}</span>`).join(' ');
+            checkIfSavedIcon(); toggleSidebar(false); stopAudio(true); window.scrollTo(0,0);
         }
 
-        // --- ORÁCULO Y ANÁLISIS ---
-        async function analyze(word) {
-            openOracle();
-            const content = document.getElementById('oracle-content');
-            content.innerHTML = "<div class='py-20 text-center animate-pulse'><p class='ancient text-stone-300 text-xs uppercase'>Interrogando al Oráculo...</p></div>";
-            
-            try {
-                const prompt = `Define la palabra griega "${word}". JSON: {"lema":"${word}","trans":"transliteración","es":"definición español","fr":"définition français","en":"english","etimologia":"explicación etimológica"}`;
-                const raw = await callAI(prompt);
-                const res = JSON.parse(raw);
-                
-                content.innerHTML = `
-                    <h3 class="greek-display text-5xl mb-2 text-stone-900">${res.lema}</h3>
-                    <p class="text-stone-400 italic mb-8">[${res.trans}]</p>
-                    <div class="space-y-6">
-                        <div class="p-6 bg-stone-50 rounded-2xl border">
-                            <p class="text-[9px] font-bold text-red-800 uppercase mb-4 tracking-widest">Significado Trilingüe</p>
-                            <p class="mb-3 text-sm"><b>ES:</b> ${res.es}</p>
-                            <p class="mb-3 text-sm"><b>FR:</b> ${res.fr}</p>
-                            <p class="text-sm"><b>EN:</b> ${res.en}</p>
-                        </div>
-                        <div class="p-6 bg-red-50 rounded-2xl border border-red-100 shadow-inner">
-                            <p class="text-[9px] font-bold text-terracotta uppercase mb-2 tracking-widest">Huella Etimológica</p>
-                            <p class="text-sm text-stone-700 font-serif leading-relaxed italic">"${res.etimologia}"</p>
-                        </div>
-                    </div>`;
-            } catch (e) {
-                content.innerHTML = `<div class='p-6 bg-red-50 text-red-800 rounded-xl'><p class='font-bold'>Error del Oráculo:</p><p class='text-xs'>${e.message}</p></div>`;
-            }
-        }
+        function showHome() { stopAudio(true); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('reader-view').classList.add('hidden'); window.scrollTo(0,0); }
+        function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('-translate-x-full', !s); }
+        function toggleCodex(s) { document.getElementById('codex-drawer').classList.toggle('-translate-x-full', !s); }
+        function openOracle() { document.getElementById('oracle-drawer').classList.remove('translate-x-full'); }
+        function closeOracle() { document.getElementById('oracle-drawer').classList.add('translate-x-full'); }
 
-        // --- RETOS ---
-        async function generateExercise() {
-            const area = document.getElementById('exercise-area');
-            area.classList.remove('hidden');
-            area.innerHTML = "<p class='animate-pulse text-gold text-[10px] uppercase ancient text-center py-4'>El Catedrático prepara la prueba...</p>";
-            
-            try {
-                const prompt = `Crea un ejercicio de opción múltiple sobre el texto: "${currentWork.content.substring(0,150)}". JSON: {"pregunta":"","opciones":["","",""],"correcta":0,"explicacion":""}`;
-                const raw = await callAI(prompt);
-                currentExercise = JSON.parse(raw);
-                
-                area.innerHTML = `
-                    <p class="mb-4 font-serif text-sm border-b border-stone-700 pb-2">${currentExercise.pregunta}</p>
-                    <div class="space-y-2">
-                        ${currentExercise.opciones.map((o, i) => `
-                            <button onclick="checkAnswer(${i})" class="block w-full text-left p-3 bg-stone-700 hover:bg-stone-600 rounded-xl text-xs transition-colors">${o}</button>
-                        `).join('')}
-                    </div>
-                    <div id="fb" class="mt-4 text-[10px] font-serif italic text-stone-400"></div>`;
-            } catch (e) {
-                area.innerHTML = "<p class='text-xs text-red-400'>No se pudo generar el reto.</p>";
-            }
-        }
-
-        function checkAnswer(i) {
-            const fb = document.getElementById('fb');
-            if (i === currentExercise.correcta) {
-                fb.innerHTML = `✅ <span class="text-green-400">¡Correcto!</span> ${currentExercise.explicacion}`;
-            } else {
-                fb.innerHTML = `❌ <span class="text-red-400">Incorrecto.</span> ${currentExercise.explicacion}`;
-            }
-        }
-
-        // --- LECTOR DE VOZ ---
+        // --- LÓGICA DE AUDIO ---
         function toggleAudio() {
             if (isReading) { stopAudio(); return; }
             utterance = new SpeechSynthesisUtterance(currentWork.content);
-            utterance.lang = 'el-GR';
-            utterance.rate = readingRate;
-            
+            utterance.lang = 'el-GR'; utterance.rate = readingRate;
             let wordIdx = 0;
             utterance.onboundary = (e) => {
                 if (e.name === 'word') {
                     document.querySelectorAll('.word-token').forEach(el => el.classList.remove('reading-now'));
                     const el = document.getElementById(`token-${wordIdx++}`);
-                    if (el) {
-                        el.classList.add('reading-now');
-                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
+                    if (el) { el.classList.add('reading-now'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
                     document.getElementById('progress-fill').style.width = `${(wordIdx / totalWords) * 100}%`;
                 }
             };
             utterance.onend = () => stopAudio(true);
-            synth.speak(utterance);
-            isReading = true;
-            updatePlayBtn(true);
+            synth.speak(utterance); isReading = true; updatePlayBtn(true);
         }
 
         function stopAudio(reset = false) {
-            synth.cancel();
-            isReading = false;
-            updatePlayBtn(false);
+            synth.cancel(); isReading = false; updatePlayBtn(false);
             if (reset) {
                 document.getElementById('progress-fill').style.width = '0%';
                 document.querySelectorAll('.word-token').forEach(el => el.classList.remove('reading-now'));
@@ -355,62 +314,52 @@
         }
 
         function updatePlayBtn(active) {
-            const btnText = document.getElementById('btn-text');
-            const icon = document.getElementById('play-icon');
-            btnText.innerText = active ? "Pausar" : "Leer";
-            icon.setAttribute('data-lucide', active ? 'pause' : 'play');
+            document.getElementById('btn-text').innerText = active ? "Pausar" : "Leer";
+            document.getElementById('play-icon').setAttribute('data-lucide', active ? 'pause' : 'play');
             lucide.createIcons();
         }
 
-        // --- FAVORITOS Y TRADUCCIONES ---
+        // --- CÓDICE Y RETOS ---
         function saveToCodex() {
             let saved = JSON.parse(localStorage.getItem('latinitatis_codex') || '[]');
             const idx = saved.findIndex(i => i.title === currentWork.title);
             if (idx >= 0) saved.splice(idx, 1);
             else saved.push({ author: currentWork.author, title: currentWork.title, ai: codexIndex.ai, wi: codexIndex.wi });
             localStorage.setItem('latinitatis_codex', JSON.stringify(saved));
-            checkIfSavedIcon();
-            loadCodex();
+            checkIfSavedIcon(); loadCodex();
         }
 
         function loadCodex() {
             const saved = JSON.parse(localStorage.getItem('latinitatis_codex') || '[]');
             const list = document.getElementById('codex-list');
-            if (saved.length === 0) {
-                list.innerHTML = "<p class='text-stone-500 text-xs italic py-4'>Tu códice personal está vacío.</p>";
-                return;
-            }
-            list.innerHTML = saved.map(i => `
-                <div class="bg-stone-800 p-4 rounded-2xl flex justify-between items-center border border-stone-700">
-                    <div>
-                        <p class="ancient text-[8px] text-gold uppercase">${i.author}</p>
-                        <p class="font-serif text-sm">${i.title}</p>
-                    </div>
-                    <button onclick="loadWork(${i.ai}, ${i.wi}); toggleCodex(false);" class="p-3 bg-stone-700 rounded-xl hover:bg-gold hover:text-stone-900 transition-all">
-                        <i data-lucide="book-open" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `).join('');
+            if (saved.length === 0) { list.innerHTML = "<p class='text-stone-500 text-[10px] ancient uppercase py-10 opacity-30'>Códice Vacío</p>"; return; }
+            list.innerHTML = saved.map(i => `<div class="bg-stone-800 p-5 rounded-[24px] flex justify-between items-center border border-stone-700/50"><div class="flex flex-col"><p class="ancient text-[7px] text-gold uppercase tracking-widest mb-1">${i.author}</p><p class="font-serif text-sm text-stone-200">${i.title}</p></div><button onclick="loadWork(${i.ai}, ${i.wi}); toggleCodex(false);" class="p-3 bg-stone-700 text-white rounded-xl hover:bg-gold transition-all"><i data-lucide="book-open" class="w-4 h-4"></i></button></div>`).join('');
             lucide.createIcons();
         }
 
         function checkIfSavedIcon() {
             const saved = JSON.parse(localStorage.getItem('latinitatis_codex') || '[]');
-            const isSaved = saved.some(i => i.title === currentWork.title);
-            document.getElementById('bookmark-icon').classList.toggle('fill-terracotta', isSaved);
+            document.getElementById('bookmark-icon').classList.toggle('fill-terracotta', saved.some(i => i.title === currentWork.title));
+        }
+
+        async function generateExercise() {
+            const area = document.getElementById('exercise-area'); area.classList.remove('hidden');
+            area.innerHTML = "<p class='animate-pulse text-gold text-[10px] uppercase ancient text-center py-4'>Preparando Cuestionario...</p>";
+            try {
+                const prompt = `Crea un ejercicio de opción múltiple sobre este pasaje griego: "${currentWork.content.substring(0,120)}". JSON: {"pregunta":"","opciones":["","",""],"correcta":0,"explicacion":""}`;
+                const raw = await callAI(prompt); currentExercise = JSON.parse(raw);
+                area.innerHTML = `<p class="mb-4 font-serif text-sm pb-2 border-b border-stone-700">${currentExercise.pregunta}</p><div class="space-y-2">${currentExercise.opciones.map((o, i) => `<button onclick="checkAnswer(${i})" class="block w-full text-left p-3 bg-stone-700 hover:bg-stone-600 rounded-xl text-xs transition-colors">${o}</button>`).join('')}</div><div id="fb" class="mt-4 text-[10px] italic"></div>`;
+            } catch (e) { area.innerHTML = "<p class='text-xs text-red-400'>Error de generación.</p>"; }
+        }
+
+        function checkAnswer(i) {
+            document.getElementById('fb').innerHTML = i === currentExercise.correcta ? `✅ <span class="text-green-400">¡Sapiens!</span> ${currentExercise.explicacion}` : `❌ <span class="text-red-400">Error.</span> ${currentExercise.explicacion}`;
         }
 
         function toggleTranslations() {
-            const grid = document.getElementById('trans-grid');
-            grid.classList.toggle('hidden');
+            const grid = document.getElementById('trans-grid'); grid.classList.toggle('hidden');
             if (!grid.classList.contains('hidden')) {
-                grid.innerHTML = currentWork.translations.map(t => `
-                    <div class="trans-card">
-                        <p class="text-[9px] ancient uppercase font-bold text-gold mb-3">${t.lang}</p>
-                        <p class="text-base italic text-stone-800 font-serif leading-relaxed">"${t.text}"</p>
-                        <p class="mt-4 text-[9px] text-stone-400 font-bold text-right">— ${t.author}</p>
-                    </div>
-                `).join('');
+                grid.innerHTML = currentWork.translations.map(t => `<div class="trans-card"><p class="text-[9px] ancient uppercase font-bold text-gold mb-3">${t.lang}</p><p class="text-base italic text-stone-800 font-serif leading-relaxed">"${t.text}"</p><p class="mt-4 text-[9px] text-stone-400 font-bold text-right">— ${t.author}</p></div>`).join('');
                 grid.scrollIntoView({ behavior: 'smooth' });
             }
         }

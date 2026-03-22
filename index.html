@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latinitatis PRO | Bibliotheca Graeca v5.2</title>
+    <title>Latinitatis PRO | Bibliotheca Graeca v5.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Noto+Serif+Display:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,900&display=swap" rel="stylesheet">
@@ -21,20 +21,24 @@
         .progress-bar { height: 100%; background: var(--gold); width: 0%; transition: width 0.2s linear; }
         .home-card { background: white; padding: 2rem; border-radius: 1.5rem; border: 1px solid #eaeaea; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: transform 0.2s; height: 100%; }
         .home-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .lang-tag { font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; margin-right: 6px; }
+        .bg-es { background: #fee2e2; color: #991b1b; }
+        .bg-en { background: #dcfce7; color: #166534; }
+        .bg-fr { background: #dbeafe; color: #1e40af; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col pb-20">
 
     <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200 px-4 md:px-6 py-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-4 cursor-pointer" onclick="showHome()">
-            <div class="w-10 h-10 bg-stone-900 text-white rounded-lg flex items-center justify-center font-bold shadow-xl hover:bg-stone-800 transition-colors">ΑΩ</div>
+            <div class="w-10 h-10 bg-stone-900 text-white rounded-lg flex items-center justify-center font-bold shadow-xl">ΑΩ</div>
             <h1 class="ancient text-lg font-black text-stone-800 uppercase hidden md:block tracking-tighter">Latinitatis <span class="text-red-800">PRO</span></h1>
         </div>
         <div class="flex gap-2">
-            <button onclick="toggleCodex(true)" class="flex items-center gap-2 px-3 md:px-4 py-2 bg-stone-100 hover:bg-stone-200 rounded-full transition-all text-stone-700">
+            <button onclick="toggleCodex(true)" class="flex items-center gap-2 px-3 md:px-4 py-2 bg-stone-100 hover:bg-stone-200 rounded-full text-stone-700">
                 <i data-lucide="bookmark" class="w-4 h-4 text-terracotta"></i><span class="ancient text-[10px] font-bold uppercase hidden md:inline">Mi Códice</span>
             </button>
-            <button onclick="toggleSidebar(true)" class="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white hover:bg-stone-800 rounded-full transition-all shadow-md">
+            <button onclick="toggleSidebar(true)" class="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white hover:bg-stone-800 rounded-full shadow-md">
                 <i data-lucide="library" class="w-4 h-4"></i><span class="ancient text-[10px] font-bold uppercase">Bibliotheca</span>
             </button>
         </div>
@@ -43,68 +47,44 @@
     <main id="home-view" class="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full animate-in fade-in duration-500">
         <header class="text-center mb-16 mt-8">
             <h2 class="greek-display text-5xl md:text-7xl font-black text-stone-900 italic mb-4">Latinitatis PRO</h2>
-            <p class="text-terracotta ancient text-xs md:text-sm uppercase tracking-[0.3em] font-bold">El Entorno Personal de Aprendizaje Definitivo</p>
+            <p class="text-terracotta ancient text-xs md:text-sm uppercase tracking-[0.3em] font-bold">Entorno Personal de Aprendizaje • Edición Trilingüe</p>
         </header>
 
         <section class="mb-20">
-            <h3 class="ancient text-2xl font-black mb-6 border-b pb-2 text-stone-800 uppercase">¿Por qué Latinitatis PRO es única?</h3>
-            <p class="text-lg font-serif text-stone-600 leading-relaxed mb-8">
-                Esta plataforma gratuita y de código abierto converge los mejores recursos del mundo clásico en una sola experiencia de lectura trilingüe y asistida por Inteligencia Artificial:
+            <h3 class="ancient text-2xl font-black mb-6 border-b pb-2 text-stone-800 uppercase">Filología Global</h3>
+            <p class="text-lg font-serif text-stone-600 leading-relaxed mb-8 text-justify">
+                Esta plataforma gratuita converge los mejores recursos del mundo clásico en una experiencia de lectura asistida por IA. Ahora con análisis morfosintáctico íntegro en **español, inglés y francés**.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="home-card">
-                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="database" class="text-stone-400"></i> 1. Perseus Digital Library</h4>
-                    <p class="text-sm font-serif mb-3">Acceso a la base de datos de filología más grande del mundo, permitiendo un análisis morfológico palabra por palabra con rigor académico.</p>
+                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="database" class="text-stone-400"></i> Perseus Library</h4>
+                    <p class="text-sm font-serif">Análisis morfológico con rigor académico basado en los estándares internacionales de filología clásica.</p>
                 </div>
                 <div class="home-card">
-                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="languages" class="text-stone-400"></i> 2. Proyecto Logeion</h4>
-                    <p class="text-sm font-serif mb-3">Integración de los diccionarios más prestigiosos del ámbito académico (Liddell-Scott-Jones) para consultas léxicas profundas e instantáneas.</p>
-                </div>
-                <div class="home-card">
-                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="quote" class="text-stone-400"></i> 3. Dicciogriego</h4>
-                    <p class="text-sm font-serif mb-3">La referencia de excelencia en español para el estudio de la morfología y la etimología clásica, ahora integrada en tu flujo de lectura.</p>
-                </div>
-                <div class="home-card">
-                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="sparkles" class="text-stone-400"></i> 4. Legentibus & Scaife</h4>
-                    <p class="text-sm font-serif mb-3">Inspirada en las interfaces de lectura más avanzadas del mercado para ofrecer una experiencia de usuario fluida, elegante y minimalista.</p>
+                    <h4 class="font-bold text-xl mb-1 flex items-center gap-2"><i data-lucide="languages" class="text-stone-400"></i> Diccionarios LSJ</h4>
+                    <p class="text-sm font-serif">Integración léxica profunda a través del proyecto Logeion para consultas inmediatas en múltiples lenguas.</p>
                 </div>
             </div>
         </section>
 
-        <section class="mb-20">
-            <h3 class="ancient text-2xl font-black mb-8 text-center border-b pb-4 uppercase">Síntesis de Funciones</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="p-6 bg-stone-900 text-white rounded-2xl shadow-lg">
-                    <i data-lucide="brain-circuit" class="w-8 h-8 text-gold mb-4"></i>
-                    <h4 class="font-bold mb-2">Oráculo Morfosintáctico</h4>
-                    <p class="text-sm text-stone-400">Análisis gramatical exhaustivo, sintaxis y etimología trilingüe mediante IA Groq Llama 3.</p>
+        <footer class="bg-stone-100 border-t border-stone-200 p-10 rounded-3xl mt-12">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-10">
+                <div class="max-w-xs">
+                    <p class="font-bold text-stone-900 uppercase ancient text-xs mb-2">Latinitatis PRO</p>
+                    <p class="text-xs text-stone-500 font-serif leading-relaxed">Proyecto de <b>Alejandro Güeto</b> para la preservación de la cultura clásica.</p>
                 </div>
-                <div class="p-6 bg-stone-900 text-white rounded-2xl shadow-lg">
-                    <i data-lucide="gamepad-2" class="w-8 h-8 text-gold mb-4"></i>
-                    <h4 class="font-bold mb-2">Retos Magistrales</h4>
-                    <p class="text-sm text-stone-400">Generación dinámica de ejercicios basados en el contexto literario que estás explorando.</p>
-                </div>
-                <div class="p-6 bg-white border border-stone-200 rounded-2xl shadow-sm">
-                    <i data-lucide="headphones" class="w-8 h-8 text-terracotta mb-4"></i>
-                    <h4 class="font-bold mb-2 text-stone-800">Lector Sincronizado</h4>
-                    <p class="text-sm text-stone-600">El texto cobra vida con el resaltado dinámico mientras escuchas la pronunciación clásica.</p>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="toggleLegal(true)" class="text-[10px] ancient uppercase font-bold text-stone-400 hover:text-red-800 underline">Aviso Legal</button>
+                    <button onclick="localStorage.removeItem('groq_key'); location.reload();" class="text-[10px] ancient uppercase font-bold text-stone-400">Resetear API</button>
                 </div>
             </div>
-        </section>
-
-        <footer class="bg-red-50 border-t-4 border-terracotta p-8 rounded-3xl mt-12 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-                <p class="font-bold text-stone-900">Alejandro Güeto</p>
-                <p class="text-xs text-stone-500 italic">Filología Clásica • v5.2 "Bibliotheca Graeca"</p>
-            </div>
-            <button onclick="localStorage.removeItem('groq_key'); alert('Clave borrada'); location.reload();" class="px-6 py-2 border border-stone-300 rounded-full text-[10px] ancient uppercase font-bold text-stone-400 hover:text-red-800 transition-all">Resetear Clave API</button>
         </footer>
     </main>
 
     <main id="reader-view" class="hidden flex-1 p-4 md:p-8 max-w-6xl mx-auto w-full">
         <header class="text-center mb-8 relative">
-            <button onclick="saveToCodex()" class="absolute right-0 top-0 p-3 bg-white text-terracotta rounded-full shadow-md border hover:bg-red-50 transition-all">
+            <button onclick="saveToCodex()" class="absolute right-0 top-0 p-3 bg-white text-terracotta rounded-full shadow-md border hover:bg-red-50">
                 <i data-lucide="bookmark" id="bookmark-icon"></i>
             </button>
             <h2 id="view-title" class="greek-display text-4xl md:text-5xl font-black text-stone-900 italic mb-2">Título</h2>
@@ -123,35 +103,25 @@
                         <span id="speed-label" class="text-stone-400">0.8x</span>
                     </h3>
                     <div class="progress-container mb-6"><div id="progress-fill" class="progress-bar"></div></div>
-                    
                     <div class="flex gap-2 mb-4">
-                        <button onclick="toggleAudio()" class="flex-1 py-4 bg-white text-stone-900 rounded-xl ancient font-black text-xs hover:bg-gold transition-all flex items-center justify-center gap-2">
+                        <button onclick="toggleAudio()" class="flex-1 py-4 bg-white text-stone-900 rounded-xl ancient font-black text-xs hover:bg-gold flex items-center justify-center gap-2">
                             <i data-lucide="play" id="play-icon"></i> <span id="btn-text">Leer</span>
                         </button>
-                        <button onclick="stopAudio(true)" class="p-4 bg-white/10 text-white rounded-xl hover:bg-red-800 transition-all">
-                            <i data-lucide="square"></i>
-                        </button>
+                        <button onclick="stopAudio(true)" class="p-4 bg-white/10 text-white rounded-xl hover:bg-red-800"><i data-lucide="square"></i></button>
                     </div>
-
-                    <div class="flex items-center justify-between bg-white/5 p-2 rounded-xl mb-6">
-                        <button onclick="changeSpeed(-0.1)" class="w-8 h-8 hover:bg-white/10 rounded-full">-</button>
-                        <span class="text-[9px] ancient uppercase font-bold text-stone-500">Velocidad</span>
-                        <button onclick="changeSpeed(0.1)" class="w-8 h-8 hover:bg-white/10 rounded-full">+</button>
-                    </div>
-
-                    <button onclick="toggleTranslations()" class="w-full py-3 mb-2 border border-stone-600 text-stone-300 rounded-xl ancient font-bold text-[10px] flex items-center justify-center gap-2 hover:bg-white/10 transition-all">
-                        <i data-lucide="languages"></i> Comparativa
-                    </button>
-                    <button onclick="generateExercise()" class="w-full py-3 bg-red-900 text-white rounded-xl ancient font-bold text-[10px] flex items-center justify-center gap-2 shadow-lg hover:bg-red-800">
-                        <i data-lucide="brain-circuit"></i> Reto Magistral
-                    </button>
+                    <button onclick="toggleTranslations()" class="w-full py-3 mb-2 border border-stone-600 text-stone-300 rounded-xl ancient font-bold text-[10px] flex items-center justify-center gap-2 hover:bg-white/10"><i data-lucide="languages"></i> Comparativa</button>
+                    <button onclick="generateExercise()" class="w-full py-3 bg-red-900 text-white rounded-xl ancient font-bold text-[10px] flex items-center justify-center gap-2 shadow-lg"><i data-lucide="brain-circuit"></i> Reto Magistral</button>
                 </div>
                 <div id="exercise-area" class="hidden bg-stone-800 text-white p-6 rounded-[30px] border border-stone-700 animate-in zoom-in-95"></div>
             </div>
         </section>
-
-        <div id="trans-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10 animate-in slide-in-from-bottom-8"></div>
+        <div id="trans-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10"></div>
     </main>
+
+    <div id="oracle-drawer" class="fixed inset-y-0 right-0 w-full md:w-[550px] bg-white shadow-2xl z-[200] translate-x-full drawer p-10 overflow-y-auto border-l border-stone-100">
+        <button onclick="closeOracle()" class="mb-10 text-stone-400 hover:text-red-800 flex items-center gap-2 ancient text-[10px] uppercase font-bold tracking-widest"><i data-lucide="arrow-left"></i> Regresar al Texto</button>
+        <div id="oracle-content"></div>
+    </div>
 
     <div id="sidebar" class="fixed inset-y-0 left-0 w-full md:w-96 bg-white shadow-2xl z-[100] -translate-x-full drawer p-8 border-r overflow-y-auto">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
@@ -169,9 +139,14 @@
         <div id="codex-list" class="space-y-4"></div>
     </div>
 
-    <div id="oracle-drawer" class="fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-2xl z-[100] translate-x-full drawer p-10 overflow-y-auto border-l border-stone-100">
-        <button onclick="closeOracle()" class="mb-10 text-stone-400 hover:text-red-800 flex items-center gap-2 ancient text-[10px] uppercase font-bold tracking-widest transition-all"><i data-lucide="arrow-left"></i> Regresar al Texto</button>
-        <div id="oracle-content"></div>
+    <div id="legal-drawer" class="fixed inset-y-0 right-0 w-full md:w-[500px] bg-white shadow-2xl z-[200] translate-x-full drawer p-12 overflow-y-auto border-l">
+        <button onclick="toggleLegal(false)" class="mb-10 text-stone-400 hover:text-red-800 flex items-center gap-2 ancient text-[10px] uppercase font-bold tracking-widest"><i data-lucide="arrow-left"></i> Cerrar</button>
+        <h2 class="ancient text-2xl font-black mb-6 border-b pb-4">Aviso Legal</h2>
+        <div class="space-y-6 font-serif text-sm text-stone-600">
+            <p><b>Privacidad:</b> Las claves API se guardan solo en tu navegador.</p>
+            <p><b>IA:</b> Los análisis son generados por IA y pueden contener errores.</p>
+            <p><b>Copyright:</b> Traducciones con fines educativos sin ánimo de lucro.</p>
+        </div>
     </div>
 
     <script src="textos.js"></script>
@@ -194,64 +169,66 @@
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
                         messages: [
-                            { role: "system", content: "Eres un experto filólogo clásico. Responde exclusivamente en formato JSON estricto." },
+                            { role: "system", content: "Eres un experto filólogo bilingüe. Responde siempre exclusivamente en formato JSON estricto." },
                             { role: "user", content: promptText }
                         ],
                         temperature: 0.1,
                         response_format: { type: "json_object" }
                     })
                 });
-                if (!response.ok) throw new Error("Fallo en la conexión con el Oráculo.");
+                if (!response.ok) throw new Error("Fallo en la conexión.");
                 const data = await response.json();
                 return data.choices[0].message.content;
             } catch (e) { console.error("DEBUG:", e); throw e; }
         }
 
-        // ANÁLISIS MORFOSINTÁCTICO PROFESIONAL
+        // --- ANÁLISIS TRILINGÜE (ES, EN, FR) ---
         async function analyze(word) {
             openOracle();
             const content = document.getElementById('oracle-content');
-            content.innerHTML = "<div class='py-32 text-center'><div class='inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-red-800 mb-4'></div><p class='ancient text-stone-300 text-[10px] uppercase tracking-widest'>Interrogando al Oráculo...</p></div>";
+            content.innerHTML = "<div class='py-32 text-center'><div class='inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-red-800 mb-4'></div><p class='ancient text-stone-300 text-[10px] uppercase tracking-widest'>Consultatio Polyglotta...</p></div>";
             
             try {
-                const prompt = `Analiza exhaustivamente la palabra griega "${word}" en el contexto de la obra de ${currentWork.author}. JSON: {"lema":"","morfologia":"aquí el análisis morfosintáctico completo (caso, género, número, tiempo, voz, modo, etc.)","traduccion":"","fr":"","en":"","etimologia":""}`;
+                const prompt = `Analiza exhaustivamente la palabra griega "${word}" en el contexto de ${currentWork.author}. Devuelve un objeto JSON con esta estructura exacta: {"lema":"","es":{"morph":"","def":"","etym":""},"en":{"morph":"","def":"","etym":""},"fr":{"morph":"","def":"","etym":""}}`;
                 const raw = await callAI(prompt);
                 const res = JSON.parse(raw);
                 
                 content.innerHTML = `
-                    <span class="text-red-800 ancient text-[9px] font-black uppercase tracking-[0.2em]">Morphologia</span>
-                    <h3 class="greek-display text-6xl my-4 text-stone-900">${word}</h3>
+                    <h3 class="greek-display text-7xl my-6 text-stone-900 border-b pb-4">${word}</h3>
+                    <p class="text-3xl font-black text-stone-400 mb-10 font-serif italic">${res.lema}</p>
                     
-                    <div class="space-y-8 mt-10">
-                        <div class="border-l-4 border-gold pl-6 py-2">
-                            <p class="text-3xl font-black text-stone-800 mb-1">${res.lema}</p>
-                            <p class="text-sm italic text-stone-400 font-serif">${res.morfologia}</p>
+                    <div class="space-y-12">
+                        <div class="border-l-4 border-red-800 pl-6">
+                            <span class="lang-tag bg-es">Español</span>
+                            <p class="text-sm font-bold text-stone-800 mt-2">${res.es.morph}</p>
+                            <p class="text-xl italic font-serif my-3">"${res.es.def}"</p>
+                            <p class="text-xs text-stone-500 leading-relaxed">${res.es.etym}</p>
                         </div>
 
-                        <div class="p-8 bg-stone-900 text-white rounded-[32px] shadow-xl">
-                            <p class="text-[9px] font-bold text-gold uppercase mb-4 tracking-widest">Significado Trilingüe</p>
-                            <div class="space-y-3">
-                                <p class="text-xl italic font-serif text-white">"${res.traduccion}" <span class="text-[10px] text-stone-500 non-italic">(ES)</span></p>
-                                <p class="text-sm text-stone-400">"${res.fr}" <span class="text-[10px] text-stone-600">(FR)</span></p>
-                                <p class="text-sm text-stone-400">"${res.en}" <span class="text-[10px] text-stone-600">(EN)</span></p>
-                            </div>
+                        <div class="border-l-4 border-green-800 pl-6">
+                            <span class="lang-tag bg-en">English</span>
+                            <p class="text-sm font-bold text-stone-800 mt-2">${res.en.morph}</p>
+                            <p class="text-xl italic font-serif my-3">"${res.en.def}"</p>
+                            <p class="text-xs text-stone-500 leading-relaxed">${res.en.etym}</p>
                         </div>
 
-                        <div class="p-6 bg-stone-50 rounded-2xl border border-stone-100">
-                            <p class="text-[9px] font-bold text-stone-400 uppercase mb-3 tracking-widest">Huella Etimológica</p>
-                            <p class="text-sm text-stone-600 font-serif leading-relaxed italic">"${res.etimologia}"</p>
+                        <div class="border-l-4 border-blue-800 pl-6">
+                            <span class="lang-tag bg-fr">Français</span>
+                            <p class="text-sm font-bold text-stone-800 mt-2">${res.fr.morph}</p>
+                            <p class="text-xl italic font-serif my-3">"${res.fr.def}"</p>
+                            <p class="text-xs text-stone-500 leading-relaxed">${res.fr.etym}</p>
                         </div>
                     </div>`;
             } catch (e) {
-                content.innerHTML = `<div class='p-8 bg-red-50 text-red-800 rounded-2xl'><p class='font-black uppercase text-xs mb-2'>Error del Oráculo</p><p class='text-sm opacity-70'>${e.message}</p></div>`;
+                content.innerHTML = `<div class='p-8 bg-red-50 text-red-800 rounded-2xl'><p class='font-black uppercase text-xs mb-2'>Error Polyglotta</p><p class='text-sm opacity-70'>${e.message}</p></div>`;
             }
         }
 
-        // --- LÓGICA DE NAVEGACIÓN ---
+        // --- NAVEGACIÓN Y CARGA ---
         function renderLibrary() {
             document.getElementById('author-list').innerHTML = canon.map((a, ai) => `
                 <div class="mb-6">
-                    <h3 class="ancient text-red-800 text-[10px] font-black uppercase border-b border-stone-100 pb-2 mb-3">${a.author}</h3>
+                    <h3 class="ancient text-red-800 text-[10px] font-black uppercase border-b pb-2 mb-3">${a.author}</h3>
                     <div class="space-y-1">
                         ${a.works.map((w, wi) => `<button onclick="loadWork(${ai}, ${wi})" class="w-full text-left py-2 px-3 rounded-xl hover:bg-stone-50 font-serif text-sm text-stone-700 flex justify-between items-center group transition-all"><span>${w.title}</span><i data-lucide="chevron-right" class="w-3 h-3 opacity-0 group-hover:opacity-100 text-stone-300"></i></button>`).join('')}
                     </div>
@@ -278,10 +255,11 @@
         function showHome() { stopAudio(true); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('reader-view').classList.add('hidden'); window.scrollTo(0,0); }
         function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('-translate-x-full', !s); }
         function toggleCodex(s) { document.getElementById('codex-drawer').classList.toggle('-translate-x-full', !s); }
+        function toggleLegal(s) { document.getElementById('legal-drawer').classList.toggle('translate-x-full', !s); }
         function openOracle() { document.getElementById('oracle-drawer').classList.remove('translate-x-full'); }
         function closeOracle() { document.getElementById('oracle-drawer').classList.add('translate-x-full'); }
 
-        // --- LÓGICA DE AUDIO ---
+        // --- AUDIO ---
         function toggleAudio() {
             if (isReading) { stopAudio(); return; }
             utterance = new SpeechSynthesisUtterance(currentWork.content);
@@ -301,23 +279,11 @@
 
         function stopAudio(reset = false) {
             synth.cancel(); isReading = false; updatePlayBtn(false);
-            if (reset) {
-                document.getElementById('progress-fill').style.width = '0%';
-                document.querySelectorAll('.word-token').forEach(el => el.classList.remove('reading-now'));
-            }
+            if (reset) { document.getElementById('progress-fill').style.width = '0%'; document.querySelectorAll('.word-token').forEach(el => el.classList.remove('reading-now')); }
         }
 
-        function changeSpeed(delta) {
-            readingRate = Math.min(1.5, Math.max(0.4, readingRate + delta));
-            document.getElementById('speed-label').innerText = readingRate.toFixed(1) + 'x';
-            if (isReading) { stopAudio(); toggleAudio(); }
-        }
-
-        function updatePlayBtn(active) {
-            document.getElementById('btn-text').innerText = active ? "Pausar" : "Leer";
-            document.getElementById('play-icon').setAttribute('data-lucide', active ? 'pause' : 'play');
-            lucide.createIcons();
-        }
+        function changeSpeed(delta) { readingRate = Math.min(1.5, Math.max(0.4, readingRate + delta)); document.getElementById('speed-label').innerText = readingRate.toFixed(1) + 'x'; if (isReading) { stopAudio(); toggleAudio(); } }
+        function updatePlayBtn(active) { document.getElementById('btn-text').innerText = active ? "Pausar" : "Leer"; document.getElementById('play-icon').setAttribute('data-lucide', active ? 'pause' : 'play'); lucide.createIcons(); }
 
         // --- CÓDICE Y RETOS ---
         function saveToCodex() {
@@ -337,24 +303,19 @@
             lucide.createIcons();
         }
 
-        function checkIfSavedIcon() {
-            const saved = JSON.parse(localStorage.getItem('latinitatis_codex') || '[]');
-            document.getElementById('bookmark-icon').classList.toggle('fill-terracotta', saved.some(i => i.title === currentWork.title));
-        }
+        function checkIfSavedIcon() { const saved = JSON.parse(localStorage.getItem('latinitatis_codex') || '[]'); document.getElementById('bookmark-icon').classList.toggle('fill-terracotta', saved.some(i => i.title === currentWork.title)); }
 
         async function generateExercise() {
             const area = document.getElementById('exercise-area'); area.classList.remove('hidden');
-            area.innerHTML = "<p class='animate-pulse text-gold text-[10px] uppercase ancient text-center py-4'>Preparando Cuestionario...</p>";
+            area.innerHTML = "<p class='animate-pulse text-gold text-[10px] uppercase ancient text-center py-4'>Generando Reto...</p>";
             try {
-                const prompt = `Crea un ejercicio de opción múltiple sobre este pasaje griego: "${currentWork.content.substring(0,120)}". JSON: {"pregunta":"","opciones":["","",""],"correcta":0,"explicacion":""}`;
+                const prompt = `Crea un ejercicio de opción múltiple sobre este pasaje griego: "${currentWork.content.substring(0,100)}". JSON: {"pregunta":"","opciones":["","",""],"correcta":0,"explicacion":""}`;
                 const raw = await callAI(prompt); currentExercise = JSON.parse(raw);
                 area.innerHTML = `<p class="mb-4 font-serif text-sm pb-2 border-b border-stone-700">${currentExercise.pregunta}</p><div class="space-y-2">${currentExercise.opciones.map((o, i) => `<button onclick="checkAnswer(${i})" class="block w-full text-left p-3 bg-stone-700 hover:bg-stone-600 rounded-xl text-xs transition-colors">${o}</button>`).join('')}</div><div id="fb" class="mt-4 text-[10px] italic"></div>`;
             } catch (e) { area.innerHTML = "<p class='text-xs text-red-400'>Error de generación.</p>"; }
         }
 
-        function checkAnswer(i) {
-            document.getElementById('fb').innerHTML = i === currentExercise.correcta ? `✅ <span class="text-green-400">¡Sapiens!</span> ${currentExercise.explicacion}` : `❌ <span class="text-red-400">Error.</span> ${currentExercise.explicacion}`;
-        }
+        function checkAnswer(i) { document.getElementById('fb').innerHTML = i === currentExercise.correcta ? `✅ <span class="text-green-400">¡Sapiens!</span> ${currentExercise.explicacion}` : `❌ <span class="text-red-400">Error.</span> ${currentExercise.explicacion}`; }
 
         function toggleTranslations() {
             const grid = document.getElementById('trans-grid'); grid.classList.toggle('hidden');

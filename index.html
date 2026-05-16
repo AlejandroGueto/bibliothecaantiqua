@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bibliotheca Antiqua PRO - Dynamic Core</title>
+    <title>Bibliotheca Antiqua PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -14,12 +14,23 @@
             --bg-panel: #171717;
             --bg-hover: #262626;
             --text-main: #E5E5E5;
+            --text-muted: #A3A3A3;
             --accent-red: #991B1B;
             --accent-gold: #D4AF37;
             --border-color: #333333;
         }
 
-        body { font-family: 'Cormorant Garamond', serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; overflow: hidden; display: flex; height: 100vh; }
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+            display: flex;
+            height: 100vh;
+        }
+
         h1, h2, h3, h4, h5, .font-cinzel { font-family: 'Cinzel', serif; }
         .font-greek { font-family: 'Noto Serif', serif; }
 
@@ -27,6 +38,7 @@
         #sidebar-left.collapsed { width: 0; min-width: 0; border-right: none; }
         
         #main-canvas { flex: 1; display: flex; flex-direction: column; position: relative; background: var(--bg-dark); min-width: 0; height: 100vh; overflow: hidden; }
+        
         #right-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; display: none; opacity: 0; transition: opacity 0.3s ease; }
         #right-backdrop.active { display: block; opacity: 1; }
 
@@ -36,19 +48,14 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #404040; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525B; }
 
-        .reading-text { font-size: 1.35rem; line-height: 2.2; text-align: justify; padding-bottom: 50vh; }
+        .reading-text { font-size: 1.35rem; line-height: 2.2; text-align: justify; }
         @media (min-width: 1280px) { .reading-text { font-size: 1.5rem; line-height: 2.4; } }
 
-        /* Tokens interactivos seguros */
-        .word-token { cursor: pointer; transition: all 0.15s ease; border-radius: 4px; padding: 0 2px; margin: 0 -2px; display: inline-block; position: relative; }
-        .word-token:hover { background-color: rgba(212, 175, 55, 0.2); }
-        .word-selected { background-color: var(--accent-gold) !important; color: #000 !important; font-weight: 600; box-shadow: 0 0 10px rgba(212,175,55,0.4); }
-        .audio-active { background-color: rgba(212, 175, 55, 0.4) !important; color: #fff !important; border-radius: 4px; }
-
-        /* Métrica sutil que no bloquea clics */
-        .scansio-long { color: var(--accent-gold); font-weight: bold; pointer-events: none; }
-        .scansio-short { opacity: 0.6; pointer-events: none; }
+        .word-token { cursor: pointer; transition: all 0.2s ease; border-radius: 3px; padding: 0 2px; margin: 0 -2px; display: inline-block; position: relative; }
+        .word-token:hover { background-color: rgba(153, 27, 27, 0.3); color: #fff; }
+        .audio-active { background-color: rgba(212, 175, 55, 0.4) !important; color: #fff !important; border-radius: 4px; box-shadow: 0 0 10px rgba(212,175,55,0.2); transition: all 0.1s ease; }
 
         #reading-area { flex: 1; display: flex; overflow: hidden; position: relative; height: calc(100vh - 3.5rem); }
         .split-pane { flex: 1; overflow-y: auto; padding: 2rem 3rem; height: 100%; box-sizing: border-box; }
@@ -56,32 +63,24 @@
         #pane-original { width: 100%; transition: width 0.3s ease; }
         #pane-original.half { width: 50%; max-width: 50%; border-right: 1px solid var(--border-color); }
         
-        #pane-translation { display: none; background: var(--bg-dark); color: var(--text-main); width: 50%; max-width: 50%; border-left: 1px solid var(--border-color); flex-direction: column;}
-        #pane-translation.active { display: flex; }
+        #pane-translation { display: none; background: var(--bg-dark); color: var(--text-main); width: 50%; max-width: 50%; border-left: 1px solid var(--border-color); }
+        #pane-translation.active { display: block; }
 
         .accordion-content, .sub-accordion-content { display: none; }
         .open > .accordion-content, .open > .sub-accordion-content { display: block; }
         .accordion-icon, .sub-accordion-icon { transition: transform 0.2s ease; }
         .open button .accordion-icon, .open button .sub-accordion-icon { transform: rotate(180deg); }
+        
         .tab-btn.active { color: var(--accent-gold); border-bottom: 2px solid var(--accent-gold); }
-        
-        .loader-ring { display: inline-block; position: relative; width: 64px; height: 64px; }
-        .loader-ring div { box-sizing: border-box; display: block; position: absolute; width: 54px; height: 54px; margin: 5px; border: 4px solid var(--accent-gold); border-radius: 50%; animation: loader-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: var(--accent-gold) transparent transparent transparent; }
-        .loader-ring div:nth-child(1) { animation-delay: -0.45s; } .loader-ring div:nth-child(2) { animation-delay: -0.3s; } .loader-ring div:nth-child(3) { animation-delay: -0.15s; }
-        @keyframes loader-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Limpiador de Wikisource (respeta tablas para poesía) */
-        .mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, .ws-noexport, 
-        .wst-poem-header, .ws-header, .ext-phonos, sup.reference, .wst-navbox, .metadata, .ambox, .navbox-title, .navbox-abovebelow { display: none !important; }
-        
+        .spinner { border: 3px solid rgba(255,255,255,0.1); width: 24px; height: 24px; border-radius: 50%; border-left-color: var(--accent-gold); animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table.plainlinks, .ws-noexport { display: none !important; }
         .poem { margin-left: 2rem; margin-bottom: 1.5rem; }
         .poem p { margin-bottom: 0.2rem; }
         
-        .search-result-card { background: #1A1A1A; border: 1px solid #333; padding: 1rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; }
-        .search-result-card:hover { border-color: var(--accent-gold); background: #262626; }
-        
         #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100; pointer-events: none; }
-        .toast { background: rgba(0,0,0,0.9); color: #fff; padding: 12px 24px; border-radius: 8px; margin-top: 10px; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; font-size: 0.9rem; text-align: center; border: 1px solid var(--accent-gold); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .toast { background: rgba(0,0,0,0.8); color: #fff; padding: 12px 24px; border-radius: 8px; margin-top: 10px; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; font-size: 0.9rem; text-align: center; border: 1px solid var(--accent-gold); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .toast.show { opacity: 1; }
     </style>
 </head>
@@ -94,8 +93,8 @@
         </div>
 
         <div class="flex border-b border-[#333] bg-[#1A1A1A] shrink-0">
-            <button onclick="switchTab('latin')" id="tab-latin" class="tab-btn active flex-1 py-3 font-cinzel text-xs font-bold uppercase tracking-widest text-[#A3A3A3] hover:text-white transition">Latini</button>
-            <button onclick="switchTab('greek')" id="tab-greek" class="tab-btn flex-1 py-3 font-cinzel text-xs font-bold uppercase tracking-widest text-[#A3A3A3] hover:text-white transition">Graeci</button>
+            <button onclick="switchTab('latin')" id="tab-latin" class="tab-btn active flex-1 py-3 font-cinzel text-xs font-bold uppercase tracking-widest text-[#A3A3A3] hover:text-white transition">Auctores Latini</button>
+            <button onclick="switchTab('greek')" id="tab-greek" class="tab-btn flex-1 py-3 font-cinzel text-xs font-bold uppercase tracking-widest text-[#A3A3A3] hover:text-white transition">Auctores Graeci</button>
         </div>
 
         <div class="p-2 border-b border-[#333] bg-[#1A1A1A] shrink-0">
@@ -108,6 +107,7 @@
         <div class="flex-1 overflow-y-auto p-2" id="library-content">
             <div id="list-latin" class="space-y-1"></div>
             <div id="list-greek" class="space-y-1 hidden"></div>
+            <div id="no-results" class="hidden text-center py-8 text-gray-500 font-serif text-sm">Nihil inventum.</div>
         </div>
     </aside>
 
@@ -115,122 +115,105 @@
         <header class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0 shadow-md z-10 w-full">
             <div class="flex items-center gap-3 overflow-hidden">
                 <button onclick="toggleSidebarLeft()" class="text-gray-400 hover:text-white p-1 rounded hover:bg-[#333] transition shrink-0"><i data-lucide="library" class="w-5 h-5"></i></button>
-                <div id="current-meta" class="font-cinzel text-sm text-gray-300 tracking-wide truncate whitespace-nowrap">Selecciona una obra</div>
+                <div id="current-meta" class="font-cinzel text-sm text-gray-300 tracking-wide truncate whitespace-nowrap">Selecciona una obra para comenzar</div>
             </div>
 
             <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0 ml-2">
                 <div class="flex items-center bg-[#121212] rounded px-1">
-                    <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Lectura Fonética"><i data-lucide="play" class="w-4 h-4"></i></button>
-                    <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio"><i data-lucide="square" class="w-4 h-4 fill-current"></i></button>
-                    <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1">
+                    <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir Fonética">
+                        <i data-lucide="play" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio">
+                        <i data-lucide="square" class="w-4 h-4 fill-current"></i>
+                    </button>
+                    <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1" title="Velocidad">
                         <option value="0.6">0.6x</option><option value="0.75" selected>0.75x</option><option value="0.9">0.9x</option>
                     </select>
                 </div>
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="toggleScansio()" id="btn-scansio" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Métrica (Scansio)"><i data-lucide="ruler" class="w-4 h-4"></i></button>
+                
+                <button onclick="toggleBilingual()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Traducción Simultánea"><i data-lucide="languages" class="w-4 h-4"></i></button>
                 <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
+                
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="toggleBilingual()" id="btn-bilingual" class="p-1.5 px-3 text-gray-400 hover:text-[#D4AF37] rounded transition flex items-center gap-2" title="Traducción Simultánea">
-                    <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
-                </button>
-                <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm">
-                    <i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span>
-                </button>
+                <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm"><i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span></button>
             </div>
         </header>
 
         <div id="reading-area">
             <div id="loading-state" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20">
-                <i data-lucide="book-marked" class="w-16 h-16 text-[#333] mb-4"></i>
-                <h2 class="font-cinzel text-xl text-gray-400 uppercase tracking-widest mb-2">Bibliotheca Antiqua PRO</h2>
-                <p class="font-serif text-gray-500 italic text-sm">Selecciona una obra del índice lateral.</p>
+                <div class="relative w-24 h-24 mb-6">
+                    <div class="absolute inset-0 border-4 border-[#333] rounded-full"></div>
+                    <div class="absolute inset-0 border-4 border-[#D4AF37] rounded-full border-t-transparent animate-spin"></div>
+                    <i data-lucide="library" class="absolute inset-0 m-auto w-10 h-10 text-gray-600"></i>
+                </div>
+                <h2 class="font-cinzel text-2xl text-gray-300 uppercase tracking-widest mb-2">Bibliotheca Antiqua</h2>
+                <p class="font-serif text-gray-500 italic text-sm">Elige un volumen del catálogo lateral.</p>
             </div>
             
             <div id="fetching-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f]/95 backdrop-blur z-20">
-                <div class="loader-ring mb-4"><div></div><div></div><div></div><div></div></div>
-                <p class="font-cinzel text-[#D4AF37] uppercase tracking-widest text-sm" id="fetch-msg">Conectando con Wikisource...</p>
-                <p class="font-serif text-gray-500 text-xs mt-2" id="fetch-submsg">Extrayendo texto original</p>
+                <div class="spinner w-12 h-12 mb-4 border-4"></div>
+                <p class="font-cinzel text-[#D4AF37] uppercase tracking-widest text-sm" id="fetch-msg">Extrayendo Papiro...</p>
             </div>
 
             <div id="error-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20">
                 <i data-lucide="alert-triangle" class="w-16 h-16 text-red-500 mb-4 opacity-80"></i>
-                <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Papiro No Localizado</p>
-                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">Error de red o archivo inexistente.</p>
+                <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Error en la Extracción</p>
+                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">El manuscrito no se encuentra disponible.</p>
                 <button onclick="retryLoad()" class="mt-6 px-4 py-2 border border-[#333] text-gray-400 hover:text-white hover:bg-[#333] rounded font-cinzel text-xs uppercase transition">Reintentar</button>
-            </div>
-            
-            <!-- PANEL DE RESCATE (ORIGINAL) -->
-            <div id="search-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20 p-8">
-                <i data-lucide="search" class="w-12 h-12 text-[#D4AF37] mb-4"></i>
-                <p class="font-cinzel text-lg text-white mb-2 uppercase tracking-wide">Ruta predefinida no encontrada</p>
-                <p class="text-sm text-gray-400 font-serif mb-6 text-center">Selecciona el texto exacto desde los resultados de Wikisource:</p>
-                <div id="original-search-results" class="w-full max-w-2xl space-y-3 overflow-y-auto max-h-[50vh] pr-2"></div>
             </div>
 
             <div id="pane-original" class="split-pane reading-text font-greek pb-32"></div>
             
-            <!-- PANEL DE TRADUCCIÓN (NATIVO Y CASCADA) -->
-            <div id="pane-translation" class="split-pane bg-[#111]">
+            <div id="pane-translation" class="split-pane reading-text font-serif pb-32">
                 <div id="trans-loading" class="flex flex-col items-center justify-center h-full opacity-50 hidden">
-                    <div class="loader-ring transform scale-50 mb-2"><div></div><div></div><div></div><div></div></div>
-                    <p class="font-cinzel text-sm uppercase tracking-widest text-gray-300">Rastreando Traducción...</p>
+                    <div class="spinner mb-4 border-gray-500 border-l-gray-300"></div>
+                    <p class="font-cinzel text-sm uppercase tracking-widest">Localizando Traducción...</p>
                 </div>
-                <!-- PANEL DE RESCATE (TRADUCCIÓN) -->
-                <div id="trans-search-state" class="flex flex-col items-center justify-center h-full p-8 hidden">
-                    <i data-lucide="languages" class="w-12 h-12 text-[#D4AF37] mb-4 opacity-80"></i>
-                    <p class="font-cinzel text-lg text-white mb-2 uppercase tracking-wide text-center">Múltiples Traducciones Detectadas</p>
-                    <p class="text-sm text-gray-400 font-serif mb-6 text-center">Selecciona la edición que deseas cargar en paralelo:</p>
-                    <div id="trans-search-results" class="w-full max-w-xl space-y-3 overflow-y-auto max-h-[60vh] pr-2"></div>
-                </div>
-                <div id="trans-content" class="reading-text font-serif pb-32 hidden w-full relative">
-                    <button onclick="forceTranslationSearch()" class="absolute top-4 right-4 bg-[#1A1A1A] border border-[#333] text-gray-400 hover:text-[#D4AF37] p-2 rounded transition z-10" title="Buscar otra traducción"><i data-lucide="search" class="w-4 h-4"></i></button>
-                    <div id="trans-inner-content"></div>
-                </div>
+                <div id="trans-content" class="w-full h-full pb-10 hidden"></div>
             </div>
         </div>
         
         <div id="right-backdrop" onclick="closeRightPanel()"></div>
     </main>
 
-    <!-- PANEL DERECHO: ORACULUM Y ESTADÍSTICAS -->
     <aside id="sidebar-right">
         <div class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0">
             <h3 id="right-panel-title" class="font-cinzel text-[#D4AF37] font-bold uppercase tracking-widest text-sm">Oraculum</h3>
-            <button onclick="closeRightPanel()" class="text-gray-400 hover:text-white p-2 rounded-md hover:bg-[#333] transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="closeRightPanel()" class="text-gray-400 hover:text-white p-2 rounded-md hover:bg-[#333] transition" title="Cerrar Panel"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
         <div id="panel-oraculum" class="flex-1 overflow-y-auto p-6 hidden-panel">
             <div class="text-center border-b border-[#333] pb-6 mb-6" id="ora-intro">
                 <i data-lucide="microscope" class="w-12 h-12 text-gray-600 mx-auto mb-4 opacity-50"></i>
-                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del texto original. Conexión directa y deduplicada con Perseus.</p>
+                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del texto original. El oráculo consultará la base de datos de la Universidad de Tufts.</p>
             </div>
 
             <div id="ora-loading" class="hidden flex flex-col items-center py-12">
-                <div class="loader-ring transform scale-50 mb-2 border-[#D4AF37]"><div></div><div></div><div></div><div></div></div>
-                <span class="font-cinzel text-xs text-[#D4AF37] tracking-widest uppercase animate-pulse mt-4">Analizando...</span>
+                <div class="spinner mb-4 border-gray-600 border-l-[#D4AF37] w-10 h-10 border-4"></div>
+                <span class="font-cinzel text-xs text-[#D4AF37] tracking-widest uppercase animate-pulse">Analizando Morfología...</span>
             </div>
 
             <div id="ora-result" class="hidden">
                 <div class="text-center mb-6">
-                    <h2 id="ora-word" class="font-greek text-4xl font-bold text-white mb-2 tracking-tight break-words">palabra</h2>
+                    <h2 id="ora-word" class="font-greek text-5xl font-bold text-white mb-2 tracking-tight">palabra</h2>
                     <p id="ora-lemma" class="font-serif text-xl text-[#D4AF37] italic border-b border-[#333] pb-4 inline-block px-4">lema</p>
                 </div>
                 <div class="bg-[#111] border border-[#333] rounded-lg p-5 mb-6 shadow-inner">
-                    <h4 class="font-cinzel text-[10px] text-gray-500 uppercase tracking-widest mb-4 border-b border-[#333] pb-2 flex items-center gap-2"><i data-lucide="layers" class="w-4 h-4"></i> Análisis Morfológico Único</h4>
+                    <h4 class="font-cinzel text-[10px] text-gray-500 uppercase tracking-widest mb-4 border-b border-[#333] pb-2 flex items-center gap-2"><i data-lucide="layers" class="w-4 h-4"></i> Análisis Gramatical</h4>
                     <div id="ora-morph" class="font-serif text-gray-300 space-y-3 text-sm leading-relaxed"></div>
                 </div>
                 <div class="space-y-3 mt-8">
                     <h4 class="font-cinzel text-[10px] text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="book-open" class="w-4 h-4"></i> Diccionarios Oficiales</h4>
-                    <a id="btn-logeion" href="#" target="_blank" class="w-full py-3 bg-[#8B2323] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#6A1A1A] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Logeion (Chicago)</a>
-                    <a id="btn-perseus" href="#" target="_blank" class="w-full py-3 bg-[#1e3a8a] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#1e40af] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Perseus (Tufts)</a>
+                    <a id="btn-logeion" href="#" target="_blank" class="hidden w-full py-3 bg-[#8B2323] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#6A1A1A] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Logeion (Chicago)</a>
+                    <a id="btn-perseus" href="#" target="_blank" class="hidden w-full py-3 bg-[#1e3a8a] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#1e40af] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Perseus (Tufts)</a>
                 </div>
             </div>
             
             <div id="ora-error" class="hidden text-center py-10">
                 <i data-lucide="alert-circle" class="w-12 h-12 text-red-500/80 mx-auto mb-4"></i>
-                <p class="font-serif text-lg text-gray-300 mb-1">Forma no registrada</p>
-                <p class="font-serif text-sm text-gray-500 mb-8">Usa los botones inferiores para forzar la búsqueda en los diccionarios base.</p>
+                <p class="font-serif text-lg text-gray-300 mb-1">Palabra no identificada</p>
+                <p class="font-serif text-sm text-gray-500 mb-8">El servicio de Perseids no reconoce esta forma exacta. Utiliza los enlaces inferiores para realizar una búsqueda manual en los diccionarios.</p>
                 <div id="fallback-links" class="mt-4 space-y-3 border-t border-[#333] pt-6"></div>
             </div>
         </div>
@@ -240,8 +223,8 @@
                 <h3 class="font-cinzel text-white text-lg flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-[#D4AF37]"></i> Frecuencia Léxica</h3>
                 <button onclick="generateStats()" class="p-2 bg-[#D4AF37] text-black rounded hover:bg-yellow-500 transition shadow" title="Recalcular"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
             </div>
-            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de palabras usadas en este fragmento.</p>
-            <div id="stats-loading" class="hidden text-center py-12"><div class="loader-ring transform scale-50 border-[#D4AF37]"><div></div><div></div><div></div><div></div></div></div>
+            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de palabras en este fragmento. Conservando la acentuación original.</p>
+            <div id="stats-loading" class="hidden text-center py-12"><div class="spinner mx-auto border-gray-600 border-l-[#D4AF37] w-8 h-8"></div></div>
             <div id="stats-list" class="space-y-2"></div>
         </div>
     </aside>
@@ -249,190 +232,197 @@
     <div id="toast-container"></div>
 
     <script>
+        const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
+
         const STATE = {
-            lang: 'la', currentBook: null, bilingual: false, scansioActive: false,
-            abortController: null, lastClickedWord: null, retryParams: null,
-            audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 }
+            lang: 'la', work: null, bilingual: false,
+            audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
+            lastClickedWord: null, retryParams: null
         };
 
-        const generateBooks = (count, format, exactBase, esBase) => {
+        const generateBooks = (prefix, count, romanFormat, pathBase, esPathBase, skipNums = []) => {
             const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
             const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
-            let books = [];
+            let list = [];
             for(let i=0; i<count; i++) {
-                let num = format === "Roman" ? roman[i] : (format === "Greek" ? greek[i] : (i+1));
-                let label = format === "Greek" ? "Canto" : "Liber";
-                books.push({ 
-                    title: `${label} ${num}`, 
-                    num: num, 
-                    arabic: i+1,
-                    pathLa: exactBase ? `${exactBase}${num}` : null,
-                    pathEs: esBase ? `${esBase}${i+1}` : null
+                if(skipNums.includes(i+1)) continue;
+                let suffix = romanFormat === "Roman" ? roman[i] : (romanFormat === "Greek" ? greek[i] : (i+1));
+                
+                let esSuffix = suffix;
+                if (esPathBase && esPathBase.includes("La_Eneida")) esSuffix = (i+1);
+                
+                list.push({
+                    title: `${prefix} ${suffix}`, 
+                    path: pathBase ? `${pathBase}${suffix}` : null,
+                    esPath: esPathBase ? (esPathBase.endsWith("_") ? `${esPathBase}${i+1}` : `${esPathBase}${suffix}`) : null
                 });
             }
-            return books;
+            return list;
         };
 
-        // CATÁLOGO DINÁMICO: 40 AUTORES
-        // Si fallan las rutas hardcodeadas, saltará automáticamente al motor de búsqueda.
         const CATALOG = {
             latin: [
-                { author: "Vergilius", esAuthor: "Virgilio", works: [
-                    { title: "Aeneis", esTitle: "Eneida", books: generateBooks(12, "Roman", "Aeneis/Liber_", "La_Eneida_(Ochoa)/Libro_") },
-                    { title: "Bucolica", esTitle: "Bucólicas", books: generateBooks(10, "Roman", "Bucolica_(Vergilius)/Ecloga_", "Bucólicas_(Ochoa)/Égloga_") },
-                    { title: "Georgica", esTitle: "Geórgicas", books: generateBooks(4, "Roman", "Georgica/Liber_", "Las_Geórgicas_(Ochoa)/Libro_") }
+                { author: "Vergilius", works: [
+                    { baseTitle: "Aeneis", books: generateBooks("Liber", 12, "Roman", "Aeneis/Liber_", "La_Eneida/Libro_") },
+                    { baseTitle: "Bucolica", books: [{ title: "Omnia", path: "Bucolica", esPath: "Bucólicas" }] },
+                    { baseTitle: "Georgica", books: generateBooks("Liber", 4, "Roman", "Georgica/Liber_") }
                 ]},
-                { author: "Ovidius", esAuthor: "Ovidio", works: [
-                    { title: "Metamorphoses", esTitle: "Metamorfosis", books: generateBooks(15, "Roman", "Metamorphoses_(Ovidius)/Liber_", "Las_metamorfosis_(Ovidio)/Libro_") },
-                    { title: "Ars Amatoria", esTitle: "Arte de amar", books: generateBooks(3, "Roman", "Ars_amatoria/Liber_", null) },
-                    { title: "Tristia", esTitle: "Tristes", books: generateBooks(5, "Roman", "Tristia/Liber_", null) }
+                { author: "Ovidius", works: [
+                    { baseTitle: "Metamorphoses", books: generateBooks("Liber", 15, "Roman", "Metamorphoses_(Ovidius)/Liber_", "Las_metamorfosis/Libro_") },
+                    { baseTitle: "Ars Amatoria", books: generateBooks("Liber", 3, "Roman", "Ars_amatoria/Liber_") },
+                    { baseTitle: "Tristia", books: generateBooks("Liber", 3, "Roman", "Tristia/Liber_") }
                 ]},
-                { author: "Cicero", esAuthor: "Cicerón", works: [
-                    { title: "In Catilinam", esTitle: "Catilinarias", books: generateBooks(4, "Roman", "In_Catilinam_oratio_", "Catilinarias/Oración_") },
-                    { title: "De Amicitia", esTitle: "De Amicitia", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Laelius_de_amicitia", pathEs: "Laelio,_ó_De_la_amistad"}] },
-                    { title: "De Senectute", esTitle: "De Senectute", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Cato_Maior_de_senectute", pathEs: "Cato_Maior,_ó_De_la_vejez"}] }
+                { author: "Cicero", works: [
+                    { baseTitle: "In Catilinam", books: [
+                        { title: "Oratio I", path: "In_Catilinam_oratio_I", esPath: "Catilinarias/Oración_I" },
+                        { title: "Oratio II", path: "In_Catilinam_oratio_II", esPath: "Catilinarias/Oración_II" },
+                        { title: "Oratio III", path: "In_Catilinam_oratio_III", esPath: "Catilinarias/Oración_III" },
+                        { title: "Oratio IV", path: "In_Catilinam_oratio_IV", esPath: "Catilinarias/Oración_IV" }
+                    ]},
+                    { baseTitle: "De Amicitia", books: [{ title: "Omnia", path: "Laelius_de_amicitia" }] },
+                    { baseTitle: "De Senectute", books: [{ title: "Omnia", path: "Cato_Maior_de_senectute" }] }
                 ]},
-                { author: "Caesar", esAuthor: "Julio César", works: [
-                    { title: "De Bello Gallico", esTitle: "Guerra de las Galias", books: generateBooks(8, "Roman", "Commentarii_de_bello_Gallico/Liber_", "Comentarios_a_la_guerra_de_las_Galias:_Libro_") },
-                    { title: "De Bello Civili", esTitle: "Guerra Civil", books: generateBooks(3, "Roman", "Commentarii_de_bello_civili/Liber_", "Comentarios_a_la_guerra_civil:_Libro_") }
+                { author: "Caesar", works: [
+                    { baseTitle: "De Bello Gallico", books: generateBooks("Liber", 8, "Roman", "Commentarii_de_bello_Gallico/Liber_", "Comentarios_a_la_guerra_de_las_Galias:_Libro_") },
+                    { baseTitle: "De Bello Civili", books: generateBooks("Liber", 3, "Roman", "Commentarii_de_bello_civili/Liber_") }
                 ]},
-                { author: "Seneca", esAuthor: "Séneca", works: [
-                    { title: "Epistulae Morales", esTitle: "Cartas a Lucilio", books: generateBooks(20, "Roman", "Epistulae_morales_ad_Lucilium/Liber_", null) },
-                    { title: "De Brevitate Vitae", esTitle: "De la brevedad de la vida", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "De_brevitate_vitae", pathEs: "De_la_brevedad_de_la_vida"}] },
-                    { title: "De Ira", esTitle: "De la ira", books: generateBooks(3, "Roman", "De_ira/Liber_", null) }
+                { author: "Seneca", works: [
+                    { baseTitle: "Epistulae Morales", books: generateBooks("Liber", 20, "Roman", "Epistulae_morales_ad_Lucilium/Liber_") },
+                    { baseTitle: "De Brevitate Vitae", books: [{ title: "Omnia", path: "De_brevitate_vitae", esPath: "De_la_brevedad_de_la_vida" }] },
+                    { baseTitle: "De Ira", books: [{ title: "Omnia", path: "De_ira" }] }
                 ]},
-                { author: "Catullus", esAuthor: "Catulo", works: [
-                    { title: "Carmina", esTitle: "Poemas", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Carmina_(Catullus)", pathEs: null}] }
+                { author: "Catullus", works: [
+                    { baseTitle: "Carmina", books: [{ title: "Omnia", path: "Carmina_(Catullus)" }] }
                 ]},
-                { author: "Plautus", esAuthor: "Plauto", works: [
-                    { title: "Aulularia", esTitle: "Aulularia", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Aulularia", pathEs: "Aulularia"}] },
-                    { title: "Miles Gloriosus", esTitle: "El soldado fanfarrón", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Miles_gloriosus", pathEs: "El_soldado_fanfarrón"}] }
+                { author: "Plautus", works: [
+                    { baseTitle: "Aulularia", books: [{ title: "Omnia", path: "Aulularia" }] },
+                    { baseTitle: "Miles Gloriosus", books: [{ title: "Omnia", path: "Miles_gloriosus" }] }
                 ]},
-                { author: "Horatius", esAuthor: "Horacio", works: [
-                    { title: "Carmina (Odae)", esTitle: "Odas", books: generateBooks(4, "Roman", "Carmina_(Horatius)/Liber_", null) },
-                    { title: "Ars Poetica", esTitle: "Arte poética", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Ars_poetica", pathEs: null}] }
+                { author: "Horatius", works: [
+                    { baseTitle: "Carmina (Odae)", books: generateBooks("Liber", 4, "Roman", "Carmina_(Horatius)/Liber_") },
+                    { baseTitle: "Ars Poetica", books: [{ title: "Omnia", path: "Ars_poetica" }] }
                 ]},
-                { author: "Tacitus", esAuthor: "Tácito", works: [
-                    { title: "Annales", esTitle: "Anales", books: generateBooks(6, "Roman", "Annales_(Tacitus)/Liber_", null) },
-                    { title: "Germania", esTitle: "Germania", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "De_origine_et_situ_Germanorum", pathEs: null}] }
+                { author: "Tacitus", works: [
+                    { baseTitle: "Annales", books: generateBooks("Liber", 6, "Roman", "Annales_(Tacitus)/Liber_") },
+                    { baseTitle: "Germania", books: [{ title: "Omnia", path: "De_origine_et_situ_Germanorum" }] }
                 ]},
-                { author: "Livius", esAuthor: "Tito Livio", works: [
-                    { title: "Ab Urbe Condita", esTitle: "Historia de Roma", books: generateBooks(10, "Roman", "Ab_urbe_condita/Liber_", null) } 
+                { author: "Livius", works: [
+                    { baseTitle: "Ab Urbe Condita", books: generateBooks("Liber", 10, "Roman", "Ab_urbe_condita/Liber_") }
                 ]},
-                { author: "Lucretius", esAuthor: "Lucrecio", works: [
-                    { title: "De Rerum Natura", esTitle: "De la naturaleza de las cosas", books: generateBooks(6, "Roman", "De_rerum_natura/Liber_", "De_la_naturaleza_de_las_cosas:_Libro_") }
+                { author: "Lucretius", works: [
+                    { baseTitle: "De Rerum Natura", books: generateBooks("Liber", 6, "Roman", "De_rerum_natura/Liber_") }
                 ]},
-                { author: "Martialis", esAuthor: "Marcial", works: [
-                    { title: "Epigrammata", esTitle: "Epigramas", books: generateBooks(14, "Roman", "Epigrammata_(Martialis)/Liber_", null) }
+                { author: "Martialis", works: [
+                    { baseTitle: "Epigrammata", books: generateBooks("Liber", 14, "Roman", "Epigrammata_(Martialis)/Liber_") }
                 ]},
-                { author: "Propertius", esAuthor: "Propercio", works: [
-                    { title: "Elegiae", esTitle: "Elegías", books: generateBooks(4, "Roman", "Elegiae_(Propertius)/Liber_", null) }
+                { author: "Propertius", works: [
+                    { baseTitle: "Elegiae", books: generateBooks("Liber", 4, "Roman", "Elegiae_(Propertius)/Liber_") }
                 ]},
-                { author: "Quintilianus", esAuthor: "Quintiliano", works: [
-                    { title: "Institutio Oratoria", esTitle: "Instituciones oratorias", books: generateBooks(12, "Roman", "Institutio_Oratoria/Liber_", null) }
+                { author: "Quintilianus", works: [
+                    { baseTitle: "Institutio Oratoria", books: generateBooks("Liber", 12, "Roman", "Institutio_Oratoria/Liber_") }
                 ]},
-                { author: "Sallustius", esAuthor: "Salustio", works: [
-                    { title: "De Catilinae coniuratione", esTitle: "Conjuración de Catilina", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "De_Catilinae_coniuratione", pathEs: "Conjuración_de_Catilina"}] },
-                    { title: "Bellum Iugurthinum", esTitle: "Guerra de Jugurta", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Bellum_Iugurthinum", pathEs: "Guerra_de_Jugurta"}] }
+                { author: "Sallustius", works: [
+                    { baseTitle: "De Catilinae coniuratione", books: [{ title: "Omnia", path: "De_Catilinae_coniuratione" }] },
+                    { baseTitle: "Bellum Iugurthinum", books: [{ title: "Omnia", path: "Bellum_Iugurthinum" }] }
                 ]},
-                { author: "Suetonius", esAuthor: "Suetonio", works: [
-                    { title: "De vita Caesarum", esTitle: "Vida de los doce césares", books: generateBooks(8, "Roman", "De_vita_Caesarum/Liber_", "Los_doce_césares:_Libro_") }
+                { author: "Suetonius", works: [
+                    { baseTitle: "De vita Caesarum", books: generateBooks("Liber", 8, "Roman", "De_vita_Caesarum/Liber_") }
                 ]},
-                { author: "Terentius", esAuthor: "Terencio", works: [
-                    { title: "Andria", esTitle: "Andria", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Andria", pathEs: null}] },
-                    { title: "Eunuchus", esTitle: "Eunuco", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Eunuchus", pathEs: null}] }
+                { author: "Terentius", works: [
+                    { baseTitle: "Andria", books: [{ title: "Omnia", path: "Andria" }] },
+                    { baseTitle: "Eunuchus", books: [{ title: "Omnia", path: "Eunuchus" }] }
                 ]},
-                { author: "Tibullus", esAuthor: "Tibulo", works: [
-                    { title: "Elegiae", esTitle: "Elegías", books: generateBooks(3, "Roman", "Elegiae_(Tibullus)/Liber_", null) }
+                { author: "Tibullus", works: [
+                    { baseTitle: "Elegiae", books: generateBooks("Liber", 3, "Roman", "Elegiae_(Tibullus)/Liber_") }
                 ]},
-                { author: "Apuleius", esAuthor: "Apuleyo", works: [
-                    { title: "Metamorphoses", esTitle: "El asno de oro", books: generateBooks(11, "Roman", "Metamorphoses_(Apuleius)/Liber_", null) }
+                { author: "Apuleius", works: [
+                    { baseTitle: "Metamorphoses", books: generateBooks("Liber", 11, "Roman", "Metamorphoses_(Apuleius)/Liber_") }
                 ]},
-                { author: "Plinius Minor", esAuthor: "Plinio el Joven", works: [
-                    { title: "Epistulae", esTitle: "Cartas", books: generateBooks(10, "Roman", "Epistulae_(Plinius_Minor)/Liber_", null) }
+                { author: "Plinius Minor", works: [
+                    { baseTitle: "Epistulae", books: generateBooks("Liber", 10, "Roman", "Epistulae_(Plinius_Minor)/Liber_") }
                 ]}
             ],
             greek: [
-                { author: "Homerus", esAuthor: "Homero", works: [
-                    { title: "Ιλιάς", esTitle: "Ilíada", books: generateBooks(24, "Greek", "Ιλιάς/", "La_Ilíada:_Canto_") },
-                    { title: "Οδύσσεια", esTitle: "Odisea", books: generateBooks(24, "Greek", "Οδύσσεια/", "La_Odisea:_Canto_") }
+                { author: "Homerus", works: [
+                    { baseTitle: "Ιλιάς (Iliada)", books: generateBooks("Canto", 24, "Greek", "Ιλιάς/", "Ilíada/Canto_") },
+                    { baseTitle: "Οδύσσεια (Odisea)", books: generateBooks("Canto", 24, "Greek", "Οδύσσεια/", "Odisea/Canto_") }
                 ]},
-                { author: "Plato", esAuthor: "Platón", works: [
-                    { title: "Apologia Socratis", esTitle: "Apología de Sócrates", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Απολογία_Σωκράτους", pathEs: "Apología_de_Sócrates_(Platón)"}] },
-                    { title: "Symposium", esTitle: "El Banquete", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Συμπόσιον_(Πλάτων)", pathEs: "El_Banquete_(Platón)"}] },
-                    { title: "Res Publica", esTitle: "República", books: generateBooks(10, "Greek", "Πολιτεία/", "La_república:_Libro_") }
+                { author: "Plato", works: [
+                    { baseTitle: "Apologia Socratis", books: [{ title: "Omnia", path: "Απολογία_Σωκράτους", esPath: "Apología_de_Sócrates_(Platón)" }] },
+                    { baseTitle: "Symposium", books: [{ title: "Omnia", path: "Συμπόσιον_(Πλάτων)", esPath: "El_Banquete_(Platón)" }] },
+                    { baseTitle: "Res Publica (Politeia)", books: generateBooks("Liber", 10, "Greek", "Πολιτεία/") }
                 ]},
-                { author: "Sophocles", esAuthor: "Sófocles", works: [
-                    { title: "Oedipus Rex", esTitle: "Edipo rey", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Οιδίπους_Τύραννος", pathEs: "Edipo_rey"}] },
-                    { title: "Antigone", esTitle: "Antígona", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Αντιγόνη", pathEs: "Antígona_(Sófocles)"}] },
-                    { title: "Ajax", esTitle: "Áyax", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Αίας", pathEs: "Áyax"}] }
+                { author: "Sophocles", works: [
+                    { baseTitle: "Oedipus Rex", books: [{ title: "Omnia", path: "Οιδίπους_Τύραννος", esPath: "Edipo_rey" }] },
+                    { baseTitle: "Antigone", books: [{ title: "Omnia", path: "Αντιγόνη", esPath: "Antígona_(Sófocles)" }] },
+                    { baseTitle: "Ajax", books: [{ title: "Omnia", path: "Αίας", esPath: "Áyax" }] }
                 ]},
-                { author: "Euripides", esAuthor: "Eurípides", works: [
-                    { title: "Medea", esTitle: "Medea", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Μήδεια_(Ευριπίδη)", pathEs: "Medea"}] },
-                    { title: "Bacchae", esTitle: "Las bacantes", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Βάκχαι", pathEs: null}] }
+                { author: "Euripides", works: [
+                    { baseTitle: "Medea", books: [{ title: "Omnia", path: "Μήδεια_(Ευριπίδη)", esPath: "Medea" }] },
+                    { baseTitle: "Bacchae", books: [{ title: "Omnia", path: "Βάκχαι" }] }
                 ]},
-                { author: "Herodotus", esAuthor: "Heródoto", works: [
-                    { title: "Historiae", esTitle: "Historia", books: generateBooks(9, "Roman", "Ιστορίαι_(Ηροδότου)/", "Los_nueve_libros_de_la_Historia:_Libro_") }
+                { author: "Herodotus", works: [
+                    { baseTitle: "Historiae", books: generateBooks("Liber", 9, "Roman", "Ιστορίαι_(Ηροδότου)/") }
                 ]},
-                { author: "Thucydides", esAuthor: "Tucídides", works: [
-                    { title: "Historia Belli Peloponnesiaci", esTitle: "Guerra del Peloponeso", books: generateBooks(8, "Roman", "Ιστορία_του_Πελοποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
+                { author: "Thucydides", works: [
+                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πελοποννησιακού_Πολέμου/") }
                 ]},
-                { author: "Aristoteles", esAuthor: "Aristóteles", works: [
-                    { title: "Ethica Nicomachea", esTitle: "Ética a Nicómaco", books: generateBooks(10, "Greek", "Ηθικά_Νικομάχεια/", "Moral_a_Nicómaco:_Libro_") },
-                    { title: "Poetica", esTitle: "Poética", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Περί_ποιητικής", pathEs: "El_arte_poética_(Aristóteles)"}] },
-                    { title: "Politica", esTitle: "Política", books: generateBooks(8, "Greek", "Πολιτικά/", "La_Política:_Libro_") }
+                { author: "Aristoteles", works: [
+                    { baseTitle: "Ethica Nicomachea", books: generateBooks("Liber", 10, "Greek", "Ηθικά_Νικομάχεια/") },
+                    { baseTitle: "Poetica", books: [{ title: "Omnia", path: "Περί_ποιητικής" }] },
+                    { baseTitle: "Politica", books: generateBooks("Liber", 8, "Greek", "Πολιτικά/") }
                 ]},
-                { author: "Aeschylus", esAuthor: "Esquilo", works: [
-                    { title: "Prometheus Vinctus", esTitle: "Prometeo encadenado", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Προμηθεύς_Δεσμώτης", pathEs: "Prometeo_encadenado"}] },
-                    { title: "Agamemnon", esTitle: "Agamenón", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Αγαμέμνων", pathEs: "Agamenón"}] }
+                { author: "Aeschylus", works: [
+                    { baseTitle: "Prometheus Vinctus", books: [{ title: "Omnia", path: "Προμηθεύς_Δεσμώτης", esPath: "Prometeo_encadenado" }] },
+                    { baseTitle: "Agamemnon", books: [{ title: "Omnia", path: "Αγαμέμνων", esPath: "Agamenón" }] }
                 ]},
-                { author: "Aristophanes", esAuthor: "Aristófanes", works: [
-                    { title: "Nubes", esTitle: "Las nubes", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Νεφέλαι", pathEs: "Las_nubes"}] },
-                    { title: "Ranae", esTitle: "Las ranas", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Βάτραχοι", pathEs: "Las_ranas"}] },
-                    { title: "Lysistrata", esTitle: "Lisístrata", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Λυσιστράτη", pathEs: "Lisístrata"}] }
+                { author: "Aristophanes", works: [
+                    { baseTitle: "Nubes", books: [{ title: "Omnia", path: "Νεφέλαι" }] },
+                    { baseTitle: "Ranae", books: [{ title: "Omnia", path: "Βάτραχοι" }] },
+                    { baseTitle: "Lysistrata", books: [{ title: "Omnia", path: "Λυσιστράτη" }] }
                 ]},
-                { author: "Pindarus", esAuthor: "Píndaro", works: [
-                    { title: "Olympia", esTitle: "Olímpicas", books: generateBooks(14, "Roman", "Ολυμπιόνικοι/", null) },
-                    { title: "Pythia", esTitle: "Píticas", books: generateBooks(12, "Roman", "Πυθιόνικοι/", null) }
+                { author: "Pindarus", works: [
+                    { baseTitle: "Olympia", books: generateBooks("Oda", 14, "Roman", "Ολυμπιόνικοι/") },
+                    { baseTitle: "Pythia", books: generateBooks("Oda", 12, "Roman", "Πυθιόνικοι/") }
                 ]},
-                { author: "Hesiodus", esAuthor: "Hesíodo", works: [
-                    { title: "Theogonia", esTitle: "Teogonía", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Θεογονία", pathEs: "Teogonía"}] },
-                    { title: "Opera et Dies", esTitle: "Trabajos y días", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Έργα_και_Ημέραι", pathEs: "Los_trabajos_y_los_días"}] }
+                { author: "Hesiodus", works: [
+                    { baseTitle: "Theogonia", books: [{ title: "Omnia", path: "Θεογονία" }] },
+                    { baseTitle: "Opera et Dies", books: [{ title: "Omnia", path: "Έργα_και_Ημέραι" }] }
                 ]},
-                { author: "Xenophon", esAuthor: "Jenofonte", works: [
-                    { title: "Anabasis", esTitle: "Anábasis", books: generateBooks(7, "Greek", "Κύρου_Ανάβασις/", null) }
+                { author: "Xenophon", works: [
+                    { baseTitle: "Anabasis", books: generateBooks("Liber", 7, "Greek", "Κύρου_Ανάβασις/") }
                 ]},
-                { author: "Plutarchus", esAuthor: "Plutarco", works: [
-                    { title: "Vitae Parallelae", esTitle: "Vidas paralelas", books: [{ title: "Alexander", num: "Alex", arabic: 1, pathLa: "Βίοι_Παράλληλοι/Αλέξανδρος" }, { title: "Caesar", num: "Caes", arabic: 2, pathLa: "Βίοι_Παράλληλοι/Καίσαρ" }] }
+                { author: "Plutarchus", works: [
+                    { baseTitle: "Vitae Parallelae", books: [{ title: "Alexander", path: "Βίοι_Παράλληλοι/Αλέξανδρος" }, { title: "Caesar", path: "Βίοι_Παράλληλοι/Καίσαρ" }] }
                 ]},
-                { author: "Demosthenes", esAuthor: "Demóstenes", works: [
-                    { title: "Philippicae", esTitle: "Filípicas", books: generateBooks(3, "Roman", "Κατά_Φιλίππου_", null) }
+                { author: "Demosthenes", works: [
+                    { baseTitle: "Philippicae", books: generateBooks("Oratio", 3, "Roman", "Κατά_Φιλίππου_") }
                 ]},
-                { author: "Isocrates", esAuthor: "Isócrates", works: [
-                    { title: "Panegyricus", esTitle: "Panegírico", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Πανηγυρικός", pathEs: null}] }
+                { author: "Isocrates", works: [
+                    { baseTitle: "Panegyricus", books: [{ title: "Omnia", path: "Πανηγυρικός" }] }
                 ]},
-                { author: "Lysias", esAuthor: "Lisias", works: [
-                    { title: "Contra Eratosthenem", esTitle: "Contra Eratóstenes", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Κατά_Ερατοσθένους", pathEs: null}] }
+                { author: "Lysias", works: [
+                    { baseTitle: "Contra Eratosthenem", books: [{ title: "Omnia", path: "Κατά_Ερατοσθένους" }] }
                 ]},
-                { author: "Lucianus", esAuthor: "Luciano", works: [
-                    { title: "Vera Historia", esTitle: "Historia Verdadera", books: generateBooks(2, "Greek", "Αληθής_Ιστορία/", null) }
+                { author: "Lucianus", works: [
+                    { baseTitle: "Vera Historia", books: generateBooks("Liber", 2, "Greek", "Αληθής_Ιστορία/") }
                 ]},
-                { author: "Epictetus", esAuthor: "Epicteto", works: [
-                    { title: "Enchiridion", esTitle: "Manual de Epicteto", books: [{title: "Omnia", num: "", arabic: 1, pathLa: "Εγχειρίδιον_Επικτήτου", pathEs: "Manual_de_Epicteto"}] }
+                { author: "Epictetus", works: [
+                    { baseTitle: "Enchiridion", books: [{ title: "Omnia", path: "Εγχειρίδιον_Επικτήτου" }] }
                 ]},
-                { author: "Polybius", esAuthor: "Polibio", works: [
-                    { title: "Historiae", esTitle: "Historias", books: generateBooks(5, "Roman", "Ιστορίαι_(Πολύβιος)/", null) }
+                { author: "Polybius", works: [
+                    { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
-                { author: "Callimachus", esAuthor: "Calímaco", works: [
-                    { title: "Hymni", esTitle: "Himnos", books: [{ title: "In Iovem", num: "1", arabic: 1, pathLa: "Ύμνοι/Εις_Δία" }, { title: "In Apollinem", num: "2", arabic: 2, pathLa: "Ύμνοι/Εις_Απόλλωνα" }] }
+                { author: "Callimachus", works: [
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", path: "Ύμνοι/Εις_Δία" }, { title: "In Apollinem", path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
 
         window.onload = function() {
             lucide.createIcons();
-            renderCatalog('latin');
-            renderCatalog('greek');
+            renderNestedCatalog('latin');
+            renderNestedCatalog('greek');
             if (speechSynthesis.onvoiceschanged !== undefined) {
                 speechSynthesis.onvoiceschanged = () => { STATE.audio.synth.getVoices(); };
             }
@@ -454,25 +444,41 @@
             document.getElementById('list-latin').classList.toggle('hidden', lang !== 'latin');
             document.getElementById('list-greek').classList.toggle('hidden', lang !== 'greek');
             STATE.lang = lang === 'latin' ? 'la' : 'grc';
-            filterLibrary();
+            filterLibrary(); 
         }
 
         function toggleAccordion(btn) { btn.parentElement.classList.toggle('open'); }
+        function toggleSubAccordion(btn) { btn.parentElement.classList.toggle('open'); }
         function toggleSidebarLeft() { document.getElementById('sidebar-left').classList.toggle('collapsed'); }
 
-        function renderCatalog(lang) {
+        function renderNestedCatalog(lang) {
             const list = document.getElementById(`list-${lang}`);
             let html = '';
             CATALOG[lang].forEach((authorNode, aIndex) => {
-                html += `<div class="mb-1 author-block"><button onclick="toggleAccordion(this)" class="w-full text-left px-3 py-2.5 rounded hover:bg-[#262626] flex items-center justify-between transition group"><span class="font-cinzel text-sm text-gray-200 font-bold">${authorNode.author}</span><i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-gray-500"></i></button><div class="accordion-content pl-4 pr-2 py-1 space-y-1 border-l border-[#333] ml-3 mt-1">`;
-                authorNode.works.forEach((workNode, wIndex) => {
-                    html += `<div class="work-block"><button onclick="toggleAccordion(this)" class="w-full text-left px-3 py-2 rounded text-sm font-serif text-gray-300 hover:text-white hover:bg-[#333] transition flex justify-between items-center group">${workNode.title}<i data-lucide="chevron-down" class="sub-accordion-icon w-3 h-3 text-gray-600"></i></button><div class="accordion-content pl-4 space-y-1 border-l border-[#444] ml-2 mt-1">`;
-                    workNode.books.forEach((b, bIndex) => {
-                        html += `<button onclick="initiateLoadOriginal('${lang}', ${aIndex}, ${wIndex}, ${bIndex})" class="w-full text-left px-3 py-1.5 rounded text-xs font-serif text-gray-400 hover:text-white hover:bg-[#444] transition truncate">${b.title}</button>`;
-                    });
-                    html += `</div></div>`;
-                });
-                html += `</div></div>`;
+                html += `
+                <div class="mb-1 author-block" data-author="${authorNode.author.toLowerCase()}">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-3 py-2.5 rounded hover:bg-[#262626] flex items-center justify-between transition group">
+                        <span class="font-cinzel text-sm text-gray-200 font-bold">${authorNode.author}</span>
+                        <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-gray-500"></i>
+                    </button>
+                    <div class="accordion-content pl-4 pr-2 py-1 space-y-1 border-l border-[#333] ml-3 mt-1">
+                        ${authorNode.works.map((workNode, wIndex) => `
+                            <div class="work-block">
+                                <button onclick="toggleSubAccordion(this)" class="w-full text-left px-3 py-2 rounded text-sm font-serif text-gray-300 hover:text-white hover:bg-[#333] transition flex justify-between items-center group" data-title="${workNode.baseTitle.toLowerCase()}">
+                                    ${workNode.baseTitle.replace(/_/g, ' ')}
+                                    <i data-lucide="chevron-down" class="sub-accordion-icon w-3 h-3 text-gray-600"></i>
+                                </button>
+                                <div class="sub-accordion-content pl-4 space-y-1 border-l border-[#444] ml-2 mt-1">
+                                    ${workNode.books.map((b, bIndex) => `
+                                        <button onclick="loadText('${lang}', ${aIndex}, ${wIndex}, ${bIndex})" class="w-full text-left px-3 py-1.5 rounded text-xs font-serif text-gray-400 hover:text-white hover:bg-[#444] transition truncate" title="${b.title}">
+                                            ${b.title}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
             });
             list.innerHTML = html;
         }
@@ -480,123 +486,141 @@
         function filterLibrary() {
             const term = document.getElementById('search-lib').value.toLowerCase();
             const listId = STATE.lang === 'la' ? 'list-latin' : 'list-greek';
-            document.querySelectorAll(`#${listId} .author-block`).forEach(block => {
-                block.style.display = block.innerText.toLowerCase().includes(term) ? 'block' : 'none';
-            });
-        }
+            const blocks = document.querySelectorAll(`#${listId} .author-block`);
+            let hasResults = false;
 
-        // ----------------------------------------------------------------------------------
-        // EXTRACCIÓN ORIGINAL (CASCADA INTELIGENTE)
-        // ----------------------------------------------------------------------------------
-        function setUIState(state) {
-            ['loading-state', 'fetching-state', 'error-state', 'search-state'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            if(state) document.getElementById(state).classList.remove('hidden');
-        }
+            blocks.forEach(block => {
+                const authorMatch = block.dataset.author.includes(term);
+                const works = block.querySelectorAll('.work-block');
+                let hasWorkMatch = false;
 
-        async function fetchWithTimeout(url, options = {}, timeout = 8000) {
-            if (STATE.abortController) STATE.abortController.abort();
-            STATE.abortController = new AbortController();
-            const id = setTimeout(() => STATE.abortController.abort(), timeout);
-            const response = await fetch(url, { ...options, signal: STATE.abortController.signal });
-            clearTimeout(id);
-            return response;
-        }
+                works.forEach(w => {
+                    const btn = w.querySelector('button[data-title]');
+                    const workMatch = btn.dataset.title.includes(term);
+                    w.style.display = workMatch || authorMatch ? 'block' : 'none';
+                    if (workMatch) hasWorkMatch = true;
+                });
 
-        async function fetchWikisourceAPI(langPrefix, title) {
-            const url = `https://${langPrefix}.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1`;
-            const res = await fetchWithTimeout(url);
-            const data = await res.json();
-            return data.parse && data.parse.text ? data.parse.text['*'] : null;
-        }
-
-        async function initiateLoadOriginal(langCat, aIndex, wIndex, bIndex) {
-            stopAudio();
-            if (STATE.bilingual) toggleBilingual(); 
-            
-            const author = CATALOG[langCat][aIndex];
-            const work = author.works[wIndex];
-            const book = work.books[bIndex];
-            STATE.currentBook = { author, work, book, langCat };
-            STATE.lang = langCat === 'latin' ? 'la' : 'grc';
-            STATE.retryParams = {langCat, aIndex, wIndex, bIndex};
-            
-            const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
-            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.title} ${book.title}`;
-            document.getElementById('reader-tools').classList.remove('hidden');
-            document.getElementById('pane-original').innerHTML = '';
-            
-            setUIState('fetching-state');
-            document.getElementById('fetch-submsg').innerText = "Cargando ruta directa...";
-            
-            try {
-                let html = null;
-                
-                // Intento 1: Usar pathLa
-                if (book.pathLa) {
-                    html = await fetchWikisourceAPI(wikiLang, book.pathLa);
-                }
-                
-                // Intento 2: Cascada API Search
-                if (!html) {
-                    document.getElementById('fetch-submsg').innerText = "Ruta directa falló. Escaneando la biblioteca...";
-                    const searchStr = `${work.title.replace(/\(.*?\)/g, '').trim()} ${book.num}`.trim();
-                    const searchUrl = `https://${wikiLang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
-                    
-                    const sRes = await fetchWithTimeout(searchUrl);
-                    const sData = await sRes.json();
-                    
-                    if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                        const results = sData.query.search;
-                        // Si hay uno muy obvio, lo cargamos. Si no, abrimos panel.
-                        if (results.length === 1 || results[0].title.includes(book.num)) {
-                            html = await fetchWikisourceAPI(wikiLang, results[0].title);
-                        } else {
-                            setUIState('search-state');
-                            const container = document.getElementById('original-search-results');
-                            container.innerHTML = results.map(r => `<div class="search-result-card" onclick="loadSelectedOriginal('${wikiLang}', '${r.title.replace(/'/g, "\\'")}')"><h4 class="font-cinzel text-[#D4AF37] text-lg">${r.title}</h4><p class="text-xs text-gray-500 mt-1 font-serif line-clamp-2">${r.snippet.replace(/<[^>]+>/g, '')}</p></div>`).join('');
-                            return; // Salimos para que el usuario elija
-                        }
+                if (authorMatch || hasWorkMatch) {
+                    block.style.display = 'block'; hasResults = true;
+                    if (term && hasWorkMatch) {
+                        block.classList.add('open');
+                        works.forEach(w => { if(w.style.display === 'block') w.classList.add('open'); });
                     }
-                }
+                } else { block.style.display = 'none'; }
+            });
+            document.getElementById('no-results').style.display = hasResults ? 'none' : 'block';
+        }
 
-                if (!html) throw new Error("No hay texto en Wikisource.");
-                await processOriginalHTML(html);
+        function openPanel(panelId) {
+            document.getElementById('sidebar-right').classList.add('open');
+            document.getElementById('right-backdrop').classList.add('active');
+            
+            document.querySelectorAll('.hidden-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`panel-${panelId}`).classList.remove('hidden');
+            let titles = { 'oraculum': 'Oraculum Filológico', 'statistica': 'Frecuencia Léxica' };
+            document.getElementById('right-panel-title').innerText = titles[panelId];
+            
+            if(panelId === 'statistica') generateStats();
+        }
+        
+        function closeRightPanel() { 
+            document.getElementById('sidebar-right').classList.remove('open'); 
+            document.getElementById('right-backdrop').classList.remove('active');
+        }
 
-            } catch (e) {
-                if(e.name !== 'AbortError') setUIState('error-state');
+        function setFetchState(state, msg="", desc="") {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('fetching-state').classList.add('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+            if(state === 'fetching') {
+                document.getElementById('fetching-state').classList.remove('hidden');
+                if(msg) document.getElementById('fetch-msg').innerText = msg;
+            } else if (state === 'error') {
+                document.getElementById('error-state').classList.remove('hidden');
+                if(desc) document.getElementById('error-desc').innerText = desc;
             }
         }
 
-        async function loadSelectedOriginal(wikiLang, title) {
-            setUIState('fetching-state');
-            document.getElementById('fetch-submsg').innerText = "Extrayendo selección...";
+        async function fetchWikisourceAPI(lang, title) {
+            const wikiLang = lang === 'grc' ? 'el' : lang;
+            const url = `https://${wikiLang}.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1`;
             try {
-                const html = await fetchWikisourceAPI(wikiLang, title);
-                if (html) await processOriginalHTML(html);
-                else throw new Error();
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.parse && data.parse.text) return data.parse.text['*'];
+                return null;
             } catch (e) {
-                setUIState('error-state');
+                return null;
             }
         }
 
         function retryLoad() {
-            if(STATE.retryParams) initiateLoadOriginal(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
+            if(STATE.retryParams) {
+                loadText(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
+            }
         }
 
-        async function processOriginalHTML(htmlContent) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlContent, 'text/html');
-            const root = doc.body;
+        async function loadText(langCat, aIndex, wIndex, bIndex) {
+            stopAudio();
+            if(STATE.bilingual) toggleBilingual(); 
+            closeRightPanel();
             
-            const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.ws-header', '.wst-poem-header', '.ext-phonos', '.wst-navbox', 'style', 'script', 'sup.reference', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
-            garbage.forEach(sel => root.querySelectorAll(sel).forEach(e => e.remove()));
+            STATE.retryParams = {langCat, aIndex, wIndex, bIndex};
+            STATE.lang = langCat === 'latin' ? 'la' : 'grc';
+            
+            const author = CATALOG[langCat][aIndex];
+            const work = author.works[wIndex];
+            const book = work.books[bIndex];
+            STATE.work = book; 
+            
+            setFetchState('fetching', `Contactando repositorio (${STATE.lang})...`);
+            
+            document.getElementById('pane-original').innerHTML = '';
+            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title}`;
+            document.getElementById('reader-tools').classList.remove('hidden');
 
-            document.getElementById('pane-original').innerHTML = root.innerHTML;
-            setUIState(null); 
-            
-            await tokenizeSafeDOMAsync(document.getElementById('pane-original'));
-            if(STATE.scansioActive) applyScansio(true);
-            lucide.createIcons();
+            try {
+                let htmlContent = await fetchWikisourceAPI(STATE.lang, book.path);
+                
+                if (!htmlContent) {
+                    setFetchState('fetching', "Búsqueda inteligente activada...");
+                    const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
+                    const cleanBaseTitle = work.baseTitle.replace(/\s*\(.*?\)\s*/g, '').replace(/_/g, ' ');
+                    const searchStr = `${cleanBaseTitle} ${book.title}`;
+                    const searchUrl = `https://${wikiLang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
+                    try {
+                        const sRes = await fetch(searchUrl);
+                        const sData = await sRes.json();
+                        if (sData.query && sData.query.search && sData.query.search.length > 0) {
+                            htmlContent = await fetchWikisourceAPI(STATE.lang, sData.query.search[0].title);
+                        }
+                    } catch(e) {}
+                }
+
+                if (!htmlContent) throw new Error("La obra no existe o la ruta ha cambiado en Wikisource.");
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlContent, 'text/html');
+                const root = doc.body;
+                
+                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', 'table.plainlinks'];
+                garbage.forEach(sel => root.querySelectorAll(sel).forEach(e => e.remove()));
+
+                document.getElementById('pane-original').innerHTML = root.innerHTML;
+                
+                setFetchState('fetching', "Procesando filología...");
+                
+                // Función asíncrona de tokenización para evitar que la pestaña se congele
+                setTimeout(async () => {
+                    await tokenizeSafeDOMAsync(document.getElementById('pane-original'));
+                    setFetchState('done');
+                    lucide.createIcons();
+                }, 50);
+
+            } catch (error) {
+                setFetchState('error', "", error.message);
+            }
         }
 
         async function tokenizeSafeDOMAsync(element) {
@@ -605,10 +629,11 @@
             while(walker.nextNode()) textNodes.push(walker.currentNode);
 
             const splitRegex = /([ \n\t\r,;:"'«»()\[\]{}\-—\.!?;·]+)/;
-            const CHUNK_SIZE = 150; 
+            const CHUNK_SIZE = 100; 
 
             for (let i = 0; i < textNodes.length; i += CHUNK_SIZE) {
-                await new Promise(resolve => setTimeout(resolve, 0)); 
+                await new Promise(resolve => setTimeout(resolve, 10)); // Pausa mínima para que el navegador respire
+                
                 const chunk = textNodes.slice(i, i + CHUNK_SIZE);
                 chunk.forEach(node => {
                     const text = node.nodeValue;
@@ -624,10 +649,8 @@
                             const span = document.createElement('span');
                             span.className = 'word-token';
                             span.textContent = part;
-                            let clean = part.toLowerCase().replace(/[.,;:"'«»()\[\]{}\-—!?;·]/g, '').trim();
-                            if(STATE.lang === 'la') { clean = clean.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/v/g, 'u').replace(/j/g, 'i'); }
-                            span.dataset.clean = clean;
-                            span.onclick = function(e) { e.preventDefault(); analyzeWord(this.dataset.clean, this, part); };
+                            span.dataset.original = part.trim();
+                            span.onclick = function(e) { e.preventDefault(); analyzeWord(this.dataset.original, this); };
                             fragment.appendChild(span);
                         }
                     });
@@ -636,311 +659,161 @@
             }
         }
 
-        // ----------------------------------------------------------------------------------
-        // TRADUCCIONES EN CASCADA (Panel Interno de Rescate)
-        // ----------------------------------------------------------------------------------
         async function toggleBilingual() {
-            if (!STATE.currentBook) return;
-            
             STATE.bilingual = !STATE.bilingual;
             const pOrig = document.getElementById('pane-original');
             const pTrans = document.getElementById('pane-translation');
             const btn = document.getElementById('btn-bilingual');
             
             if (STATE.bilingual) {
-                btn.classList.add('text-[#D4AF37]', 'bg-[#333]');
+                btn.classList.add('text-[#D4AF37]');
                 pOrig.classList.add('half');
                 pTrans.classList.add('active');
                 
                 document.getElementById('trans-loading').classList.remove('hidden');
                 document.getElementById('trans-content').classList.add('hidden');
-                document.getElementById('trans-search-state').classList.add('hidden');
-
-                const { author, work, book } = STATE.currentBook;
                 
-                try {
-                    let html = null;
-                    // Intento 1: Ruta exacta
-                    if (book.pathEs) {
-                        html = await fetchWikisourceAPI('es', book.pathEs);
-                    }
-                    
-                    if (html) {
-                        renderTranslationHTML(html);
-                        return;
-                    }
-                    
-                    // Intento 2: Búsqueda dinámica
-                    let queryStr = `${author.esAuthor} ${work.esTitle} ${book.arabic}`;
-                    if(book.arabic === 1 && book.num === "") queryStr = `${author.esAuthor} ${work.esTitle}`;
-                    
-                    const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(queryStr)}&utf8=&format=json&origin=*`;
-                    const sRes = await fetchWithTimeout(searchUrl);
-                    const sData = await sRes.json();
-                    
-                    document.getElementById('trans-loading').classList.add('hidden');
-                    
-                    if (sData.query && sData.query.search.length > 0) {
-                        document.getElementById('trans-search-state').classList.remove('hidden');
-                        const resContainer = document.getElementById('trans-search-results');
-                        resContainer.innerHTML = sData.query.search.slice(0, 8).map(r => `
-                            <div class="search-result-card" onclick="loadSelectedTranslation('${r.title.replace(/'/g, "\\'")}')">
-                                <h4 class="font-cinzel text-[#D4AF37] text-lg">${r.title}</h4>
-                                <p class="text-xs text-gray-500 mt-1 font-serif line-clamp-2">${r.snippet.replace(/<[^>]+>/g, '')}</p>
-                            </div>
-                        `).join('');
-                    } else {
-                        throw new Error("No hay coincidencias en Wikisource ES.");
-                    }
-                } catch(e) {
-                    document.getElementById('trans-loading').classList.add('hidden');
-                    document.getElementById('trans-content').innerHTML = `
-                        <div class="flex flex-col items-center justify-center h-full text-center opacity-80 mt-20">
-                            <i data-lucide="book-x" class="w-12 h-12 mb-3 text-[#991B1B]"></i>
-                            <p class="font-cinzel text-sm uppercase tracking-widest text-[#D4AF37]">Traducción no disponible</p>
-                            <p class="font-serif text-sm mt-4 text-gray-300">No se ha localizado una versión digitalizada de este texto.</p>
-                        </div>`;
-                    document.getElementById('trans-content').classList.remove('hidden');
-                    lucide.createIcons();
-                }
+                if (STATE.work && STATE.work.esPath) {
+                    try {
+                        let htmlContent = await fetchWikisourceAPI('es', STATE.work.esPath);
+                        if (!htmlContent) {
+                            const searchStr = STATE.work.esPath.replace(/_/g, ' ');
+                            const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
+                            const sRes = await fetch(searchUrl);
+                            const sData = await sRes.json();
+                            if (sData.query && sData.query.search.length > 0) {
+                                htmlContent = await fetchWikisourceAPI('es', sData.query.search[0].title);
+                            }
+                        }
+                        if(!htmlContent) throw new Error();
+
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(htmlContent, 'text/html');
+                        const root = doc.body;
+                        
+                        root.querySelectorAll('.mw-editsection, .sidenote, .noprint, '#toc', .navbox, .infobox, table.plainlinks').forEach(e => e.remove());
+                        document.getElementById('trans-content').innerHTML = root.innerHTML;
+                        
+                        document.getElementById('trans-loading').classList.add('hidden');
+                        document.getElementById('trans-content').classList.remove('hidden');
+                        
+                    } catch(e) { showTransError("No se encontró una traducción exacta en Wikisource ES para este capítulo."); }
+                } else { showTransError("Ruta de traducción no definida en el catálogo principal."); }
             } else {
-                btn.classList.remove('text-[#D4AF37]', 'bg-[#333]');
+                btn.classList.remove('text-[#D4AF37]');
                 pOrig.classList.remove('half');
                 pTrans.classList.remove('active');
             }
         }
 
-        async function loadSelectedTranslation(title) {
-            document.getElementById('trans-search-state').classList.add('hidden');
-            document.getElementById('trans-loading').classList.remove('hidden');
-            
-            try {
-                const html = await fetchWikisourceAPI('es', title);
-                if (html) renderTranslationHTML(html);
-                else throw new Error("Página vacía");
-            } catch (e) {
-                document.getElementById('trans-loading').classList.add('hidden');
-                document.getElementById('trans-search-state').classList.remove('hidden');
-                showToast("Error al procesar la traducción.");
-            }
-        }
-
-        function renderTranslationHTML(htmlContent) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlContent, 'text/html');
-            
-            const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', 'table', '.ws-header', '.wst-poem-header', 'script', 'style', '.metadata', '.ambox', '.navbox-title'];
-            garbage.forEach(sel => doc.querySelectorAll(sel).forEach(e => e.remove()));
-            
-            document.getElementById('trans-inner-content').innerHTML = doc.body.innerHTML.replace(/&#160;/g, ' ');
+        function showTransError(msg) {
             document.getElementById('trans-loading').classList.add('hidden');
+            document.getElementById('trans-content').innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full text-center opacity-60 mt-20">
+                    <i data-lucide="book-x" class="w-12 h-12 mb-3"></i>
+                    <p class="font-cinzel text-sm uppercase tracking-widest text-[#D4AF37]">Traducción no disponible</p>
+                    <p class="font-serif text-xs mt-2 max-w-xs mx-auto">${msg}</p>
+                </div>`;
             document.getElementById('trans-content').classList.remove('hidden');
             lucide.createIcons();
         }
 
-        function forceTranslationSearch() {
-            document.getElementById('trans-content').classList.add('hidden');
-            document.getElementById('trans-search-state').classList.remove('hidden');
-        }
-
-        // ----------------------------------------------------------------------------------
-        // MÉTRICA SEGURA (POINTER EVENTS NONE)
-        // ----------------------------------------------------------------------------------
-        function toggleScansio() {
-            if (STATE.lang !== 'la') return showToast("La escansión automática solo está disponible en latín.");
-            STATE.scansioActive = !STATE.scansioActive;
-            const btn = document.getElementById('btn-scansio');
-            
-            if(STATE.scansioActive) {
-                btn.classList.add('text-[#D4AF37]', 'bg-[#333]');
-                applyScansio(true);
-            } else {
-                btn.classList.remove('text-[#D4AF37]', 'bg-[#333]');
-                applyScansio(false);
-            }
-        }
-
-        function applyScansio(enable) {
-            const vowels = ['a','e','i','o','u','y','æ','œ'];
-            const tokens = document.querySelectorAll('#pane-original .word-token');
-            
-            tokens.forEach(t => {
-                if (!enable) {
-                    if(t.dataset.origHtml) t.innerHTML = t.dataset.origHtml;
-                    return;
-                }
-                
-                if(!t.dataset.origHtml) t.dataset.origHtml = t.innerHTML;
-                
-                let text = t.textContent;
-                let html = '';
-                for (let i = 0; i < text.length; i++) {
-                    let char = text[i];
-                    let lower = char.toLowerCase();
-                    if (vowels.includes(lower)) {
-                        let next1 = text[i+1] ? text[i+1].toLowerCase() : '';
-                        let next2 = text[i+2] ? text[i+2].toLowerCase() : '';
-                        let isLong = (!vowels.includes(next1) && next1 !== '' && !vowels.includes(next2) && next2 !== '' && next2 !== 'r' && next2 !== 'l');
-                        
-                        if(isLong) html += `<span class="scansio-long">${char}</span>`;
-                        else html += `<span class="scansio-short">${char}</span>`;
-                    } else {
-                        html += char;
-                    }
-                }
-                t.innerHTML = html;
-            });
-        }
-
-        // ----------------------------------------------------------------------------------
-        // ORACULUM DIRECTO Y DEDUPLICADO (PERSEIDS NATIVO)
-        // ----------------------------------------------------------------------------------
-        function openPanel(panelId) {
-            document.getElementById('sidebar-right').classList.add('open');
-            document.getElementById('right-backdrop').classList.add('active');
-            document.querySelectorAll('.hidden-panel').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`panel-${panelId}`).classList.remove('hidden');
-            if(panelId === 'statistica') generateStats();
-        }
-        
-        function closeRightPanel() { 
-            document.getElementById('sidebar-right').classList.remove('open'); 
-            document.getElementById('right-backdrop').classList.remove('active');
-        }
-
-        function findInJson(obj, keyToFind) {
-            let results = [];
-            function search(currentObj) {
-                if (currentObj === null || typeof currentObj !== 'object') return;
-                if (currentObj.hasOwnProperty(keyToFind)) results.push(currentObj[keyToFind]);
-                for (let k in currentObj) search(currentObj[k]);
-            }
-            search(obj);
-            return results;
-        }
-
-        function stripEnclitics(word) {
-            if (STATE.lang !== 'la') return word;
-            const enclitics = ['que', 'ne', 've', 'nam'];
-            for (let enc of enclitics) {
-                if (word.endsWith(enc) && word.length > enc.length + 2) return word.slice(0, -enc.length);
-            }
-            return word;
-        }
-
-        async function analyzeWord(cleanWord, element, displayWord) {
-            if(STATE.lastClickedWord) STATE.lastClickedWord.classList.remove('word-selected');
+        async function analyzeWord(rawWord, element) {
+            if(STATE.lastClickedWord) STATE.lastClickedWord.style.borderBottom = '2px solid transparent';
             STATE.lastClickedWord = element;
-            element.classList.add('word-selected');
+            element.style.borderBottom = '2px solid var(--accent-gold)';
 
             openPanel('oraculum');
             document.getElementById('ora-intro').classList.add('hidden');
             document.getElementById('ora-loading').classList.remove('hidden');
             document.getElementById('ora-result').classList.add('hidden');
             document.getElementById('ora-error').classList.add('hidden');
-            document.getElementById('ora-word').innerText = displayWord;
 
-            let wordToTest = cleanWord;
-            let data = null;
+            const cleanWord = rawWord.replace(/^[\s.,;:"'«»()\[\]{}\-—!?;·]+|[\s.,;:"'«»()\[\]{}\-—!?;·]+$/g, '').toLowerCase();
+            document.getElementById('ora-word').innerText = rawWord;
 
             try {
                 const morphLang = STATE.lang === 'la' ? 'lat' : 'grc';
                 const engine = STATE.lang === 'la' ? 'morpheuslat' : 'morpheusgrc';
                 
-                // Conexión Directa
-                let url = `https://morph.perseids.org/analysis/word?lang=${morphLang}&engine=${engine}&word=${encodeURIComponent(wordToTest)}`;
-                let res = await fetchWithTimeout(url, { headers: { 'Accept': 'application/json' } }, 5000);
+                const res = await fetch(`https://morph.perseids.org/analysis/word?lang=${morphLang}&engine=${engine}&word=${encodeURIComponent(cleanWord)}`);
+                if (!res.ok) throw new Error(`API Error`);
+                const data = await res.json();
                 
-                if (res.ok) {
-                    let temp = await res.json();
-                    if (findInJson(temp, 'dict').length > 0) data = temp;
-                }
-
-                // Fallback de enclíticos
-                if (!data && STATE.lang === 'la') {
-                    let stripped = stripEnclitics(wordToTest);
-                    if (stripped !== wordToTest) {
-                        wordToTest = stripped;
-                        url = `https://morph.perseids.org/analysis/word?lang=lat&engine=morpheuslat&word=${encodeURIComponent(wordToTest)}`;
-                        let res2 = await fetchWithTimeout(url, { headers: { 'Accept': 'application/json' } }, 5000);
-                        if (res2.ok) {
-                            let temp2 = await res2.json();
-                            if (findInJson(temp2, 'dict').length > 0) data = temp2;
-                        }
-                    }
-                }
-
-                if (!data) throw new Error("API failed");
-                
-                const dictEntries = findInJson(data, 'dict');
-                if (dictEntries.length === 0) throw new Error("No dict");
-                
-                let baseLemma = null;
-                for(let e of dictEntries) {
-                    let entriesArray = Array.isArray(e) ? e : [e];
-                    for(let sub of entriesArray) {
-                        if(sub.hdwd && sub.hdwd.$) { baseLemma = sub.hdwd.$; break; }
-                    }
-                    if(baseLemma) break;
-                }
-                
-                if(!baseLemma) baseLemma = wordToTest;
-                let lemmaStr = baseLemma.replace(/\d+$/, ''); 
-
-                const inflEntries = findInJson(data, 'infl');
-                let allInfls = [];
-                inflEntries.forEach(i => {
-                    if (Array.isArray(i)) allInfls.push(...i); else allInfls.push(i);
-                });
-
+                let lemmaStr = "Forma ignota";
                 let morphHtml = "";
-                if (allInfls.length > 0) {
-                    // DEDUPLICACIÓN
-                    let uniqueMorphs = new Set();
-                    let htmlParts = [];
+                let baseLemma = cleanWord;
+                let found = false;
+
+                if (data && data.RDF && data.RDF.Annotation) {
+                    let annotations = asArray(data.RDF.Annotation);
                     
-                    allInfls.forEach(inf => {
-                        const attr = (name) => inf[name]?.$ || '';
-                        const attrsStr = [attr('pofs'), attr('case'), attr('num'), attr('gend'), attr('pers'), attr('tense'), attr('voice'), attr('mood')].filter(Boolean).join(', ') || 'Invariable';
-                        const stem = attr('stem') || ''; const term = attr('term') || '';
+                    for (let ann of annotations) {
+                        if (!ann.Body) continue;
+                        let bodies = asArray(ann.Body);
+                        let firstValid = bodies.find(b => b.rest && b.rest.entry);
                         
-                        const uniqueKey = `${stem}-${term}-${attrsStr}`;
-                        
-                        if (!uniqueMorphs.has(uniqueKey)) {
-                            uniqueMorphs.add(uniqueKey);
-                            htmlParts.push(`<div class="mb-3 pb-3 border-b border-[#333]/50 last:border-0"><span class="font-mono text-gray-500 text-base">${stem}<strong class="text-[#D4AF37]">${term}</strong></span><p class="italic text-gray-400 text-xs uppercase mt-1">${attrsStr}</p></div>`);
+                        if (firstValid) {
+                            found = true;
+                            let entry = firstValid.rest.entry;
+                            let dictEntry = asArray(entry.dict)[0];
+                            baseLemma = dictEntry && dictEntry.hdwd ? dictEntry.hdwd.$ : cleanWord;
+                            
+                            lemmaStr = baseLemma.replace(/\d+$/, ''); 
+                            
+                            let infls = asArray(entry.infl);
+                            morphHtml = infls.map(inf => {
+                                const attr = (name) => inf[name] ? inf[name].$ : '';
+                                const attrsStr = [attr('pofs'), attr('case'), attr('num'), attr('gend'), attr('pers'), attr('tense'), attr('voice'), attr('mood')].filter(Boolean).join(', ') || 'Forma invariable';
+                                const stem = attr('stem') || ''; const term = attr('term') || '';
+                                return `<div class="mb-3 pb-3 border-b border-[#333]/50 last:border-0 last:pb-0 last:mb-0"><div class="flex items-baseline gap-2 mb-1"><span class="font-mono text-gray-500 text-base">${stem}<strong class="text-[#D4AF37]">${term}</strong></span></div><p class="italic text-gray-400 text-xs uppercase tracking-wide">${attrsStr}</p></div>`;
+                            }).join('');
+                            break;
                         }
-                    });
-                    morphHtml = htmlParts.join('');
-                } else {
-                    morphHtml = `<p class="italic text-gray-400 text-xs">Raíz identificada.</p>`;
+                    }
                 }
 
-                renderOraculumSuccess(lemmaStr, morphHtml, wordToTest);
+                if (!found) throw new Error("Not found in Morpheus DB");
+
+                document.getElementById('ora-lemma').innerText = lemmaStr;
+                document.getElementById('ora-morph').innerHTML = morphHtml;
+                setupExternalDictLinks(lemmaStr, cleanWord);
+
+                document.getElementById('ora-loading').classList.add('hidden');
+                document.getElementById('ora-result').classList.remove('hidden');
 
             } catch (error) {
-                renderOraculumSuccess(wordToTest, `<p class="italic text-red-400 text-xs">Análisis no disponible. Usa los diccionarios.</p>`, wordToTest);
+                document.getElementById('ora-loading').classList.add('hidden');
+                document.getElementById('ora-error').classList.remove('hidden');
+                setupExternalDictLinks(cleanWord, cleanWord, true);
             }
         }
 
-        function renderOraculumSuccess(lemma, morphHtml, searchWord) {
-            document.getElementById('ora-lemma').innerText = lemma;
-            document.getElementById('ora-morph').innerHTML = morphHtml;
+        function setupExternalDictLinks(lemma, fallbackWord, isError = false) {
+            const btnLogeion = document.getElementById('btn-logeion');
+            const btnPerseus = document.getElementById('btn-perseus');
+            const fallbackContainer = document.getElementById('fallback-links');
+            const targetWord = encodeURIComponent(lemma || fallbackWord);
             
-            const logeionUrl = `https://logeion.uchicago.edu/${encodeURIComponent(lemma)}`;
-            const perseusLang = STATE.lang === 'la' ? 'la' : 'greek';
-            const perseusUrl = `https://www.perseus.tufts.edu/hopper/morph?l=${encodeURIComponent(searchWord)}&la=${perseusLang}`;
-            
-            document.getElementById('btn-logeion').href = logeionUrl; 
-            document.getElementById('btn-perseus').href = perseusUrl; 
-
-            document.getElementById('ora-loading').classList.add('hidden');
-            document.getElementById('ora-result').classList.remove('hidden');
+            if (STATE.lang === 'grc') {
+                const url = `https://logeion.uchicago.edu/${targetWord}`;
+                if (isError) {
+                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-3 bg-[#8B2323] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#6A1A1A] transition">Consultar Logeion</a>`;
+                } else {
+                    btnLogeion.href = url; btnLogeion.classList.remove('hidden'); btnLogeion.classList.add('flex');
+                    btnPerseus.classList.add('hidden'); btnPerseus.classList.remove('flex');
+                }
+            } else {
+                const url = `https://www.perseus.tufts.edu/hopper/morph?l=${targetWord}&la=la`;
+                if (isError) {
+                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-3 bg-[#1e3a8a] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#1e40af] transition">Consultar Perseus</a>`;
+                } else {
+                    btnPerseus.href = url; btnPerseus.classList.remove('hidden'); btnPerseus.classList.add('flex');
+                    btnLogeion.classList.add('hidden'); btnLogeion.classList.remove('flex');
+                }
+            }
         }
 
-        // ----------------------------------------------------------------------------------
-        // ESTADÍSTICAS Y AUDIO
-        // ----------------------------------------------------------------------------------
         function generateStats() {
             document.getElementById('stats-loading').classList.remove('hidden');
             document.getElementById('stats-list').innerHTML = '';
@@ -950,9 +823,10 @@
                 const counts = {};
                 
                 tokens.forEach(t => {
-                    let word = t.dataset.clean;
-                    if (!word || word.length < 3) return;
-                    counts[word] = (counts[word] || 0) + 1;
+                    let word = t.dataset.original;
+                    if (!word) return;
+                    word = word.toLowerCase().replace(/^[\s.,;:"'«»()\[\]{}\-—!?;·]+|[\s.,;:"'«»()\[\]{}\-—!?;·]+$/g, ''); 
+                    if(word.length > 2) counts[word] = (counts[word] || 0) + 1;
                 });
 
                 const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 50);
@@ -969,8 +843,10 @@
             STATE.audio.chunks = [];
             STATE.audio.idx = 0;
             if(STATE.audio.utterance) STATE.audio.utterance.onend = null;
+            
             STATE.audio.activeEls.forEach(el => el.classList.remove('audio-active'));
             STATE.audio.activeEls = [];
+            
             document.getElementById('btn-audio-play').classList.remove('hidden');
             document.getElementById('btn-audio-stop').classList.add('hidden');
         }
@@ -982,12 +858,14 @@
 
         function toggleAudio() {
             if (STATE.audio.reading) return; 
+
             const tokens = Array.from(document.querySelectorAll('#pane-original .word-token'));
-            if (tokens.length === 0) return showToast("No hay texto.");
+            if (tokens.length === 0) return showToast("No hay texto para leer.");
 
             let chunkMap = []; 
             let currentSentence = "";
             let currentEls = [];
+            
             const endOfSentence = /[.!?;·\n]+/;
 
             tokens.forEach(t => {
@@ -998,7 +876,9 @@
                 let textAfter = nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue : "";
                 
                 if (endOfSentence.test(word) || endOfSentence.test(textAfter) || t === tokens[tokens.length-1]) {
-                    let cleanSentence = currentSentence.trim().replace(/\b\d+[a-z]?\b|\b[IVXLCDM]+\b/gi, '').trim();
+                    let cleanSentence = currentSentence.trim();
+                    cleanSentence = cleanSentence.replace(/\b\d+[a-z]?\b|\b[IVXLCDM]+\b/gi, '').trim();
+                    
                     if (cleanSentence && /[a-zA-Z\u0370-\u03FF]/.test(cleanSentence)) { 
                          chunkMap.push({ text: cleanSentence, elements: [...currentEls] });
                     }
@@ -1006,7 +886,7 @@
                 }
             });
 
-            if (chunkMap.length === 0) return;
+            if (chunkMap.length === 0) return showToast("No se detectó texto narrativo válido para lectura.");
             STATE.audio.chunks = chunkMap;
             startAudioChunking(0);
         }
@@ -1026,9 +906,17 @@
             let spokenText = chunk.text.toLowerCase();
             
             if (STATE.lang === 'la') {
-                spokenText = spokenText.replace(/v/g, 'u').replace(/ce/g, 'que').replace(/ci/g, 'qui').replace(/ge/g, 'gue').replace(/gi/g, 'gui').replace(/ll/g, 'l l'); 
+                spokenText = spokenText
+                    .replace(/v/g, 'u')
+                    .replace(/ce/g, 'que').replace(/ci/g, 'qui')
+                    .replace(/ge/g, 'gue').replace(/gi/g, 'gui')
+                    .replace(/ll/g, 'l l'); 
             } else if (STATE.lang === 'grc') {
-                spokenText = spokenText.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/αι/g, "ai").replace(/ει/g, "ei").replace(/οι/g, "oi").replace(/υι/g, "ui").replace(/αυ/g, "au").replace(/ευ/g, "eu").replace(/ου/g, "u").replace(/φ/g, "f").replace(/θ/g, "z").replace(/χ/g, "j").replace(/γ/g, "g").replace(/κ/g, "k").replace(/ξ/g, "ks").replace(/ψ/g, "ps").replace(/υ/g, "i").replace(/η/g, "e").replace(/ω/g, "o").replace(/\u0314/g, "j");
+                spokenText = spokenText.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/αι/g, "ai").replace(/ει/g, "ei").replace(/οι/g, "oi").replace(/υι/g, "ui")
+                    .replace(/αυ/g, "au").replace(/ευ/g, "eu").replace(/ου/g, "u")
+                    .replace(/φ/g, "f").replace(/θ/g, "z").replace(/χ/g, "j").replace(/γ/g, "g").replace(/κ/g, "k")
+                    .replace(/ξ/g, "ks").replace(/ψ/g, "ps").replace(/υ/g, "i").replace(/η/g, "e").replace(/ω/g, "o").replace(/\u0314/g, "j");
                 const gMap = {'α':'a','β':'b','δ':'d','ε':'e','ζ':'ds','ι':'i','λ':'l','μ':'m','ν':'n','ο':'o','π':'p','ρ':'r','σ':'s','ς':'s','τ':'t'};
                 spokenText = Array.from(spokenText).map(c => gMap[c] || c).join('');
             }
@@ -1036,11 +924,14 @@
             STATE.audio.activeEls.forEach(el => el.classList.remove('audio-active'));
             STATE.audio.activeEls = chunk.elements;
             STATE.audio.activeEls.forEach(el => el.classList.add('audio-active'));
+            
             if (chunk.elements.length > 0) chunk.elements[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             STATE.audio.utterance = new SpeechSynthesisUtterance(spokenText);
+            
             let voices = STATE.audio.synth.getVoices();
             let prefVoice = voices.find(v => v.lang.startsWith('es')); 
+            
             if (prefVoice) STATE.audio.utterance.voice = prefVoice;
             STATE.audio.utterance.rate = STATE.audio.speed;
 
@@ -1049,6 +940,7 @@
                 STATE.audio.idx++;
                 setTimeout(playNextChunk, 200); 
             };
+
             STATE.audio.utterance.onerror = function(e) {
                 if(e.error !== 'canceled' && e.error !== 'interrupted' && STATE.audio.reading) { 
                     STATE.audio.idx++; playNextChunk(); 

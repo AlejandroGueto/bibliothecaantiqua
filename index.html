@@ -3,20 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bibliotheca Antiqua PRO - Red Blindada</title>
+    <title>Bibliotheca Antiqua PRO - Versión Definitiva</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-dark: #0f0f0f;
-            --bg-panel: #171717;
-            --bg-hover: #262626;
-            --text-main: #E5E5E5;
-            --accent-red: #991B1B;
-            --accent-gold: #D4AF37;
-            --border-color: #333333;
+            --bg-dark: #0f0f0f; --bg-panel: #171717; --bg-hover: #262626;
+            --text-main: #E5E5E5; --accent-red: #991B1B; --accent-gold: #D4AF37; --border-color: #333333;
         }
 
         body { font-family: 'Cormorant Garamond', serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; overflow: hidden; display: flex; height: 100vh; }
@@ -66,6 +61,10 @@
         .loader-ring div { box-sizing: border-box; display: block; position: absolute; width: 54px; height: 54px; margin: 5px; border: 4px solid var(--accent-gold); border-radius: 50%; animation: loader-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: var(--accent-gold) transparent transparent transparent; }
         .loader-ring div:nth-child(1) { animation-delay: -0.45s; } .loader-ring div:nth-child(2) { animation-delay: -0.3s; } .loader-ring div:nth-child(3) { animation-delay: -0.15s; }
         @keyframes loader-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Limpiador sin tocar 'table' para no romper los versos griegos */
+        .mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, .ws-noexport, 
+        .wst-poem-header, .ws-header, .ext-phonos, sup.reference, .wst-navbox, .metadata, .ambox, .navbox-title, .navbox-abovebelow { display: none !important; }
         
         .poem { margin-left: 2rem; margin-bottom: 1.5rem; }
         .poem p { margin-bottom: 0.2rem; }
@@ -141,7 +140,7 @@
             
             <div id="fetching-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f]/95 backdrop-blur z-20">
                 <div class="loader-ring mb-4"><div></div><div></div><div></div><div></div></div>
-                <p class="font-cinzel text-[#D4AF37] uppercase tracking-widest text-sm" id="fetch-msg">Conectando con The Latin Library / Wikisource...</p>
+                <p class="font-cinzel text-[#D4AF37] uppercase tracking-widest text-sm" id="fetch-msg">Conectando con la biblioteca...</p>
             </div>
 
             <div id="error-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20">
@@ -448,7 +447,7 @@
         }
 
         // ----------------------------------------------------------------------------------
-        // EXTRACCIÓN CON PROXY ROTATIVO ROBUSTO
+        // EXTRACCIÓN CON PROXY ROTATIVO ROBUSTO (CORREGIDO PARA EVITAR BUCLE INFINITO)
         // ----------------------------------------------------------------------------------
         function setUIState(state) {
             ['loading-state', 'fetching-state', 'error-state'].forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -466,9 +465,9 @@
 
         async function fetchWithProxy(targetUrl) {
             const proxies = [
+                `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
                 `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
-                `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
             ];
             for (let p of proxies) {
                 try {
@@ -516,7 +515,8 @@
                     if (data.parse && data.parse.text) {
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(data.parse.text['*'], 'text/html');
-                        const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', 'table', '.ws-header', '.wst-poem-header', '.ext-phonos', '.wst-navbox', 'style', 'script', 'sup.reference', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
+                        // ELIMINADA la purga de etiquetas <table> para NO ROMPER la poesía griega (Ilíada, Odisea, Tragedias)
+                        const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.ws-header', '.wst-poem-header', '.ext-phonos', '.wst-navbox', 'style', 'script', 'sup.reference', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
                         garbage.forEach(sel => doc.querySelectorAll(sel).forEach(e => e.remove()));
                         html = doc.body.innerHTML;
                     }
@@ -657,7 +657,7 @@
         }
 
         // ----------------------------------------------------------------------------------
-        // ORACULUM DEDUPLICADO
+        // ORACULUM DIRECTO SIN PROXY (NATIVO CORS) Y DEDUPLICADO
         // ----------------------------------------------------------------------------------
         function openPanel(panelId) {
             document.getElementById('sidebar-right').classList.add('open');
@@ -711,23 +711,23 @@
                 const morphLang = STATE.lang === 'la' ? 'lat' : 'grc';
                 const engine = STATE.lang === 'la' ? 'morpheuslat' : 'morpheusgrc';
                 
+                // CONEXIÓN DIRECTA CORS (Sin Proxy que falle)
                 let url = `https://morph.perseids.org/analysis/word?lang=${morphLang}&engine=${engine}&word=${encodeURIComponent(wordToTest)}`;
-                let res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-                let proxyData = await res.json();
+                let res = await fetchWithTimeout(url, { headers: { 'Accept': 'application/json' } }, 5000);
                 
-                if (proxyData.contents) {
-                    let temp = JSON.parse(proxyData.contents);
+                if (res.ok) {
+                    let temp = await res.json();
                     if (findInJson(temp, 'dict').length > 0) data = temp;
                 }
 
+                // Fallback de enclíticos
                 if (!data && STATE.lang === 'la') {
                     let stripped = stripEnclitics(wordToTest);
                     if (stripped !== wordToTest) {
                         wordToTest = stripped;
                         url = `https://morph.perseids.org/analysis/word?lang=lat&engine=morpheuslat&word=${encodeURIComponent(wordToTest)}`;
-                        res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-                        proxyData = await res.json();
-                        if (proxyData.contents) data = JSON.parse(proxyData.contents);
+                        let res2 = await fetchWithTimeout(url, { headers: { 'Accept': 'application/json' } }, 5000);
+                        if (res2.ok) data = await res2.json();
                     }
                 }
 
@@ -756,6 +756,7 @@
 
                 let morphHtml = "";
                 if (allInfls.length > 0) {
+                    // DEDUPLICACIÓN ESTRICTA DE ANÁLISIS
                     let uniqueMorphs = new Set();
                     let htmlParts = [];
                     

@@ -252,6 +252,25 @@
             lastClickedWord: null, retryParams: null
         };
 
+        const generateBooks = (prefix, count, romanFormat, pathBase, esPathBase) => {
+            const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
+            const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
+            let list = [];
+            for(let i=0; i<count; i++) {
+                let suffix = romanFormat === "Roman" ? roman[i] : (romanFormat === "Greek" ? greek[i] : (i+1));
+                let esSuffix = (esPathBase && esPathBase.includes("Libro_")) ? roman[i] : (i+1); 
+                
+                list.push({
+                    title: `${prefix} ${suffix}`, 
+                    search: suffix,
+                    arabic: i+1,
+                    path: pathBase ? `${pathBase}${suffix}` : null,
+                    esPath: esPathBase ? (esPathBase.endsWith("_") ? `${esPathBase}${esSuffix}` : `${esPathBase}${suffix}`) : null
+                });
+            }
+            return list;
+        };
+
         const MEMORIA_ESTATICA = {
             "In_L._Catilinam_oratio_prima_habita_in_senatu": `
                 <p><b>[I]</b> Quo usque tandem abutere, Catilina, patientia nostra? quam diu etiam furor iste tuus nos eludet? quem ad finem sese effrenata iactabit audacia? Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae, nihil timor populi, nihil concursus bonorum omnium, nihil hic munitissimus habendi senatus locus, nihil horum ora vultusque moverunt? Patere tua consilia non sentis, constrictam iam horum omnium scientia teneri coniurationem tuam non vides? Quid proxima, quid superiore nocte egeris, ubi fueris, quos convocaveris, quid consilii ceperis, quem nostrum ignorare arbitraris?</p>
@@ -283,7 +302,6 @@
             "amemus": { lemma: "amo", morph: "Verbo | 1ª pers. plur. Presente Subjuntivo Activo.<br>Raíz: amo, amare, amavi, amatum (Amar)." }
         };
 
-        // CATÁLOGO ÍNTEGRO RESTAURADO - LOS 40 AUTORES COMPLETO
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -395,7 +413,7 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 9, "Roman", "Ιστορίαι_(Ηροδότου)/", "Los_nueve_libros_de_la_Historia:_Libro_") }
                 ]},
                 { author: "Thucydides", authorEs: "Tucídides", works: [
-                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πελοποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
+                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πεloποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
                 ]},
                 { author: "Aristoteles", authorEs: "Aristóteles", works: [
                     { baseTitle: "Ethica Nicomachea", books: generateBooks("Liber", 10, "Greek", "Ηθικά_Νικομάχεια/", "Moral_a_Nicómaco:_Libro_") },
@@ -444,10 +462,75 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
                 { author: "Callimachus", authorEs: "Calímaco", works: [
-                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δía", arabic: 1, path: "Ύμνοι/Εις_Δία" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δία", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
+
+        window.onload = function() {
+            renderNestedCatalog('latin');
+            renderNestedCatalog('greek');
+            lucide.createIcons(); 
+            
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => { STATE.audio.synth.getVoices(); };
+            }
+        };
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast'; toast.innerText = msg;
+            container.appendChild(toast);
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        function switchTab(lang) {
+            document.getElementById('tab-latin').classList.toggle('active', lang === 'latin');
+            document.getElementById('tab-greek').classList.toggle('active', lang === 'greek');
+            document.getElementById('list-latin').classList.toggle('hidden', lang !== 'latin');
+            document.getElementById('list-greek').classList.toggle('hidden', lang !== 'greek');
+            STATE.lang = lang === 'latin' ? 'la' : 'grc';
+            filterLibrary();
+        }
+
+        function toggleAccordion(btn) { btn.parentElement.classList.toggle('open'); }
+        function toggleSubAccordion(btn) { btn.parentElement.classList.toggle('open'); }
+        function toggleSidebarLeft() { document.getElementById('sidebar-left').classList.toggle('collapsed'); }
+
+        function renderNestedCatalog(lang) {
+            const list = document.getElementById(`list-${lang}`);
+            let html = '';
+            CATALOG[lang].forEach((authorNode, aIndex) => {
+                html += `
+                <div class="mb-1 author-block">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-3 py-2.5 rounded hover:bg-[#262626] flex items-center justify-between transition group">
+                        <span class="font-cinzel text-sm text-gray-200 font-bold">${authorNode.author}</span>
+                        <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-gray-500"></i>
+                    </button>
+                    <div class="accordion-content pl-4 pr-2 py-1 space-y-1 border-l border-[#333] ml-3 mt-1">
+                        ${authorNode.works.map((workNode, wIndex) => `
+                            <div class="work-block">
+                                <button onclick="toggleSubAccordion(this)" class="w-full text-left px-3 py-2 rounded text-sm font-serif text-gray-300 hover:text-white hover:bg-[#333] transition flex justify-between items-center group">
+                                    ${workNode.baseTitle.replace(/_/g, ' ')}
+                                    <i data-lucide="chevron-down" class="sub-accordion-icon w-3 h-3 text-gray-600"></i>
+                                </button>
+                                <div class="sub-accordion-content pl-4 space-y-1 border-l border-[#444] ml-2 mt-1">
+                                    ${workNode.books.map((b, bIndex) => `
+                                        <button onclick="loadText('${lang}', ${aIndex}, ${wIndex}, ${bIndex})" class="w-full text-left px-3 py-1.5 rounded text-xs font-serif text-gray-400 hover:text-white hover:bg-[#444] transition truncate">
+                                            ${b.title}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            });
+            list.innerHTML = html;
+        }
 
         function handleSearchInput(event) {
             if (event.key === "Enter") {
@@ -462,7 +545,7 @@
             }
         }
 
-        // FIX: Se inyecta correctamente el keyword 'function' ausente en la versión previa
+        // CORRECCIÓN: Se añade el keyword 'async function' obligatorio que crasheaba el script
         async function proxyFetchHTML(url) {
             try {
                 const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
@@ -478,6 +561,30 @@
                 } catch (e2) {
                     return null;
                 }
+            }
+        }
+
+        async function fetchWikisourceAPI(lang, title) {
+            if (MEMORIA_ESTATICA[title]) {
+                return MEMORIA_ESTATICA[title]; 
+            }
+            const wikiLang = lang === 'grc' ? 'el' : lang;
+            const url = `https://${wikiLang}.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.parse && data.parse.text) return data.parse.text['*'];
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function retryLoad() {
+            if(STATE.currentExternalUrl) {
+                loadExternalUrl(STATE.currentExternalUrl);
+            } else if(STATE.retryParams) {
+                loadText(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
             }
         }
 
@@ -817,7 +924,7 @@
                         let pofs = inf.pofs?.$||''; let case_ = inf.case?.$||''; let num = inf.num?.$||'';
                         let stem = inf.stem?.$||''; let term = inf.term?.$||'';
                         
-                        // FIX: Se subsana la referencia rota de 'temp' apuntando al puntero lógico correcto 'stem'
+                        // CORRECCIÓN: Se repara la variable 'temp' rota por el puntero real 'stem'
                         let uniqueKey = `${stem}-${term}-${pofs}-${case_}-${num}`; 
                         if(!uniqueMorphs.has(uniqueKey)) {
                             uniqueMorphs.add(uniqueKey);
@@ -927,7 +1034,6 @@
             if (STATE.audio.reading) { const currentIdx = STATE.audio.idx; stopAudio(); startAudioChunking(currentIdx); }
         }
 
-        // CONTROLADOR DE AUDIO TTS CON TRANSPOSICIÓN ERASMIANA AVANZADA
         function toggleAudio() {
             if (STATE.audio.reading) return; 
 

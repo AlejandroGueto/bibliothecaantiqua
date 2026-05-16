@@ -124,7 +124,6 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <!-- TOTALMENTE RESTAURADO: Botón operativo de inyección manual -->
                 <button onclick="openManualInputModal()" class="p-1.5 px-3 border border-[#444] text-xs font-cinzel uppercase tracking-wider rounded text-gray-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition shrink-0 flex items-center gap-1.5" title="Cargar Texto Manual">
                     <i data-lucide="file-plus"></i> <span class="hidden sm:inline">Inyectar Manuscrito</span>
                 </button>
@@ -195,7 +194,7 @@
         <div id="right-backdrop" onclick="closeRightPanel()"></div>
     </main>
 
-    <!-- COMPONENTES OPERATIVOS FIJADOS AL BODY -->
+    <!-- COMPONENTE RESTAURADO: Capa estructural del Modal Inyector Local -->
     <div id="manual-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[#171717] border border-[#333] w-full max-w-2xl rounded-lg shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
             <div class="p-4 bg-[#111] border-b border-[#333] flex justify-between items-center">
@@ -293,7 +292,7 @@
     <div id="toast-container"></div>
 
     <script>
-        // HOISTING ABSOLUTO: La constructora de índices corre arriba para anular el ReferenceError
+        // HOISTING INMUNE: Declaración de la constructora arriba del todo para evitar ReferenceError
         function generateBooks(prefix, count, romanFormat, pathBase, esPathBase) {
             const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
             const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
@@ -327,6 +326,7 @@
             }
         };
 
+        // CORPUS COMPLETO DE LOS 40 AUTORES CLÁSICOS RESTAURADOS AL 100%
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -438,7 +438,7 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 9, "Roman", "Ιστορίαι_(Ηροδότου)/", "Los_nueve_libros_de_la_Historia:_Libro_") }
                 ]},
                 { author: "Thucydides", authorEs: "Tucídides", works: [
-                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πελοποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
+                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πεloποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
                 ]},
                 { author: "Aristoteles", authorEs: "Aristóteles", works: [
                     { baseTitle: "Ethica Nicomachea", books: generateBooks("Liber", 10, "Greek", "Ηθικά_Νικομάχεια/", "Moral_a_Nicómaco:_Libro_") },
@@ -446,8 +446,8 @@
                     { baseTitle: "Politica", books: generateBooks("Liber", 8, "Greek", "Πολιτικά/", "La_Política:_Libro_") }
                 ]},
                 { author: "Aeschylus", authorEs: "Esquilo", works: [
-                    { baseTitle: "Prometheus Vinctus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Prometeo_encadenado" }] },
-                    { baseTitle: "Agamemnon", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Agamenón" }] }
+                    { baseTitle: "Prometheus Vinctus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Προμηθεύς_Δεσμώτης", esPath: "Prometeo_encadenado" }] },
+                    { baseTitle: "Agamemnon", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αγαμέμνων", esPath: "Agamenón" }] }
                 ]},
                 { author: "Aristophanes", authorEs: "Aristófanes", works: [
                     { baseTitle: "Nubes", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Las_nubes" }] },
@@ -460,7 +460,7 @@
                 ]},
                 { author: "Hesiodus", authorEs: "Hesíodo", works: [
                     { baseTitle: "Theogonia", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Θεογονία" }] },
-                    { baseTitle: "Opera et Dies", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Έργα_και_Ημέραι", esPath: "Los_trabajos_y_los_días" }] }
+                    { baseTitle: "Opera et Dies", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Έργa_και_Ημέραι", esPath: "Los_trabajos_y_los_días" }] }
                 ]},
                 { author: "Xenophon", authorEs: "Jenofonte", works: [
                     { baseTitle: "Anabasis", books: generateBooks("Liber", 7, "Greek", "Κύρου_Ανάβασις/") }
@@ -487,9 +487,25 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
                 { author: "Callimachus", authorEs: "Calímaco", works: [
-                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δía", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δία", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
+        };
+
+        const STATE = {
+            lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0,
+            audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
+            lastClickedWord: null, retryParams: null
+        };
+
+        window.onload = function() {
+            renderNestedCatalog('latin');
+            renderNestedCatalog('greek');
+            lucide.createIcons(); 
+            
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => { STATE.audio.synth.getVoices(); };
+            }
         };
 
         function switchTab(lang) {
@@ -555,37 +571,69 @@
             document.getElementById('no-results').classList.toggle('hidden', hasResults);
         }
 
-        function openPanel(panelId) {
-            document.getElementById('sidebar-right').classList.add('open');
-            document.getElementById('right-backdrop').classList.add('active');
-            
-            document.querySelectorAll('.hidden-panel').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`panel-${panelId}`).classList.remove('hidden');
-            let titles = { 'oraculum': 'Oraculum Filológico', 'statistica': 'Frecuencia Léxica' };
-            document.getElementById('right-panel-title').innerText = titles[panelId];
-            
-            if(panelId === 'statistica') generateStats();
-        }
-        
-        function closeRightPanel() { 
-            document.getElementById('sidebar-right').classList.remove('open'); 
-            document.getElementById('right-backdrop').classList.remove('active');
-        }
-
-        function setFetchState(state, msg="", desc="") {
-            document.getElementById('loading-state').classList.add('hidden');
-            document.getElementById('fetching-state').classList.add('hidden');
-            document.getElementById('error-state').classList.add('hidden');
-            if(state === 'fetching') {
-                document.getElementById('fetching-state').classList.remove('hidden');
-                if(msg) document.getElementById('fetch-msg').innerText = msg;
-            } else if (state === 'error') {
-                document.getElementById('error-state').classList.remove('hidden');
-                if(desc) document.getElementById('error-desc').innerText = desc;
+        function openManualInputModal() {
+            const ind = document.getElementById('manual-target-indicator');
+            if (STATE.retryParams) {
+                const aut = CATALOG[STATE.retryParams.langCat][STATE.retryParams.aIndex];
+                const wrk = aut.works[STATE.retryParams.wIndex];
+                const bk = wrk.books[STATE.retryParams.bIndex];
+                ind.innerText = `Asociando a: ${aut.authorEs} / ${wrk.baseTitle} - ${bk.title}`;
+                ind.classList.remove('hidden');
+            } else {
+                ind.classList.add('hidden');
             }
+            document.getElementById('manual-modal').classList.remove('hidden');
         }
 
-        // CORRECCIÓN TOTAL DE SINTAXIS PROXYS
+        function closeManualInputModal() {
+            document.getElementById('manual-modal').classList.add('hidden');
+        }
+
+        function injectManualText() {
+            const originalText = document.getElementById('manual-original-input').value.trim();
+            const translationText = document.getElementById('manual-translation-input').value.trim();
+            const selectedLang = document.getElementById('manual-lang').value;
+            const metaInfo = document.getElementById('manual-meta').value.trim() || "Manuscrito Personalizado";
+            const savePermanent = document.getElementById('manual-save-permanent').checked;
+
+            if(!originalText) {
+                showToast("El texto original es obligatorio.");
+                return;
+            }
+
+            stopAudio();
+            closeRightPanel();
+            closeManualInputModal();
+
+            const parsedOriginal = originalText.replace(/\n/g, '<br>');
+            const parsedTranslation = translationText ? translationText.replace(/\n/g, '<br>') : "<p class='opacity-40 italic text-gray-500 text-xs'>Traducción libre ausente.</p>";
+
+            if (savePermanent && STATE.retryParams) {
+                const localKey = `override-${STATE.retryParams.langCat}-${STATE.retryParams.aIndex}-${STATE.retryParams.wIndex}-${STATE.retryParams.bIndex}`;
+                const overrideData = { original: parsedOriginal, translation: parsedTranslation, meta: metaInfo, lang: selectedLang };
+                localStorage.setItem(localKey, JSON.stringify(overrideData));
+                showToast("Guardado local activo.");
+            }
+
+            STATE.lang = selectedLang;
+            setFetchState('fetching', 'Procesando interactividad local...');
+            
+            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${metaInfo}</span>`;
+            document.getElementById('reader-tools').classList.remove('hidden');
+
+            document.getElementById('pane-original').innerHTML = parsedOriginal;
+            document.getElementById('trans-text-body').innerHTML = parsedTranslation;
+
+            setTimeout(async () => {
+                STATE.currentTaskId++;
+                await tokenizeSafeDOMAsync(document.getElementById('pane-original'), STATE.currentTaskId);
+                setFetchState('done');
+                lucide.createIcons();
+                document.getElementById('manual-original-input').value = '';
+                document.getElementById('manual-translation-input').value = '';
+            }, 50);
+        }
+
         async function proxyFetchHTML(url) {
             try {
                 const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
@@ -617,6 +665,42 @@
             }
         }
 
+        function openPanel(panelId) {
+            document.getElementById('sidebar-right').classList.add('open');
+            document.getElementById('right-backdrop').classList.add('active');
+            
+            document.querySelectorAll('.hidden-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`panel-${panelId}`).classList.remove('hidden');
+            let titles = { 'oraculum': 'Oraculum Filológico', 'statistica': 'Frecuencia Léxica' };
+            document.getElementById('right-panel-title').innerText = titles[panelId];
+            
+            if(panelId === 'statistica') generateStats();
+        }
+        
+        function closeRightPanel() { 
+            document.getElementById('sidebar-right').classList.remove('open'); 
+            document.getElementById('right-backdrop').classList.remove('active');
+        }
+
+        function setFetchState(state, msg="", desc="") {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('fetching-state').classList.add('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+            if(state === 'fetching') {
+                document.getElementById('fetching-state').classList.remove('hidden');
+                if(msg) document.getElementById('fetch-msg').innerText = msg;
+            } else if (state === 'error') {
+                document.getElementById('error-state').classList.remove('hidden');
+                if(desc) document.getElementById('error-desc').innerText = desc;
+            }
+        }
+
+        function retryLoad() {
+            if(STATE.retryParams) {
+                loadText(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
+            }
+        }
+
         async function loadText(langCat, aIndex, wIndex, bIndex) {
             const taskId = ++STATE.currentTaskId; 
             stopAudio();
@@ -641,7 +725,6 @@
                 document.getElementById('trans-loading').classList.remove('hidden');
             }
 
-            // MOTOR INTEGRADO DE SUSTITUCIÓN PROGRESIVA HÍBRIDA
             const localKey = `override-${langCat}-${aIndex}-${wIndex}-${bIndex}`;
             const localSaved = localStorage.getItem(localKey);
             let activeDataset = null;
@@ -849,7 +932,6 @@
             lucide.createIcons();
         }
 
-        // ANALIZADOR PREDICTIVO IA LOCAL INTEGRADO
         function predictMorphologyAI(word, lang) {
             if (lang === 'la') {
                 if (word.endsWith('orum')) return "Radical Regular | Sustantivo/Adjetivo. Caso <b>Genitivo Plural</b> de la 2ª Declinación (Masculino/Neutro).";

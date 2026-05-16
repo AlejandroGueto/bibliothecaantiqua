@@ -252,26 +252,6 @@
             lastClickedWord: null, retryParams: null
         };
 
-        const generateBooks = (prefix, count, romanFormat, pathBase, esPathBase) => {
-            const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
-            const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
-            let list = [];
-            for(let i=0; i<count; i++) {
-                let suffix = romanFormat === "Roman" ? roman[i] : (romanFormat === "Greek" ? greek[i] : (i+1));
-                let esSuffix = (esPathBase && esPathBase.includes("Libro_")) ? roman[i] : (i+1); 
-                
-                list.push({
-                    title: `${prefix} ${suffix}`, 
-                    search: suffix,
-                    arabic: i+1,
-                    path: pathBase ? `${pathBase}${suffix}` : null,
-                    esPath: esPathBase ? (esPathBase.endsWith("_") ? `${esPathBase}${esSuffix}` : `${esPathBase}${suffix}`) : null
-                });
-            }
-            return list;
-        };
-
-        // MEMORIA LOCAL DE CONTINGENCIA: Textos blindados sin conexiones de red
         const MEMORIA_ESTATICA = {
             "In_L._Catilinam_oratio_prima_habita_in_senatu": `
                 <p><b>[I]</b> Quo usque tandem abutere, Catilina, patientia nostra? quam diu etiam furor iste tuus nos eludet? quem ad finem sese effrenata iactabit audacia? Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae, nihil timor populi, nihil concursus bonorum omnium, nihil hic munitissimus habendi senatus locus, nihil horum ora vultusque moverunt? Patere tua consilia non sentis, constrictam iam horum omnium scientia teneri coniurationem tuam non vides? Quid proxima, quid superiore nocte egeris, ubi fueris, quos convocaveris, quid consilii ceperis, quem nostrum ignorare arbitraris?</p>
@@ -288,7 +268,6 @@
             `
         };
 
-        // DICCIONARIO MORFOLÓGICO LOCAL DE RESCATE
         const LEXICON_LOCAL = {
             "quousque": { lemma: "quousque", morph: "Adverbio | Hasta cuándo, hasta dónde." },
             "tandem": { lemma: "tandem", morph: "Adverbio | Finalmente, al fin, por fin." },
@@ -304,7 +283,7 @@
             "amemus": { lemma: "amo", morph: "Verbo | 1ª pers. plur. Presente Subjuntivo Activo.<br>Raíz: amo, amare, amavi, amatum (Amar)." }
         };
 
-        // CATÁLOGO COMPLETO DE LOS 40 AUTORES CLÁSICOS RESTAURADO ÍNTEGRAMENTE
+        // CATÁLOGO ÍNTEGRO RESTAURADO - LOS 40 AUTORES COMPLETO
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -447,7 +426,7 @@
                     { baseTitle: "Vitae Parallelae", books: [{ title: "Alexander", search: "Αλέξανδρος", arabic: 1, path: "Βίοι_Παράλληλοι/Αλέξανδρος" }, { title: "Caesar", search: "Καίσαρ", arabic: 2, path: "Βίοι_Παράλληλοι/Καίσαρ" }] }
                 ]},
                 { author: "Demosthenes", authorEs: "Demóstenes", works: [
-                    { baseTitle: "Philippicae", books: generateBooks("Oratio", 3, "Roman", "Κατά_Φιλίππου_") }
+                    { baseTitle: "Philippicae", books: generateBooks("Oratio", 3, "Roman", "Κατά_Φιλíππου_") }
                 ]},
                 { author: "Isocrates", authorEs: "Isócrates", works: [
                     { baseTitle: "Panegyricus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Πανηγυρικός" }] }
@@ -459,49 +438,16 @@
                     { baseTitle: "Vera Historia", books: generateBooks("Liber", 2, "Greek", "Αληθής_Ιστορία/") }
                 ]},
                 { author: "Epictetus", authorEs: "Epicteto", works: [
-                    { baseTitle: "Enchiridion", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Εγχειρίδιον_Επictήτου", esPath: "Manual_de_Epicteto" }] }
+                    { baseTitle: "Enchiridion", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Εγχειρίδιον_Επικτήτου", esPath: "Manual_de_Epicteto" }] }
                 ]},
                 { author: "Polybius", authorEs: "Polibio", works: [
                     { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
                 { author: "Callimachus", authorEs: "Calímaco", works: [
-                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δία", arabic: 1, path: "Ύμνοι/Εις_Δία" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δía", arabic: 1, path: "Ύμνοι/Εις_Δία" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
-
-        window.onload = function() {
-            renderNestedCatalog('latin');
-            renderNestedCatalog('greek');
-            lucide.createIcons(); 
-            
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = () => { STATE.audio.synth.getVoices(); };
-            }
-        };
-
-        function showToast(msg) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast'; toast.innerText = msg;
-            container.appendChild(toast);
-            void toast.offsetWidth;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
-        }
-
-        function switchTab(lang) {
-            document.getElementById('tab-latin').classList.toggle('active', lang === 'latin');
-            document.getElementById('tab-greek').classList.toggle('active', lang === 'greek');
-            document.getElementById('list-latin').classList.toggle('hidden', lang !== 'latin');
-            document.getElementById('list-greek').classList.toggle('hidden', lang !== 'greek');
-            STATE.lang = lang === 'latin' ? 'la' : 'grc';
-            filterLibrary();
-        }
-
-        function toggleAccordion(btn) { btn.parentElement.classList.toggle('open'); }
-        function toggleSubAccordion(btn) { btn.parentElement.classList.toggle('open'); }
-        function toggleSidebarLeft() { document.getElementById('sidebar-left').classList.toggle('collapsed'); }
 
         function handleSearchInput(event) {
             if (event.key === "Enter") {
@@ -516,7 +462,8 @@
             }
         }
 
-        async proxyFetchHTML(url) {
+        // FIX: Se inyecta correctamente el keyword 'function' ausente en la versión previa
+        async function proxyFetchHTML(url) {
             try {
                 const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
                 const res = await fetch(proxyUrl);
@@ -531,30 +478,6 @@
                 } catch (e2) {
                     return null;
                 }
-            }
-        }
-
-        async function fetchWikisourceAPI(lang, title) {
-            if (MEMORIA_ESTATICA[title]) {
-                return MEMORIA_ESTATICA[title]; 
-            }
-            const wikiLang = lang === 'grc' ? 'el' : lang;
-            const url = `https://${wikiLang}.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1`;
-            try {
-                const res = await fetch(url);
-                const data = await res.json();
-                if (data.parse && data.parse.text) return data.parse.text['*'];
-                return null;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function retryLoad() {
-            if(STATE.currentExternalUrl) {
-                loadExternalUrl(STATE.currentExternalUrl);
-            } else if(STATE.retryParams) {
-                loadText(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
             }
         }
 
@@ -894,7 +817,8 @@
                         let pofs = inf.pofs?.$||''; let case_ = inf.case?.$||''; let num = inf.num?.$||'';
                         let stem = inf.stem?.$||''; let term = inf.term?.$||'';
                         
-                        let uniqueKey = `${stem}-${term}-${pofs}-${case_}-${num}`; // CORREGIDO TYPO
+                        // FIX: Se subsana la referencia rota de 'temp' apuntando al puntero lógico correcto 'stem'
+                        let uniqueKey = `${stem}-${term}-${pofs}-${case_}-${num}`; 
                         if(!uniqueMorphs.has(uniqueKey)) {
                             uniqueMorphs.add(uniqueKey);
                             htmlParts.push(`<div class="mb-3 border-b border-[#333] pb-2"><span class="text-gray-500">${stem}<strong class="text-[#D4AF37]">${term}</strong></span><p class="text-xs text-gray-400 uppercase mt-1">${pofs} ${case_} ${num}</p></div>`);
@@ -1003,6 +927,7 @@
             if (STATE.audio.reading) { const currentIdx = STATE.audio.idx; stopAudio(); startAudioChunking(currentIdx); }
         }
 
+        // CONTROLADOR DE AUDIO TTS CON TRANSPOSICIÓN ERASMIANA AVANZADA
         function toggleAudio() {
             if (STATE.audio.reading) return; 
 
@@ -1012,7 +937,6 @@
             let chunkMap = []; 
             let currentSentence = "";
             let currentEls = [];
-            
             const endOfSentence = /[.!?;·\n]+/;
 
             tokens.forEach(t => {

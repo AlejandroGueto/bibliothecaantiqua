@@ -46,6 +46,7 @@
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-full { background: #404040; border-radius: 3px; }
         ::-webkit-scrollbar-thumb { background: #404040; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #52525B; }
 
@@ -120,38 +121,32 @@
         <header class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0 shadow-md z-10 w-full">
             <div class="flex items-center gap-3 overflow-hidden">
                 <button onclick="toggleSidebarLeft()" class="text-gray-400 hover:text-white p-1 rounded hover:bg-[#333] transition shrink-0"><i data-lucide="library" class="w-5 h-5"></i></button>
-                <div id="current-meta" class="font-cinzel text-sm text-gray-300 tracking-wide truncate whitespace-nowrap">Esperando inicialización del papiro...</div>
+                <div id="current-meta" class="font-cinzel text-sm text-gray-300 tracking-wide truncate whitespace-nowrap">Esperando papiro...</div>
             </div>
 
-            <div class="flex items-center gap-2">
-                <button onclick="openManualInputModal()" class="p-1.5 px-3 border border-[#444] text-xs font-cinzel uppercase tracking-wider rounded text-gray-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition shrink-0 flex items-center gap-1.5" title="Cargar Texto Manual">
-                    <i data-lucide="file-plus"></i> <span class="hidden sm:inline">Inyectar Manuscrito</span>
-                </button>
-
-                <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0 ml-2">
-                    <div class="flex items-center bg-[#121212] rounded px-1">
-                        <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir Fonética">
-                            <i data-lucide="play" class="w-4 h-4"></i>
-                        </button>
-                        <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio">
-                            <i data-lucide="square" class="w-4 h-4 fill-current"></i>
-                        </button>
-                        <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1" title="Velocidad">
-                            <option value="0.6">0.6x</option><option value="0.75" selected>0.75x</option><option value="0.9">0.9x</option>
-                        </select>
-                    </div>
-                    
-                    <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                    <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
-                    
-                    <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                    <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
-                        <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
+            <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0 ml-2">
+                <div class="flex items-center bg-[#121212] rounded px-1">
+                    <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir Fonética">
+                        <i data-lucide="play" class="w-4 h-4"></i>
                     </button>
-                    
-                    <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                    <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm"><i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span></button>
+                    <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio">
+                        <i data-lucide="square" class="w-4 h-4 fill-current"></i>
+                    </button>
+                    <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1" title="Velocidad">
+                        <option value="0.6">0.6x</option><option value="0.75" selected>0.75x</option><option value="0.9">0.9x</option>
+                    </select>
                 </div>
+                
+                <div class="w-px h-4 bg-gray-700 mx-1"></div>
+                <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
+                
+                <div class="w-px h-4 bg-gray-700 mx-1"></div>
+                <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
+                    <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
+                </button>
+                
+                <div class="w-px h-4 bg-gray-700 mx-1"></div>
+                <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm"><i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span></button>
             </div>
         </header>
 
@@ -193,43 +188,6 @@
         
         <div id="right-backdrop" onclick="closeRightPanel()"></div>
     </main>
-
-    <div id="manual-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-[#171717] border border-[#333] w-full max-w-2xl rounded-lg shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
-            <div class="p-4 bg-[#111] border-b border-[#333] flex justify-between items-center">
-                <h3 class="font-cinzel text-[#D4AF37] font-bold uppercase tracking-widest text-sm">Inyector de Texto Local</h3>
-                <button onclick="closeManualInputModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-6 space-y-4 overflow-y-auto flex-1">
-                <div id="manual-target-indicator" class="text-xs font-cinzel text-[#D4AF37] bg-[#222] p-2 rounded border border-[#333] hidden"></div>
-                <div>
-                    <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Texto Original (Latín o Griego)</label>
-                    <textarea id="manual-original-input" rows="6" placeholder="Pega el texto clásico original aquí..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
-                </div>
-                <div>
-                    <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Traducción al Español de Reemplazo</label>
-                    <textarea id="manual-translation-input" rows="5" placeholder="Pega tu traducción mejorada aquí..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
-                </div>
-                <div class="flex gap-4">
-                    <div class="flex-1">
-                        <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Idioma</label>
-                        <select id="manual-lang" class="w-full bg-[#101010] border border-[#333] rounded p-2 text-gray-300 focus:outline-none focus:border-[#D4AF37]">
-                            <option value="la">Latín (la)</option>
-                            <option value="grc">Griego Antiguo (grc)</option>
-                        </select>
-                    </div>
-                    <div class="flex-1">
-                        <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Metadatos / Fragmento</label>
-                        <input type="text" id="manual-meta" placeholder="Ej: Cicerón, Catilina I, 1-2" class="w-full bg-[#101010] border border-[#333] rounded p-2 text-gray-300 focus:outline-none focus:border-[#D4AF37] font-serif">
-                    </div>
-                </div>
-            </div>
-            <div class="p-4 bg-[#111] border-t border-[#333] flex justify-end gap-3 shadow-inner">
-                <button onclick="closeManualInputModal()" class="px-4 py-2 border border-[#444] rounded text-gray-400 text-xs font-cinzel uppercase tracking-wider hover:bg-[#222] transition">Cancelar</button>
-                <button onclick="injectManualText()" class="px-5 py-2 bg-[#991B1B] text-white rounded text-xs font-cinzel uppercase tracking-wider hover:bg-[#7f1616] transition font-bold shadow-md">Procesar e Inyectar</button>
-            </div>
-        </div>
-    </div>
 
     <aside id="sidebar-right">
         <div class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0">
@@ -287,6 +245,29 @@
     <div id="toast-container"></div>
 
     <script>
+        // HOISTING CORRECTO: Las funciones constructoras del catálogo van ARRIBA DEL TODO
+        function generateBooks(prefix, count, romanFormat, pathBase, esPathBase) {
+            const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XX4"];
+            const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
+            let list = [];
+            for(let i=0; i<count; i++) {
+                let suffix = romanFormat === "Roman" ? roman[i] : (romanFormat === "Greek" ? greek[i] : (i+1));
+                let esSuffix = (esPathBase && esPathBase.includes("Libro_")) ? roman[i] : (i+1); 
+                
+                list.push({
+                    title: `${prefix} ${suffix}`, 
+                    search: suffix,
+                    arabic: i+1,
+                    path: pathBase ? `${pathBase}${suffix}` : null,
+                    esPath: esPathBase ? (esPathBase.endsWith("_") ? `${esPathBase}${esSuffix}` : `${esPathBase}${suffix}`) : null
+                });
+            }
+            return list;
+        }
+
+        /* =========================================================================
+           === CORPUS PROPIO: TU BASE DE DATOS FILOLÓGICA PARA EXPEDIENTE ROMA ===
+           ========================================================================= */
         const CORPUS_PROPIO = {
             "In_L._Catilinam_oratio_prima_habita_in_senatu": {
                 original: `<p><b>[I]</b> Quo usque tandem abutere, Catilina, patientia nostra? quam diu etiam furor iste tuus nos eludet? quem ad finem sese effrenata iactabit audacia? Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae, nihil timor populi, nihil concursus bonorum omnium, nihil hic munitissimus habendi senatus locus, nihil horum ora vultusque moverunt?</p>`,
@@ -298,6 +279,7 @@
             }
         };
 
+        // OBJETO CATALOGADO SIN REFERENCE ERRORS
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -397,16 +379,16 @@
                     { baseTitle: "Res Publica (Politeia)", books: generateBooks("Liber", 10, "Greek", "Πολιτεία/", "La_república:_Libro_") }
                 ]},
                 { author: "Sophocles", authorEs: "Sófocles", works: [
-                    { baseTitle: "Oedipus Rex", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Οιδίπους_Τύραννος", esPath: "Edipo_rey" }] },
-                    { baseTitle: "Antigone", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αντιγόνη", esPath: "Antígona_(Sófocles)" }] },
-                    { baseTitle: "Ajax", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αίας", esPath: "Áyax" }] }
+                    { baseTitle: "Oedipus Rex", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Edipo_rey" }] },
+                    { baseTitle: "Antigone", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Antígona_(Sófocles)" }] },
+                    { baseTitle: "Ajax", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Áyax" }] }
                 ]},
                 { author: "Euripides", authorEs: "Eurípides", works: [
-                    { baseTitle: "Medea", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Μήδεια_(Ευριpίδη)", esPath: "Medea" }] },
+                    { baseTitle: "Medea", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Medea" }] },
                     { baseTitle: "Bacchae", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Βάκχαι" }] }
                 ]},
                 { author: "Herodotus", authorEs: "Heródoto", works: [
-                    { baseTitle: "Historiae", books: generateBooks("Liber", 9, "Roman", "Ιστορίαι_(Ηροδόتو)/", "Los_nueve_libros_de_la_Historia:_Libro_") }
+                    { baseTitle: "Historiae", books: generateBooks("Liber", 9, "Roman", "Ιστορίαι_(Ηροδότου)/", "Los_nueve_libros_de_la_Historia:_Libro_") }
                 ]},
                 { author: "Thucydides", authorEs: "Tucídides", works: [
                     { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πελοποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
@@ -417,8 +399,8 @@
                     { baseTitle: "Politica", books: generateBooks("Liber", 8, "Greek", "Πολιτικά/", "La_Política:_Libro_") }
                 ]},
                 { author: "Aeschylus", authorEs: "Esquilo", works: [
-                    { baseTitle: "Prometheus Vinctus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Προμηθεύς_Δεσμώτης", esPath: "Prometeo_encadenado" }] },
-                    { baseTitle: "Agamemnon", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αγαμέμνων", esPath: "Agamenón" }] }
+                    { baseTitle: "Prometheus Vinctus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Prometeo_encadenado" }] },
+                    { baseTitle: "Agamemnon", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Agamenón" }] }
                 ]},
                 { author: "Aristophanes", authorEs: "Aristófanes", works: [
                     { baseTitle: "Nubes", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Las_nubes" }] },
@@ -430,7 +412,7 @@
                     { baseTitle: "Pythia", books: generateBooks("Oda", 12, "Roman", "Πυθιόνικοι/") }
                 ]},
                 { author: "Hesiodus", authorEs: "Hesíodo", works: [
-                    { baseTitle: "Theogonia", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Θεογονία", esPath: "Teogonía" }] },
+                    { baseTitle: "Theogonia", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Θεογονία" }] },
                     { baseTitle: "Opera et Dies", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Έργα_και_Ημέραι", esPath: "Los_trabajos_y_los_días" }] }
                 ]},
                 { author: "Xenophon", authorEs: "Jenofonte", works: [
@@ -440,10 +422,10 @@
                     { baseTitle: "Vitae Parallelae", books: [{ title: "Alexander", search: "Αλέξανδρος", arabic: 1, path: "Βίοι_Παράλληλοι/Αλέξανδρος" }, { title: "Caesar", search: "Καίσαρ", arabic: 2, path: "Βίοι_Παράλληλοι/Καίσαρ" }] }
                 ]},
                 { author: "Demosthenes", authorEs: "Demóstenes", works: [
-                    { baseTitle: "Philippicae", books: generateBooks("Oratio", 3, "Roman", "Κατά_Φιλíππου_") }
+                    { baseTitle: "Philippicae", books: generateBooks("Oratio", 3, "Roman", "Κατά_Φιλίππου_") }
                 ]},
                 { author: "Isocrates", authorEs: "Isócrates", works: [
-                    { baseTitle: "Panegyricus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Πανηγυρικός" }] }
+                    { baseTitle: "Panegyricus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Πανηγurικός" }] }
                 ]},
                 { author: "Lysias", authorEs: "Lisias", works: [
                     { baseTitle: "Contra Eratosthenem", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Κατά_Eratοσθένους" }] }
@@ -458,64 +440,35 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
                 { author: "Callimachus", authorEs: "Calímaco", works: [
-                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δία", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δía", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
 
-        function openManualInputModal() {
-            const ind = document.getElementById('manual-target-indicator');
-            if (STATE.retryParams) {
-                const aut = CATALOG[STATE.retryParams.langCat][STATE.retryParams.aIndex];
-                const wrk = aut.works[STATE.retryParams.wIndex];
-                const bk = wrk.books[STATE.retryParams.bIndex];
-                ind.innerText = `Asociando a: ${aut.author} / ${wrk.baseTitle} - ${bk.title}`;
-                ind.classList.remove('hidden');
-            } else {
-                ind.classList.add('hidden');
-            }
-            document.getElementById('manual-modal').classList.remove('hidden');
-        }
+        const STATE = {
+            lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0,
+            audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
+            lastClickedWord: null, retryParams: null
+        };
 
-        function closeManualInputModal() {
-            document.getElementById('manual-modal').classList.add('hidden');
-        }
-
-        function injectManualText() {
-            const originalText = document.getElementById('manual-original-input').value.trim();
-            const translationText = document.getElementById('manual-translation-input').value.trim();
-            const selectedLang = document.getElementById('manual-lang').value;
-            const metaInfo = document.getElementById('manual-meta').value.trim() || "Manuscrito Personalizado";
-
-            if(!originalText) {
-                showToast("El texto original es obligatorio.");
-                return;
-            }
-
-            stopAudio();
-            closeRightPanel();
-            closeManualInputModal();
-
-            const parsedOriginal = originalText.replace(/\n/g, '<br>');
-            const parsedTranslation = translationText ? translationText.replace(/\n/g, '<br>') : "<p class='opacity-40 italic text-gray-500 text-xs'>Traducción libre ausente.</p>";
-
-            STATE.lang = selectedLang;
-            setFetchState('fetching', 'Procesando interactividad local...');
+        window.onload = function() {
+            renderNestedCatalog('latin');
+            renderNestedCatalog('greek');
+            lucide.createIcons(); 
             
-            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${metaInfo}</span>`;
-            document.getElementById('reader-tools').classList.remove('hidden');
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => { STATE.audio.synth.getVoices(); };
+            }
+        };
 
-            document.getElementById('pane-original').innerHTML = parsedOriginal;
-            document.getElementById('trans-text-body').innerHTML = parsedTranslation;
-
-            setTimeout(async () => {
-                STATE.currentTaskId++;
-                await tokenizeSafeDOMAsync(document.getElementById('pane-original'), STATE.currentTaskId);
-                setFetchState('done');
-                lucide.createIcons();
-                document.getElementById('manual-original-input').value = '';
-                document.getElementById('manual-translation-input').value = '';
-            }, 50);
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast'; toast.innerText = msg;
+            container.appendChild(toast);
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
         function switchTab(lang) {
@@ -538,7 +491,7 @@
                 html += `
                 <div class="mb-1 author-block">
                     <button onclick="toggleAccordion(this)" class="w-full text-left px-3 py-2.5 rounded hover:bg-[#262626] flex items-center justify-between transition group">
-                        <span class="font-cinzel text-sm text-gray-200 font-bold">${authorNode.author}</span>
+                        <span class="font-cinzel text-sm text-gray-200 font-bold">${authorNode.authorEs || authorNode.author}</span>
                         <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-gray-500"></i>
                     </button>
                     <div class="accordion-content pl-4 pr-2 py-1 space-y-1 border-l border-[#333] ml-3 mt-1">
@@ -581,7 +534,7 @@
             document.getElementById('no-results').classList.toggle('hidden', hasResults);
         }
 
-        // CORRECCIÓN RADICAL DE SINTAXIS (Faltaba la palabra reservada 'function')
+        // CORRECCIÓN DE ERROR FATAL: Inyección explícita y obligatoria de la palabra clave 'function'
         async function proxyFetchHTML(url) {
             try {
                 const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
@@ -613,6 +566,12 @@
             }
         }
 
+        function retryLoad() {
+            if(STATE.retryParams) {
+                loadText(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
+            }
+        }
+
         async function loadText(langCat, aIndex, wIndex, bIndex) {
             const taskId = ++STATE.currentTaskId; 
             stopAudio();
@@ -628,8 +587,8 @@
             STATE.work = book; 
             STATE.authorEs = author.authorEs || author.author;
             STATE.currentWorkStr = work.baseTitle;
-            
-            setFetchState('fetching', `Cargando papiro...`);
+
+            setFetchState('fetching', `Cargando papiro clásico...`);
             document.getElementById('pane-original').innerHTML = '';
             
             if (STATE.bilingual) {
@@ -637,10 +596,10 @@
                 document.getElementById('trans-loading').classList.remove('hidden');
             }
 
-            // CARGA DEL CORPUS PROPIO: Intercepción directa sin conexiones externas
+            // PRIORIDAD 1: Si la obra está definida en el objeto CORPUS_PROPIO del script, cancela la descarga de red
             if (CORPUS_PROPIO[book.path]) {
                 const manualData = CORPUS_PROPIO[book.path];
-                document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title} (Corpus Integrado)`;
+                document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.authorEs}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title} (Corpus Integrado)`;
                 document.getElementById('reader-tools').classList.remove('hidden');
                 document.getElementById('pane-original').innerHTML = manualData.original;
                 document.getElementById('trans-text-body').innerHTML = manualData.translation;
@@ -660,7 +619,7 @@
                 return;
             }
             
-            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title}`;
+            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.authorEs}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title}`;
             document.getElementById('reader-tools').classList.remove('hidden');
 
             try {
@@ -683,7 +642,7 @@
                     } catch(e) {}
                 }
 
-                if (!htmlContent) throw new Error("Recurso no indexado en servidor externo.");
+                if (!htmlContent) throw new Error("Obra no localizada en red. Modifica el objeto CORPUS_PROPIO en tu script.");
 
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlContent, 'text/html');
@@ -771,6 +730,7 @@
                     const sRes = await fetch(searchUrl);
                     const sData = await sRes.json();
                     if (sData.query && sData.query.search && sData.query.search.length > 0) {
+                        // FILTRO ESTRICTO ANTICORRUPCIÓN: Extermina las suplantaciones de obras ajenas (como La Celestina)
                         const bestHits = sData.query.search.filter(r => {
                             const titleLower = r.title.toLowerCase();
                             return r.ns === 0 && !titleLower.includes("wikisource:") && 

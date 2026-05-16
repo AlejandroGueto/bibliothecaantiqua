@@ -672,8 +672,20 @@
             const rawText = canvas.innerText;
             if(!rawText || rawText.trim().length < 5) return;
 
-            // Split into sentences using proper punctuation boundaries
-            sentences = rawText.match(/[^.!?;·]+[.!?;·]+/g) || [rawText];
+            // Split into sentences using proper punctuation and newline boundaries
+            let rawSentences = rawText.match(/[^.!?;·\n]+[.!?;·\n]+/g) || [rawText];
+            sentences = [];
+            
+            // Prevent TTS crash by sub-chunking excessively long strings
+            rawSentences.forEach(s => {
+                if(s.length > 250) {
+                    let subParts = s.match(/[^,;]+[,;]+/g) || [s];
+                    sentences.push(...subParts);
+                } else {
+                    sentences.push(s);
+                }
+            });
+
             if(sentences.length === 0) return;
 
             isReading = true;
@@ -685,8 +697,8 @@
         }
 
         function stopAudio() {
-            synth.cancel();
             isReading = false;
+            synth.cancel();
             currentSentenceIdx = -1;
             document.getElementById('audio-icon').setAttribute('data-lucide', 'play');
             lucide.createIcons();
@@ -700,7 +712,11 @@
             }
 
             let textToRead = sentences[currentSentenceIdx].trim();
-            if(!textToRead) { currentSentenceIdx++; playSentence(); return; }
+            if(!textToRead) { 
+                currentSentenceIdx++; 
+                setTimeout(playSentence, 10); 
+                return; 
+            }
 
             // PHONETIC PRE-PROCESSING (Restituta for Latin)
             if (currentLang === 'la') {
@@ -726,15 +742,27 @@
             utterance.onstart = () => highlightSentence(sentences[currentSentenceIdx]);
             
             utterance.onend = () => {
+                if (!isReading) return;
                 currentSentenceIdx++;
-                playSentence();
+                setTimeout(playSentence, 50); // Pause slightly between sentences
             };
 
             utterance.onerror = (e) => {
+                // Browser TTS engines often throw 'canceled' or 'interrupted' when stopped manually or if speed is changed.
+                if (e.error === 'canceled' || e.error === 'interrupted') return;
+                
                 console.error("Audio Error:", e);
-                stopAudio();
+                
+                // If it's a genuine error (e.g. text too long), skip the faulty sentence instead of crashing
+                if (isReading) {
+                    currentSentenceIdx++;
+                    setTimeout(playSentence, 50);
+                }
             };
 
+            // Keep global reference to prevent Chrome Garbage Collection bug that cuts off audio
+            window._voxUtterance = utterance;
+            
             synth.speak(utterance);
         }
 
@@ -743,7 +771,7 @@
             document.getElementById('audio-speed').innerText = playbackRate.toFixed(1) + 'x';
             if (isReading) {
                 synth.cancel(); // Interrupt current utterance
-                playSentence(); // Restart with new speed
+                setTimeout(playSentence, 100); // Restart with new speed
             }
         }
 

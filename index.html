@@ -544,9 +544,40 @@
                 const rawText = document.getElementById('reading-canvas').innerText;
                 if(rawText.trim().length < 5 || rawText.includes("Selecciona un volumen")) return;
                 
-                document.getElementById('translation-content').innerHTML = '<div class="spinner mx-auto mt-10"></div><p class="text-center mt-4 font-mono text-xs uppercase tracking-widest text-academy-500">Traduciendo manuscrito...</p>';
+                document.getElementById('translation-content').innerHTML = '<div class="spinner mx-auto mt-10"></div><p class="text-center mt-4 font-mono text-xs uppercase tracking-widest text-academy-500">Buscando traducción literaria en repositorios...</p>';
                 
                 try {
+                    // ESTRATEGIA PRIMARIA: Buscar traducción humana real en es.wikisource
+                    let currentTitle = document.getElementById('reader-title').innerText;
+                    let author = document.getElementById('reader-author').innerText;
+                    let searchQuery = `${author} ${currentTitle.replace(/-/g, ' ')}`;
+                    
+                    const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQuery)}&utf8=1&format=json&origin=*`;
+                    const searchResp = await fetch(searchUrl);
+                    const searchData = await searchResp.json();
+
+                    if (searchData.query && searchData.query.search.length > 0) {
+                        const topTitle = searchData.query.search[0].title;
+                        const pageUrl = `https://es.wikisource.org/w/api.php?action=parse&format=json&page=${encodeURIComponent(topTitle)}&prop=text&redirects=1&origin=*`;
+                        const pageResp = await fetch(pageUrl);
+                        const pageData = await pageResp.json();
+
+                        if(pageData.parse && pageData.parse.text) {
+                            const htmlRaw = pageData.parse.text['*'];
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(htmlRaw, 'text/html');
+                            const container = doc.querySelector('.mw-parser-output');
+                            
+                            const selectorsToRemove = ['script', 'style', 'figure', 'table', 'sup', '.mw-editsection', '.sidenote', '.navbox', 'img', '.toc', '.ws-noexport', '.header', '.footer', '.dropinitial', '.prp-page-quality', '.reference'];
+                            container.querySelectorAll(selectorsToRemove.join(', ')).forEach(e => e.remove());
+
+                            document.getElementById('translation-content').innerHTML = container.innerHTML;
+                            return; // Terminamos aquí si encuentra la traducción de calidad
+                        }
+                    }
+
+                    // ESTRATEGIA SECUNDARIA: Fallback a red neuronal si la obra no está traducida en el repositorio
+                    document.getElementById('translation-content').innerHTML = '<div class="spinner mx-auto mt-10"></div><p class="text-center mt-4 font-mono text-xs uppercase tracking-widest text-academy-500">Traducción literaria no hallada. Activando Oráculo Neuronal...</p>';
                     const chunks = rawText.match(/[\s\S]{1,1000}(?!\S)/g) || [rawText];
                     let translatedText = '';
                     
@@ -558,7 +589,7 @@
                     
                     document.getElementById('translation-content').innerHTML = translatedText.replace(/\n/g, '<br><br>');
                 } catch (e) {
-                    document.getElementById('translation-content').innerHTML = '<p class="text-red-500 text-center italic mt-10">Error al conectar con el oráculo de traducción. Comprueba tu conexión a internet.</p>';
+                    document.getElementById('translation-content').innerHTML = '<p class="text-red-500 text-center italic mt-10">Error al conectar con los repositorios de traducción. Comprueba tu conexión a internet.</p>';
                 }
             } else {
                 panel.classList.add('hidden');
@@ -678,12 +709,48 @@
             document.getElementById('analysis-result').classList.remove('hidden');
             
             document.getElementById('morph-word').innerText = displayWord;
-            document.getElementById('morph-lemma').innerText = "Forma Irregular / Invariable";
+            document.getElementById('morph-lemma').innerText = "Consultando Oráculos Externos...";
             document.getElementById('morph-structure-container').style.display = 'none';
-            document.getElementById('morph-table').innerHTML = `<tr><td class="p-4 text-academy-500 text-center italic font-serif">Morpheus no dispone de un análisis exacto para esta grafía. Consulte el diccionario.</td></tr>`;
+            document.getElementById('morph-table').innerHTML = `<tr><td class="p-4 text-center"><div class="spinner mx-auto mb-2"></div><span class="text-xs text-academy-500">Extrayendo datos de Perseus Digital Library...</span></td></tr>`;
             
             document.getElementById('dict-btn-logeion').href = `https://logeion.uchicago.edu/${encodeURIComponent(displayWord)}`;
             document.getElementById('dict-btn-perseus').href = `http://www.perseus.tufts.edu/hopper/morph?l=${encodeURIComponent(displayWord)}&la=${currentLang==='la'?'la':'greek'}`;
+
+            // NUEVA ESTRATEGIA: Buscar directamente en Perseus si Perseids (Morpheus) falla
+            (async () => {
+                try {
+                    const perseusUrl = `http://www.perseus.tufts.edu/hopper/morph?l=${encodeURIComponent(displayWord)}&la=${currentLang==='la'?'la':'greek'}`;
+                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(perseusUrl)}`;
+                    const resp = await fetch(proxyUrl);
+                    const data = await resp.json();
+
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data.contents, 'text/html');
+                    const lemmas = doc.querySelectorAll('.lemma');
+
+                    if (lemmas.length > 0) {
+                        let tableHtml = "";
+                        let firstLemma = lemmas[0].querySelector('.lemma_header')?.textContent.trim().replace(/\d+$/, '') || "Hallazgo en Perseus";
+                        document.getElementById('morph-lemma').innerText = firstLemma;
+
+                        lemmas.forEach(lemma => {
+                            const analyses = lemma.querySelectorAll('table tbody tr');
+                            analyses.forEach(tr => {
+                                const td = tr.querySelectorAll('td');
+                                if (td.length >= 2) {
+                                    tableHtml += `<tr class="border-b border-academy-200 dark:border-academy-800 last:border-0"><th class="py-3 px-4 text-academy-500 dark:text-academy-400 font-medium w-2/5 bg-academy-50 dark:bg-academy-900/50 text-[10px] uppercase tracking-wider">${td[0].textContent.trim()}</th><td class="py-3 px-4 text-academy-900 dark:text-academy-100 capitalize font-medium">${td[1].textContent.trim()}</td></tr>`;
+                                }
+                            });
+                        });
+                        document.getElementById('morph-table').innerHTML = tableHtml;
+                    } else {
+                        throw new Error("No hallado");
+                    }
+                } catch (e) {
+                    document.getElementById('morph-lemma').innerText = "Forma Irregular / No documentada";
+                    document.getElementById('morph-table').innerHTML = `<tr><td class="p-4 text-academy-500 text-center italic font-serif">Las bases externas no disponen de un análisis para esta grafía. Consulte Logeion.</td></tr>`;
+                }
+            })();
         }
 
         // ==========================================
@@ -779,12 +846,13 @@
             if (currentLang === 'la') {
                 textToRead = textToRead.toLowerCase()
                     .replace(/qu/g, 'cu') // suena /kw/
-                    .replace(/c([eiy]|ae|oe)/g, 'qu$1') // c fuerte ante e/i
-                    .replace(/g([eiy]|ae|oe)/g, 'gu$1') // g fuerte ante e/i
-                    .replace(/v/g, 'u') // v como vocal/semivocal
+                    .replace(/c/g, 'k')   // C siempre oclusiva /k/
+                    .replace(/v/g, 'u')   // V como semivocal /w/ o /u/
+                    .replace(/g([eiy])/g, 'gu$1') // G siempre suave /g/ ante e/i
                     .replace(/ph/g, 'f').replace(/ch/g, 'k').replace(/th/g, 't')
-                    .replace(/ae/g, 'ae').replace(/oe/g, 'oe')
-                    .replace(/ll/g, 'l l'); // Evitar 'elle' española
+                    .replace(/ae/g, 'ai').replace(/oe/g, 'oi') // Diptongos clásicos puros
+                    .replace(/x/g, 'ks')
+                    .replace(/ll/g, 'l'); // Evitar doble L española (evita cortes de audio)
             } else if (currentLang === 'grc') {
                 textToRead = transliterateGreekToPhonetic(textToRead);
             }
@@ -912,13 +980,13 @@
             const counts = {};
             spans.forEach(span => {
                 let original = span.getAttribute('data-original') || span.textContent;
-                // SOLO limpiamos comillas residuales. NO tocamos acentos ni normalizamos NFD.
-                let w = original.toLowerCase().replace(/^['"‘“]+|['"’”]+$/g, '').trim();
+                // Formateamos en NFC para respetar absolutamente toda la composición Unicode (acentos, espíritus, apóstrofes) sin desmembrar las palabras
+                let w = original.normalize("NFC").toLowerCase().trim();
                 
-                // Quitamos acentos de las stop words para comparar, pero GUARDAMOS la palabra intacta
-                let wCompare = w.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                // Quitamos acentos SOLO de la copia de comparación para cruzar con stop words
+                let wCompare = w.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/['’]/g, '');
                 
-                if (w.length > 2 && !stopsLa.includes(wCompare) && !stopsGrc.includes(wCompare)) {
+                if (w.length > 1 && !stopsLa.includes(wCompare) && !stopsGrc.includes(wCompare)) {
                     if(!counts[w]) counts[w] = { word: w, count: 0 };
                     counts[w].count++;
                 }

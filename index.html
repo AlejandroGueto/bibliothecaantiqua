@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bibliotheca Antiqua PRO - Edición Definitiva</title>
+    <title>Bibliotheca Antiqua PRO - Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -37,16 +37,16 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #404040; border-radius: 3px; }
 
-        .reading-text { font-size: 1.35rem; line-height: 2.2; text-align: justify; }
+        .reading-text { font-size: 1.35rem; line-height: 2.2; text-align: justify; padding-bottom: 50vh; }
         @media (min-width: 1280px) { .reading-text { font-size: 1.5rem; line-height: 2.4; } }
 
         .word-token { cursor: pointer; transition: all 0.2s ease; border-radius: 3px; padding: 0 2px; margin: 0 -2px; display: inline-block; position: relative; }
         .word-token:hover { background-color: rgba(153, 27, 27, 0.3); color: #fff; }
         .audio-active { background-color: rgba(212, 175, 55, 0.4) !important; color: #fff !important; border-radius: 4px; box-shadow: 0 0 10px rgba(212,175,55,0.2); transition: all 0.1s ease; }
 
-        /* Métrica rediseñada: Sutil, dorada, sin parecer un error de corrección */
-        .scansio-long { color: var(--accent-gold); font-weight: 700; pointer-events: none; }
-        .scansio-short { opacity: 0.8; pointer-events: none; }
+        /* Métrica blindada: pointer-events: none evita que el clic lea la etiqueta HTML en vez del texto */
+        .scansio-long { color: var(--accent-red); font-weight: 700; pointer-events: none; }
+        .scansio-short { color: #6b7280; pointer-events: none; }
 
         #reading-area { flex: 1; display: flex; overflow: hidden; position: relative; height: calc(100vh - 3.5rem); }
         .split-pane { flex: 1; overflow-y: auto; padding: 2rem 3rem; height: 100%; box-sizing: border-box; }
@@ -54,8 +54,8 @@
         #pane-original { width: 100%; transition: width 0.3s ease; }
         #pane-original.half { width: 50%; max-width: 50%; border-right: 1px solid var(--border-color); }
         
-        #pane-translation { display: none; background: var(--bg-dark); color: var(--text-main); width: 50%; max-width: 50%; border-left: 1px solid var(--border-color); }
-        #pane-translation.active { display: flex; flex-direction: column; }
+        #pane-translation { display: none; background: var(--bg-dark); color: var(--text-main); width: 50%; max-width: 50%; border-left: 1px solid var(--border-color); flex-direction: column;}
+        #pane-translation.active { display: flex; }
 
         .accordion-content, .sub-accordion-content { display: none; }
         .open > .accordion-content, .open > .sub-accordion-content { display: block; }
@@ -67,10 +67,6 @@
         .loader-ring div { box-sizing: border-box; display: block; position: absolute; width: 54px; height: 54px; margin: 5px; border: 4px solid var(--accent-gold); border-radius: 50%; animation: loader-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; border-color: var(--accent-gold) transparent transparent transparent; }
         .loader-ring div:nth-child(1) { animation-delay: -0.45s; } .loader-ring div:nth-child(2) { animation-delay: -0.3s; } .loader-ring div:nth-child(3) { animation-delay: -0.15s; }
         @keyframes loader-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* PURGA DE WIKISOURCE: Bloqueo de elementos basura */
-        .mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table, .ws-noexport, 
-        .wst-poem-header, .ws-header, .ext-phonos, sup.reference, .wst-navbox, .metadata, .ambox, .navbox-title, .navbox-abovebelow { display: none !important; }
         
         .poem { margin-left: 2rem; margin-bottom: 1.5rem; }
         .poem p { margin-bottom: 0.2rem; }
@@ -78,11 +74,13 @@
         #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100; pointer-events: none; }
         .toast { background: rgba(0,0,0,0.9); color: #fff; padding: 12px 24px; border-radius: 8px; margin-top: 10px; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; font-size: 0.9rem; text-align: center; border: 1px solid var(--accent-gold); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .toast.show { opacity: 1; }
+
+        .iframe-container { flex: 1; width: 100%; border: none; background: #fff; }
     </style>
 </head>
 <body>
 
-    <!-- CATÁLOGO LATERAL -->
+    <!-- CATÁLOGO LATERAL (40 AUTORES INTACTOS) -->
     <aside id="sidebar-left">
         <div class="p-4 border-b border-[#333] flex items-center gap-3 bg-[#111] shrink-0">
             <div class="w-8 h-8 bg-[#991B1B] rounded flex items-center justify-center font-cinzel font-bold text-white shadow shrink-0">BA</div>
@@ -116,7 +114,6 @@
             </div>
 
             <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0 ml-2">
-                <!-- Herramientas -->
                 <div class="flex items-center bg-[#121212] rounded px-1">
                     <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Lectura en Voz Alta"><i data-lucide="play" class="w-4 h-4"></i></button>
                     <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio"><i data-lucide="square" class="w-4 h-4 fill-current"></i></button>
@@ -130,7 +127,7 @@
                 <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
                 
-                <button onclick="toggleBilingual()" id="btn-bilingual" class="p-1.5 px-3 text-gray-400 hover:text-[#D4AF37] rounded transition flex items-center gap-2" title="Traducción Simultánea">
+                <button onclick="toggleBilingual()" id="btn-bilingual" class="p-1.5 px-3 text-gray-400 hover:text-[#D4AF37] rounded transition flex items-center gap-2" title="Traducción">
                     <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
                 </button>
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
@@ -142,7 +139,6 @@
         </header>
 
         <div id="reading-area">
-            <!-- Estados del Original -->
             <div id="loading-state" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20">
                 <i data-lucide="book-marked" class="w-16 h-16 text-[#333] mb-4"></i>
                 <h2 class="font-cinzel text-xl text-gray-400 uppercase tracking-widest mb-2">Bibliotheca Antiqua PRO</h2>
@@ -151,31 +147,32 @@
             
             <div id="fetching-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f]/95 backdrop-blur z-20">
                 <div class="loader-ring mb-4"><div></div><div></div><div></div><div></div></div>
-                <p class="font-cinzel text-[#D4AF37] uppercase tracking-widest text-sm" id="fetch-msg">Desplegando papiro...</p>
+                <p class="font-cinzel text-[#D4AF37] uppercase tracking-widest text-sm" id="fetch-msg">Conectando con The Latin Library / Wikisource...</p>
             </div>
 
             <div id="error-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20">
                 <i data-lucide="alert-triangle" class="w-16 h-16 text-red-500 mb-4 opacity-80"></i>
-                <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Papiro no localizado</p>
-                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">La obra no se encuentra digitalizada bajo este formato en Wikisource.</p>
+                <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Error de Conexión</p>
+                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">No se ha podido extraer el texto.</p>
+                <button onclick="retryLoad()" class="mt-6 px-4 py-2 border border-[#333] text-gray-400 hover:text-white hover:bg-[#333] rounded font-cinzel text-xs uppercase transition">Reintentar</button>
             </div>
 
-            <div id="pane-original" class="split-pane reading-text font-greek pb-32"></div>
+            <div id="pane-original" class="split-pane reading-text font-greek"></div>
             
-            <!-- PANEL DE TRADUCCIÓN -->
-            <div id="pane-translation" class="split-pane bg-[#111]">
-                <div id="trans-loading" class="flex flex-col items-center justify-center h-full opacity-50 hidden">
-                    <div class="loader-ring transform scale-50 mb-2"><div></div><div></div><div></div><div></div></div>
-                    <p class="font-cinzel text-sm uppercase tracking-widest text-gray-300">Localizando Traducción...</p>
+            <!-- PANEL DE TRADUCCIÓN INTEGRADO UNIVERSAL -->
+            <div id="pane-translation" class="bg-[#111]">
+                <div class="bg-[#1A1A1A] p-3 border-b border-[#333] flex justify-between items-center shrink-0">
+                    <span class="font-cinzel text-xs text-[#D4AF37] uppercase tracking-widest font-bold" id="trans-title">Traducción Universal</span>
+                    <button onclick="toggleBilingual()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </div>
-                <div id="trans-content" class="reading-text font-serif pb-32 hidden w-full"></div>
+                <iframe id="trans-iframe" class="iframe-container" sandbox="allow-same-origin allow-scripts allow-popups"></iframe>
             </div>
         </div>
         
         <div id="right-backdrop" onclick="closeRightPanel()"></div>
     </main>
 
-    <!-- PANELES DERECHOS -->
+    <!-- ORACULUM Y ESTADÍSTICAS -->
     <aside id="sidebar-right">
         <div class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0">
             <h3 id="right-panel-title" class="font-cinzel text-[#D4AF37] font-bold uppercase tracking-widest text-sm">Oraculum</h3>
@@ -185,7 +182,7 @@
         <div id="panel-oraculum" class="flex-1 overflow-y-auto p-6 hidden-panel">
             <div class="text-center border-b border-[#333] pb-6 mb-6" id="ora-intro">
                 <i data-lucide="microscope" class="w-12 h-12 text-gray-600 mx-auto mb-4 opacity-50"></i>
-                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del texto original para obtener su análisis filológico exacto.</p>
+                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del texto original para obtener su análisis filológico exacto y deduplicado.</p>
             </div>
 
             <div id="ora-loading" class="hidden flex flex-col items-center py-12">
@@ -199,7 +196,7 @@
                     <p id="ora-lemma" class="font-serif text-xl text-[#D4AF37] italic border-b border-[#333] pb-4 inline-block px-4">lema</p>
                 </div>
                 <div class="bg-[#111] border border-[#333] rounded-lg p-5 mb-6 shadow-inner">
-                    <h4 class="font-cinzel text-[10px] text-gray-500 uppercase tracking-widest mb-4 border-b border-[#333] pb-2 flex items-center gap-2"><i data-lucide="layers" class="w-4 h-4"></i> Análisis Morfológico (Deduplicado)</h4>
+                    <h4 class="font-cinzel text-[10px] text-gray-500 uppercase tracking-widest mb-4 border-b border-[#333] pb-2 flex items-center gap-2"><i data-lucide="layers" class="w-4 h-4"></i> Análisis Morfológico Único</h4>
                     <div id="ora-morph" class="font-serif text-gray-300 space-y-3 text-sm leading-relaxed"></div>
                 </div>
                 <div class="space-y-3 mt-8">
@@ -211,8 +208,8 @@
             
             <div id="ora-error" class="hidden text-center py-10">
                 <i data-lucide="alert-circle" class="w-12 h-12 text-red-500/80 mx-auto mb-4"></i>
-                <p class="font-serif text-lg text-gray-300 mb-1">Forma exacta no identificada</p>
-                <p class="font-serif text-sm text-gray-500 mb-8">Posible arcaísmo o enclítico complejo. Utiliza los diccionarios inferiores para la búsqueda directa de la raíz probable.</p>
+                <p class="font-serif text-lg text-gray-300 mb-1">Forma no identificada</p>
+                <p class="font-serif text-sm text-gray-500 mb-8">La API automática no reconoce esta inflexión. Usa los botones inferiores para forzar la búsqueda de la raíz.</p>
                 <div id="fallback-links" class="mt-4 space-y-3 border-t border-[#333] pt-6"></div>
             </div>
         </div>
@@ -222,7 +219,7 @@
                 <h3 class="font-cinzel text-white text-lg flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-[#D4AF37]"></i> Frecuencia Léxica</h3>
                 <button onclick="generateStats()" class="p-2 bg-[#D4AF37] text-black rounded hover:bg-yellow-500 transition shadow" title="Recalcular"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
             </div>
-            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de uso. Conserva la acentuación original.</p>
+            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de uso absoluto.</p>
             <div id="stats-loading" class="hidden text-center py-12"><div class="loader-ring transform scale-50 border-[#D4AF37]"><div></div><div></div><div></div><div></div></div></div>
             <div id="stats-list" class="space-y-2"></div>
         </div>
@@ -231,179 +228,177 @@
     <div id="toast-container"></div>
 
     <script>
-        // ----------------------------------------------------------------------------------
-        // ESTADO GLOBAL
-        // ----------------------------------------------------------------------------------
         const STATE = {
             lang: 'la', currentBook: null, bilingual: false, scansioActive: false,
-            abortController: null, lastClickedWord: null,
+            abortController: null, lastClickedWord: null, retryParams: null,
             audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 }
         };
 
         // ----------------------------------------------------------------------------------
-        // CATÁLOGO ESTRUCTURADO (Rutas estrictas para evitar el caos de búsquedas aleatorias)
+        // CATÁLOGO CON RUTAS A THE LATIN LIBRARY Y WIKISOURCE GRIEGO
         // ----------------------------------------------------------------------------------
-        const generateCatalogBooks = (prefix, count, format) => {
+        const generateBooks = (count, format) => {
             const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
             const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
             let books = [];
             for(let i=0; i<count; i++) {
                 let num = format === "Roman" ? roman[i] : (format === "Greek" ? greek[i] : (i+1));
-                books.push({ title: `${prefix} ${num}`, num: num, arabicNum: i+1 });
+                books.push({ title: `${format === "Greek" ? "Canto" : "Liber"} ${num}`, num: num, n: i+1 });
             }
             return books;
         };
 
         const CATALOG = {
             latin: [
-                { author: "Vergilius", works: [
-                    { title: "Aeneis", books: generateCatalogBooks("Liber", 12, "Roman"), exactPathBase: "Aeneis/Liber_", esPathBase: "La_Eneida_(Ochoa)/Libro_I" }, // Hardcoded fix logic applies later
-                    { title: "Bucolica", books: generateCatalogBooks("Ecloga", 10, "Roman"), exactPathBase: "Bucolica_(Vergilius)/Ecloga_", esPathBase: "Bucólicas_(Ochoa)/Égloga_" },
-                    { title: "Georgica", books: generateCatalogBooks("Liber", 4, "Roman"), exactPathBase: "Georgica/Liber_", esPathBase: "Las_Geórgicas_(Ochoa)/Libro_" }
+                { author: "Vergilius", esAuthor: "Virgilio", works: [
+                    { title: "Aeneis", books: generateBooks(12, "Roman"), tll: "vergil/aen{n}.shtml" },
+                    { title: "Bucolica (Eclogae)", books: generateBooks(10, "Roman"), tll: "vergil/ec{n}.shtml" },
+                    { title: "Georgica", books: generateBooks(4, "Roman"), tll: "vergil/geo{n}.shtml" }
                 ]},
-                { author: "Ovidius", works: [
-                    { title: "Metamorphoses", books: generateCatalogBooks("Liber", 15, "Roman"), exactPathBase: "Metamorphoses_(Ovidius)/Liber_", esPathBase: "Las_metamorfosis_(Ovidio)/Libro_" },
-                    { title: "Ars Amatoria", books: generateCatalogBooks("Liber", 3, "Roman"), exactPathBase: "Ars_amatoria/Liber_", esPathBase: null },
-                    { title: "Tristia", books: generateCatalogBooks("Liber", 3, "Roman"), exactPathBase: "Tristia/Liber_", esPathBase: null }
+                { author: "Ovidius", esAuthor: "Ovidio", works: [
+                    { title: "Metamorphoses", books: generateBooks(15, "Roman"), tll: "ovid/ovid.met{n}.shtml" },
+                    { title: "Ars Amatoria", books: generateBooks(3, "Roman"), tll: "ovid/ovid.artis{n}.shtml" },
+                    { title: "Tristia", books: generateBooks(5, "Roman"), tll: "ovid/ovid.tristia{n}.shtml" }
                 ]},
-                { author: "Cicero", works: [
-                    { title: "In Catilinam", books: generateCatalogBooks("Oratio", 4, "Roman"), exactPathBase: "In_Catilinam_oratio_", esPathBase: "Catilinarias/Oración_" },
-                    { title: "De Amicitia", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Laelius_de_amicitia", esPathBase: "Laelio,_ó_De_la_amistad" },
-                    { title: "De Senectute", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Cato_Maior_de_senectute", esPathBase: "De_la_vejez" }
+                { author: "Cicero", esAuthor: "Cicerón", works: [
+                    { title: "In Catilinam", books: generateBooks(4, "Roman"), tll: "cicero/cat{n}.shtml" },
+                    { title: "De Amicitia", books: [{title: "Omnia", n: 1}], tll: "cicero/amic.shtml" },
+                    { title: "De Senectute", books: [{title: "Omnia", n: 1}], tll: "cicero/senectute.shtml" }
                 ]},
-                { author: "Caesar", works: [
-                    { title: "De Bello Gallico", books: generateCatalogBooks("Liber", 8, "Roman"), exactPathBase: "Commentarii_de_bello_Gallico/Liber_", esPathBase: "Comentarios_a_la_guerra_de_las_Galias:_Libro_" },
-                    { title: "De Bello Civili", books: generateCatalogBooks("Liber", 3, "Roman"), exactPathBase: "Commentarii_de_bello_civili/Liber_", esPathBase: "Comentarios_a_la_guerra_civil:_Libro_" }
+                { author: "Caesar", esAuthor: "Julio César", works: [
+                    { title: "De Bello Gallico", books: generateBooks(8, "Roman"), tll: "caesar/gall{n}.shtml" },
+                    { title: "De Bello Civili", books: generateBooks(3, "Roman"), tll: "caesar/bc{n}.shtml" }
                 ]},
-                { author: "Seneca", works: [
-                    { title: "Epistulae Morales", books: generateCatalogBooks("Liber", 20, "Roman"), exactPathBase: "Epistulae_morales_ad_Lucilium/Liber_", esPathBase: null },
-                    { title: "De Brevitate Vitae", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "De_brevitate_vitae", esPathBase: "De_la_brevedad_de_la_vida" },
-                    { title: "De Ira", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "De_ira", esPathBase: "De_la_ira" }
+                { author: "Seneca", esAuthor: "Séneca", works: [
+                    { title: "Epistulae Morales", books: generateBooks(20, "Roman"), tll: "seneca/epistulae{n}.shtml" },
+                    { title: "De Brevitate Vitae", books: [{title: "Omnia", n: 1}], tll: "seneca/seneca.brev.shtml" },
+                    { title: "De Ira", books: generateBooks(3, "Roman"), tll: "seneca/seneca.ira{n}.shtml" }
                 ]},
-                { author: "Catullus", works: [
-                    { title: "Carmina", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Carmina_(Catullus)", esPathBase: null }
+                { author: "Catullus", esAuthor: "Catulo", works: [
+                    { title: "Carmina", books: [{title: "Omnia", n: 1}], tll: "catullus.shtml" }
                 ]},
-                { author: "Plautus", works: [
-                    { title: "Aulularia", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Aulularia", esPathBase: "Aulularia" },
-                    { title: "Miles Gloriosus", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Miles_gloriosus", esPathBase: "El_soldado_fanfarrón" }
+                { author: "Plautus", esAuthor: "Plauto", works: [
+                    { title: "Aulularia", books: [{title: "Omnia", n: 1}], tll: "plautus/aulularia.shtml" },
+                    { title: "Miles Gloriosus", books: [{title: "Omnia", n: 1}], tll: "plautus/miles.shtml" }
                 ]},
-                { author: "Horatius", works: [
-                    { title: "Carmina (Odae)", books: generateCatalogBooks("Liber", 4, "Roman"), exactPathBase: "Carmina_(Horatius)/Liber_", esPathBase: null },
-                    { title: "Ars Poetica", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Ars_poetica", esPathBase: null }
+                { author: "Horatius", esAuthor: "Horacio", works: [
+                    { title: "Carmina (Odae)", books: generateBooks(4, "Roman"), tll: "horace/odes{n}.shtml" },
+                    { title: "Ars Poetica", books: [{title: "Omnia", n: 1}], tll: "horace/arspoet.shtml" }
                 ]},
-                { author: "Tacitus", works: [
-                    { title: "Annales", books: generateCatalogBooks("Liber", 6, "Roman"), exactPathBase: "Annales_(Tacitus)/Liber_", esPathBase: null },
-                    { title: "Germania", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "De_origine_et_situ_Germanorum", esPathBase: null }
+                { author: "Tacitus", esAuthor: "Tácito", works: [
+                    { title: "Annales", books: generateBooks(6, "Roman"), tll: "tacitus/ann{n}.shtml" },
+                    { title: "Germania", books: [{title: "Omnia", n: 1}], tll: "tacitus/germ.shtml" }
                 ]},
-                { author: "Livius", works: [
-                    { title: "Ab Urbe Condita", books: generateCatalogBooks("Liber", 10, "Roman"), exactPathBase: "Ab_urbe_condita/Liber_", esPathBase: null }
+                { author: "Livius", esAuthor: "Tito Livio", works: [
+                    { title: "Ab Urbe Condita", books: generateBooks(10, "Roman"), tll: "livy/liv.1.shtml" } // Mapping full Livy is complex, simplified for MVP
                 ]},
-                { author: "Lucretius", works: [
-                    { title: "De Rerum Natura", books: generateCatalogBooks("Liber", 6, "Roman"), exactPathBase: "De_rerum_natura/Liber_", esPathBase: "De_la_naturaleza_de_las_cosas:_Libro_" }
+                { author: "Lucretius", esAuthor: "Lucrecio", works: [
+                    { title: "De Rerum Natura", books: generateBooks(6, "Roman"), tll: "lucretius/lucretius{n}.shtml" }
                 ]},
-                { author: "Martialis", works: [
-                    { title: "Epigrammata", books: generateCatalogBooks("Liber", 14, "Roman"), exactPathBase: "Epigrammata_(Martialis)/Liber_", esPathBase: null }
+                { author: "Martialis", esAuthor: "Marcial", works: [
+                    { title: "Epigrammata", books: generateBooks(14, "Roman"), tll: "martial/mart{n}.shtml" }
                 ]},
-                { author: "Propertius", works: [
-                    { title: "Elegiae", books: generateCatalogBooks("Liber", 4, "Roman"), exactPathBase: "Elegiae_(Propertius)/Liber_", esPathBase: null }
+                { author: "Propertius", esAuthor: "Propercio", works: [
+                    { title: "Elegiae", books: generateBooks(4, "Roman"), tll: "propertius/prop{n}.shtml" }
                 ]},
-                { author: "Quintilianus", works: [
-                    { title: "Institutio Oratoria", books: generateCatalogBooks("Liber", 12, "Roman"), exactPathBase: "Institutio_Oratoria/Liber_", esPathBase: null }
+                { author: "Quintilianus", esAuthor: "Quintiliano", works: [
+                    { title: "Institutio Oratoria", books: generateBooks(12, "Roman"), tll: "quintilian/quintilian.institutio{n}.shtml" }
                 ]},
-                { author: "Sallustius", works: [
-                    { title: "De Catilinae coniuratione", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "De_Catilinae_coniuratione", esPathBase: "Conjuración_de_Catilina" },
-                    { title: "Bellum Iugurthinum", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Bellum_Iugurthinum", esPathBase: "Guerra_de_Jugurta" }
+                { author: "Sallustius", esAuthor: "Salustio", works: [
+                    { title: "De Catilinae coniuratione", books: [{title: "Omnia", n: 1}], tll: "sallust/catilinae.shtml" },
+                    { title: "Bellum Iugurthinum", books: [{title: "Omnia", n: 1}], tll: "sallust/iugurthinum.shtml" }
                 ]},
-                { author: "Suetonius", works: [
-                    { title: "De vita Caesarum", books: generateCatalogBooks("Liber", 8, "Roman"), exactPathBase: "De_vita_Caesarum/Liber_", esPathBase: "Los_doce_césares" }
+                { author: "Suetonius", esAuthor: "Suetonio", works: [
+                    { title: "De vita Caesarum", books: generateBooks(8, "Roman"), tll: "suetonius/suet.caesar.shtml" }
                 ]},
-                { author: "Terentius", works: [
-                    { title: "Andria", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Andria", esPathBase: null },
-                    { title: "Eunuchus", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Eunuchus", esPathBase: null }
+                { author: "Terentius", esAuthor: "Terencio", works: [
+                    { title: "Andria", books: [{title: "Omnia", n: 1}], tll: "terence/andria.shtml" },
+                    { title: "Eunuchus", books: [{title: "Omnia", n: 1}], tll: "terence/eunuchus.shtml" }
                 ]},
-                { author: "Tibullus", works: [
-                    { title: "Elegiae", books: generateCatalogBooks("Liber", 3, "Roman"), exactPathBase: "Elegiae_(Tibullus)/Liber_", esPathBase: null }
+                { author: "Tibullus", esAuthor: "Tibulo", works: [
+                    { title: "Elegiae", books: generateBooks(3, "Roman"), tll: "tibullus{n}.shtml" }
                 ]},
-                { author: "Apuleius", works: [
-                    { title: "Metamorphoses", books: generateCatalogBooks("Liber", 11, "Roman"), exactPathBase: "Metamorphoses_(Apuleius)/Liber_", esPathBase: null }
+                { author: "Apuleius", esAuthor: "Apuleyo", works: [
+                    { title: "Metamorphoses", books: generateBooks(11, "Roman"), tll: "apuleius/met{n}.shtml" }
                 ]},
-                { author: "Plinius Minor", works: [
-                    { title: "Epistulae", books: generateCatalogBooks("Liber", 10, "Roman"), exactPathBase: "Epistulae_(Plinius_Minor)/Liber_", esPathBase: null }
+                { author: "Plinius Minor", esAuthor: "Plinio el Joven", works: [
+                    { title: "Epistulae", books: generateBooks(10, "Roman"), tll: "pliny/ep{n}.shtml" }
                 ]}
             ],
             greek: [
-                { author: "Homerus", works: [
-                    { title: "Ιλιάς", books: generateCatalogBooks("Canto", 24, "Greek"), exactPathBase: "Ιλιάς/", esPathBase: "La_Ilíada:_Canto_" },
-                    { title: "Οδύσσεια", books: generateCatalogBooks("Canto", 24, "Greek"), exactPathBase: "Οδύσσεια/", esPathBase: "La_Odisea_(Luis_Segalá_y_Estalella)/Canto_" }
+                // Greek uses Wikisource as TLL does not have Greek texts.
+                { author: "Homerus", esAuthor: "Homero", works: [
+                    { title: "Ιλιάς", books: generateBooks(24, "Greek"), ws: "Ιλιάς/" },
+                    { title: "Οδύσσεια", books: generateBooks(24, "Greek"), ws: "Οδύσσεια/" }
                 ]},
-                { author: "Plato", works: [
-                    { title: "Apologia Socratis", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Απολογία_Σωκράτους", esPathBase: "Apología_de_Sócrates_(Platón)" },
-                    { title: "Symposium", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Συμπόσιον_(Πλάτων)", esPathBase: "El_Banquete_(Platón)" },
-                    { title: "Res Publica", books: generateCatalogBooks("Liber", 10, "Greek"), exactPathBase: "Πολιτεία/", esPathBase: "La_república:_Libro_" }
+                { author: "Plato", esAuthor: "Platón", works: [
+                    { title: "Apologia Socratis", books: [{title: "Omnia", num: "", n: 1}], ws: "Απολογία_Σωκράτους" },
+                    { title: "Symposium", books: [{title: "Omnia", num: "", n: 1}], ws: "Συμπόσιον_(Πλάτων)" },
+                    { title: "Res Publica", books: generateBooks(10, "Greek"), ws: "Πολιτεία/" }
                 ]},
-                { author: "Sophocles", works: [
-                    { title: "Oedipus Rex", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Οιδίπους_Τύραννος", esPathBase: "Edipo_rey" },
-                    { title: "Antigone", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Αντιγόνη", esPathBase: "Antígona_(Sófocles)" },
-                    { title: "Ajax", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Αίας", esPathBase: "Áyax" }
+                { author: "Sophocles", esAuthor: "Sófocles", works: [
+                    { title: "Oedipus Rex", books: [{title: "Omnia", num: "", n: 1}], ws: "Οιδίπους_Τύραννος" },
+                    { title: "Antigone", books: [{title: "Omnia", num: "", n: 1}], ws: "Αντιγόνη" },
+                    { title: "Ajax", books: [{title: "Omnia", num: "", n: 1}], ws: "Αίας" }
                 ]},
-                { author: "Euripides", works: [
-                    { title: "Medea", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Μήδεια_(Ευριπίδη)", esPathBase: "Medea" },
-                    { title: "Bacchae", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Βάκχαι", esPathBase: null }
+                { author: "Euripides", esAuthor: "Eurípides", works: [
+                    { title: "Medea", books: [{title: "Omnia", num: "", n: 1}], ws: "Μήδεια_(Ευριπίδη)" },
+                    { title: "Bacchae", books: [{title: "Omnia", num: "", n: 1}], ws: "Βάκχαι" }
                 ]},
-                { author: "Herodotus", works: [
-                    { title: "Historiae", books: generateCatalogBooks("Liber", 9, "Roman"), exactPathBase: "Ιστορίαι_(Ηροδότου)/", esPathBase: "Los_nueve_libros_de_la_Historia:_Libro_" }
+                { author: "Herodotus", esAuthor: "Heródoto", works: [
+                    { title: "Historiae", books: generateBooks(9, "Roman"), ws: "Ιστορίαι_(Ηροδότου)/" }
                 ]},
-                { author: "Thucydides", works: [
-                    { title: "Historia Belli Peloponnesiaci", books: generateCatalogBooks("Liber", 8, "Roman"), exactPathBase: "Ιστορία_του_Πελοποννησιακού_Πολέμου/", esPathBase: "Historia_de_la_guerra_del_Peloponeso:_Libro_" }
+                { author: "Thucydides", esAuthor: "Tucídides", works: [
+                    { title: "Historia Belli Peloponnesiaci", books: generateBooks(8, "Roman"), ws: "Ιστορία_του_Πελοποννησιακού_Πολέμου/" }
                 ]},
-                { author: "Aristoteles", works: [
-                    { title: "Ethica Nicomachea", books: generateCatalogBooks("Liber", 10, "Greek"), exactPathBase: "Ηθικά_Νικομάχεια/", esPathBase: "Moral_a_Nicómaco:_Libro_" },
-                    { title: "Poetica", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Περί_ποιητικής", esPathBase: "El_arte_poética_(Aristóteles)" },
-                    { title: "Politica", books: generateCatalogBooks("Liber", 8, "Greek"), exactPathBase: "Πολιτικά/", esPathBase: "La_Política:_Libro_" }
+                { author: "Aristoteles", esAuthor: "Aristóteles", works: [
+                    { title: "Ethica Nicomachea", books: generateBooks(10, "Greek"), ws: "Ηθικά_Νικομάχεια/" },
+                    { title: "Poetica", books: [{title: "Omnia", num: "", n: 1}], ws: "Περί_ποιητικής" },
+                    { title: "Politica", books: generateBooks(8, "Greek"), ws: "Πολιτικά/" }
                 ]},
-                { author: "Aeschylus", works: [
-                    { title: "Prometheus Vinctus", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Προμηθεύς_Δεσμώτης", esPathBase: "Prometeo_encadenado" },
-                    { title: "Agamemnon", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Αγαμέμνων", esPathBase: "Agamenón" }
+                { author: "Aeschylus", esAuthor: "Esquilo", works: [
+                    { title: "Prometheus Vinctus", books: [{title: "Omnia", num: "", n: 1}], ws: "Προμηθεύς_Δεσμώτης" },
+                    { title: "Agamemnon", books: [{title: "Omnia", num: "", n: 1}], ws: "Αγαμέμνων" }
                 ]},
-                { author: "Aristophanes", works: [
-                    { title: "Nubes", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Νεφέλαι", esPathBase: "Las_nubes" },
-                    { title: "Ranae", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Βάτραχοι", esPathBase: "Las_ranas" },
-                    { title: "Lysistrata", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Λυσιστράτη", esPathBase: "Lisístrata" }
+                { author: "Aristophanes", esAuthor: "Aristófanes", works: [
+                    { title: "Nubes", books: [{title: "Omnia", num: "", n: 1}], ws: "Νεφέλαι" },
+                    { title: "Ranae", books: [{title: "Omnia", num: "", n: 1}], ws: "Βάτραχοι" },
+                    { title: "Lysistrata", books: [{title: "Omnia", num: "", n: 1}], ws: "Λυσιστράτη" }
                 ]},
-                { author: "Pindarus", works: [
-                    { title: "Olympia", books: generateCatalogBooks("Oda", 14, "Roman"), exactPathBase: "Ολυμπιόνικοι/", esPathBase: null },
-                    { title: "Pythia", books: generateCatalogBooks("Oda", 12, "Roman"), exactPathBase: "Πυθιόνικοι/", esPathBase: null }
+                { author: "Pindarus", esAuthor: "Píndaro", works: [
+                    { title: "Olympia", books: generateBooks(14, "Roman"), ws: "Ολυμπιόνικοι/" },
+                    { title: "Pythia", books: generateBooks(12, "Roman"), ws: "Πυθιόνικοι/" }
                 ]},
-                { author: "Hesiodus", works: [
-                    { title: "Theogonia", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Θεογονία", esPathBase: "Teogonía" },
-                    { title: "Opera et Dies", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Έργα_και_Ημέραι", esPathBase: "Los_trabajos_y_los_días" }
+                { author: "Hesiodus", esAuthor: "Hesíodo", works: [
+                    { title: "Theogonia", books: [{title: "Omnia", num: "", n: 1}], ws: "Θεογονία" },
+                    { title: "Opera et Dies", books: [{title: "Omnia", num: "", n: 1}], ws: "Έργα_και_Ημέραι" }
                 ]},
-                { author: "Xenophon", works: [
-                    { title: "Anabasis", books: generateCatalogBooks("Liber", 7, "Greek"), exactPathBase: "Κύρου_Ανάβασις/", esPathBase: null }
+                { author: "Xenophon", esAuthor: "Jenofonte", works: [
+                    { title: "Anabasis", books: generateBooks(7, "Greek"), ws: "Κύρου_Ανάβασις/" }
                 ]},
-                { author: "Plutarchus", works: [
-                    { title: "Vitae Parallelae", books: [{ title: "Alexander", num: "Alex", arabicNum: "1" }, { title: "Caesar", num: "Caes", arabicNum: "2" }], exactPathBase: "Βίοι_Παράλληλοι/", esPathBase: null }
+                { author: "Plutarchus", esAuthor: "Plutarco", works: [
+                    { title: "Vitae Parallelae", books: [{ title: "Alexander", num: "Alex", n: 1 }, { title: "Caesar", num: "Caes", n: 2 }], ws: "Βίοι_Παράλληλοι/" }
                 ]},
-                { author: "Demosthenes", works: [
-                    { title: "Philippicae", books: generateCatalogBooks("Oratio", 3, "Roman"), exactPathBase: "Κατά_Φιλίππου_", esPathBase: null }
+                { author: "Demosthenes", esAuthor: "Demóstenes", works: [
+                    { title: "Philippicae", books: generateBooks(3, "Roman"), ws: "Κατά_Φιλίππου_" }
                 ]},
-                { author: "Isocrates", works: [
-                    { title: "Panegyricus", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Πανηγυρικός", esPathBase: null }
+                { author: "Isocrates", esAuthor: "Isócrates", works: [
+                    { title: "Panegyricus", books: [{title: "Omnia", num: "", n: 1}], ws: "Πανηγυρικός" }
                 ]},
-                { author: "Lysias", works: [
-                    { title: "Contra Eratosthenem", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Κατά_Ερατοσθένους", esPathBase: null }
+                { author: "Lysias", esAuthor: "Lisias", works: [
+                    { title: "Contra Eratosthenem", books: [{title: "Omnia", num: "", n: 1}], ws: "Κατά_Ερατοσθένους" }
                 ]},
-                { author: "Lucianus", works: [
-                    { title: "Vera Historia", books: generateCatalogBooks("Liber", 2, "Greek"), exactPathBase: "Αληθής_Ιστορία/", esPathBase: null }
+                { author: "Lucianus", esAuthor: "Luciano", works: [
+                    { title: "Vera Historia", books: generateBooks(2, "Greek"), ws: "Αληθής_Ιστορία/" }
                 ]},
-                { author: "Epictetus", works: [
-                    { title: "Enchiridion", books: [{title: "Omnia", num: "", arabicNum: ""}], exactPathBase: "Εγχειρίδιον_Επικτήτου", esPathBase: "Manual_de_Epicteto" }
+                { author: "Epictetus", esAuthor: "Epicteto", works: [
+                    { title: "Enchiridion", books: [{title: "Omnia", num: "", n: 1}], ws: "Εγχειρίδιον_Επικτήτου" }
                 ]},
-                { author: "Polybius", works: [
-                    { title: "Historiae", books: generateCatalogBooks("Liber", 5, "Roman"), exactPathBase: "Ιστορίαι_(Πολύβιος)/", esPathBase: null }
+                { author: "Polybius", esAuthor: "Polibio", works: [
+                    { title: "Historiae", books: generateBooks(5, "Roman"), ws: "Ιστορίαι_(Πολύβιος)/" }
                 ]},
-                { author: "Callimachus", works: [
-                    { title: "Hymni", books: [{ title: "In Iovem", num: "", arabicNum: "1" }, { title: "In Apollinem", num: "", arabicNum: "2" }], exactPathBase: "Ύμνοι/", esPathBase: null }
+                { author: "Callimachus", esAuthor: "Calímaco", works: [
+                    { title: "Hymni", books: [{ title: "In Iovem", num: "", n: 1 }, { title: "In Apollinem", num: "", n: 2 }], ws: "Ύμνοι/" }
                 ]}
             ]
         };
@@ -465,27 +460,20 @@
         }
 
         // ----------------------------------------------------------------------------------
-        // EXTRACCIÓN Y LIMPIEZA
+        // EXTRACCIÓN HÍBRIDA: THE LATIN LIBRARY (LA) / WIKISOURCE (GRC)
         // ----------------------------------------------------------------------------------
         function setUIState(state) {
             ['loading-state', 'fetching-state', 'error-state'].forEach(id => document.getElementById(id).classList.add('hidden'));
             if(state) document.getElementById(state).classList.remove('hidden');
         }
 
-        async function fetchWithTimeout(url, options = {}, timeout = 8000) {
+        async function fetchWithTimeout(url, options = {}, timeout = 10000) {
             if (STATE.abortController) STATE.abortController.abort();
             STATE.abortController = new AbortController();
             const id = setTimeout(() => STATE.abortController.abort(), timeout);
             const response = await fetch(url, { ...options, signal: STATE.abortController.signal });
             clearTimeout(id);
             return response;
-        }
-
-        async function fetchWikisourceContent(langPrefix, title) {
-            const url = `https://${langPrefix}.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1`;
-            const res = await fetchWithTimeout(url);
-            const data = await res.json();
-            return data.parse && data.parse.text ? data.parse.text['*'] : null;
         }
 
         async function initiateLoadOriginal(langCat, aIndex, wIndex, bIndex) {
@@ -497,50 +485,62 @@
             const book = work.books[bIndex];
             STATE.currentBook = { author, work, book, langCat };
             STATE.lang = langCat === 'latin' ? 'la' : 'grc';
-            const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
+            STATE.retryParams = {langCat, aIndex, wIndex, bIndex};
             
-            let displayTitle = book.num ? `${work.title} ${book.num}` : work.title;
-            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${displayTitle}`;
+            let displayTitle = book.title;
+            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.title} - ${displayTitle}`;
             document.getElementById('reader-tools').classList.remove('hidden');
             document.getElementById('pane-original').innerHTML = '';
             
             setUIState('fetching-state');
             
             try {
-                let exactPath = work.exactPathBase ? `${work.exactPathBase}${book.num}` : null;
-                // Excepciones manuales para libros/cantos que varían
-                if (work.title === 'Aeneis') exactPath = `Aeneis/Liber_${book.num}`;
-                
-                let html = exactPath ? await fetchWikisourceContent(wikiLang, exactPath) : null;
-                
-                if (html) {
-                    await processOriginalHTML(html);
-                } else {
-                    throw new Error("No encontrado");
+                let html = "";
+                if (STATE.lang === 'la' && work.tll) {
+                    // THE LATIN LIBRARY VIA CORS PROXY
+                    const targetUrl = `https://www.thelatinlibrary.com/${work.tll.replace('{n}', book.n)}`;
+                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+                    const res = await fetchWithTimeout(proxyUrl);
+                    const data = await res.json();
+                    if (!data.contents) throw new Error("TLL Empty");
+                    
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data.contents, 'text/html');
+                    
+                    // Extraer los párrafos válidos de TLL
+                    const paragraphs = Array.from(doc.querySelectorAll('p')).filter(p => !p.className.includes('internal_navigation') && !p.className.includes('pagehead') && p.textContent.trim().length > 5);
+                    html = paragraphs.map(p => `<p>${p.innerHTML}</p>`).join('');
+                    
+                } else if (STATE.lang === 'grc' && work.ws) {
+                    // WIKISOURCE PARA GRIEGO
+                    const exactPath = `${work.ws}${book.num}`;
+                    const url = `https://el.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(exactPath)}&format=json&origin=*&disableeditsection=1&disabletoc=1`;
+                    const res = await fetchWithTimeout(url);
+                    const data = await res.json();
+                    if (data.parse && data.parse.text) {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(data.parse.text['*'], 'text/html');
+                        const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', 'table', '.ws-header', '.wst-poem-header', '.ext-phonos', '.wst-navbox', 'style', 'script', 'sup.reference', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
+                        garbage.forEach(sel => doc.querySelectorAll(sel).forEach(e => e.remove()));
+                        html = doc.body.innerHTML;
+                    }
                 }
+
+                if (!html || html.trim() === '') throw new Error("No content found");
+                
+                document.getElementById('pane-original').innerHTML = html;
+                setUIState(null); 
+                
+                await tokenizeSafeDOMAsync(document.getElementById('pane-original'));
+                if(STATE.scansioActive) applyScansio();
+                lucide.createIcons();
             } catch (e) {
                 if(e.name !== 'AbortError') setUIState('error-state');
             }
         }
 
-        async function processOriginalHTML(htmlContent) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlContent, 'text/html');
-            const root = doc.body;
-            
-            const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', 'table', '.ws-header', '.wst-poem-header', '.ext-phonos', '.wst-navbox', 'style', 'script', 'sup.reference', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
-            garbage.forEach(sel => root.querySelectorAll(sel).forEach(e => e.remove()));
-
-            root.querySelectorAll('p, div, span').forEach(el => {
-                if(el.textContent.trim() === '' && el.children.length === 0) el.remove();
-            });
-
-            document.getElementById('pane-original').innerHTML = root.innerHTML;
-            setUIState(null); 
-            
-            await tokenizeSafeDOMAsync(document.getElementById('pane-original'));
-            if(STATE.scansioActive) applyScansio();
-            lucide.createIcons();
+        function retryLoad() {
+            if(STATE.retryParams) initiateLoadOriginal(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
         }
 
         async function tokenizeSafeDOMAsync(element) {
@@ -549,7 +549,7 @@
             while(walker.nextNode()) textNodes.push(walker.currentNode);
 
             const splitRegex = /([ \n\t\r,;:"'«»()\[\]{}\-—\.!?;·]+)/;
-            const CHUNK_SIZE = 100; 
+            const CHUNK_SIZE = 150; 
 
             for (let i = 0; i < textNodes.length; i += CHUNK_SIZE) {
                 await new Promise(resolve => setTimeout(resolve, 0)); 
@@ -581,9 +581,9 @@
         }
 
         // ----------------------------------------------------------------------------------
-        // TRADUCCIÓN EXACTA (SIN BUSCADOR)
+        // BUSCADOR UNIVERSAL DE TRADUCCIONES (IFRAME SEGURO)
         // ----------------------------------------------------------------------------------
-        async function toggleBilingual() {
+        function toggleBilingual() {
             if (!STATE.currentBook) return;
             
             STATE.bilingual = !STATE.bilingual;
@@ -596,61 +596,22 @@
                 pOrig.classList.add('half');
                 pTrans.classList.add('active');
                 
-                document.getElementById('trans-loading').classList.remove('hidden');
-                document.getElementById('trans-content').classList.add('hidden');
-
-                const { work, book } = STATE.currentBook;
+                const { author, work, book } = STATE.currentBook;
+                const query = `site:es.wikisource.org OR site:cervantesvirtual.com "${author.esAuthor}" "${work.esTitle}" "${book.title}"`;
                 
-                // Generar ruta en español exacta
-                let esTargetUrl = null;
-                if (work.esPathBase) {
-                    esTargetUrl = `${work.esPathBase}${book.num !== "" ? (work.title === 'Aeneis' ? book.num : book.arabicNum) : ""}`;
-                }
+                // Utilizamos DuckDuckGo sin cabeceras restrictivas para que funcione en iframe
+                document.getElementById('trans-iframe').src = `https://duckduckgo.com/?q=${encodeURIComponent(query)}&ia=web`;
                 
-                if (esTargetUrl) {
-                    try {
-                        const html = await fetchWikisourceContent('es', esTargetUrl);
-                        if (!html) throw new Error();
-                        
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        const root = doc.body;
-                        
-                        const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', 'table', '.ws-header', '.wst-poem-header', 'script', 'style', '.metadata', '.ambox', '.navbox-title'];
-                        garbage.forEach(sel => root.querySelectorAll(sel).forEach(e => e.remove()));
-                        root.innerHTML = root.innerHTML.replace(/&#160;/g, ' ');
-                        
-                        document.getElementById('trans-content').innerHTML = root.innerHTML;
-                        document.getElementById('trans-loading').classList.add('hidden');
-                        document.getElementById('trans-content').classList.remove('hidden');
-                        
-                    } catch(e) { 
-                        showTransError(`Esta obra exacta no se encuentra digitalizada en Wikisource Español de forma independiente.<br><br><span class="text-xs">Consulta una edición física de <em>${work.title}</em> para la traducción.</span>`); 
-                    }
-                } else { 
-                    showTransError(`Traducción no mapeada en la base de datos pública.<br><br><span class="text-xs">Usa diccionarios o ediciones de referencia.</span>`); 
-                }
             } else {
                 btn.classList.remove('text-[#D4AF37]', 'bg-[#333]');
                 pOrig.classList.remove('half');
                 pTrans.classList.remove('active');
+                document.getElementById('trans-iframe').src = '';
             }
         }
 
-        function showTransError(msgHtml) {
-            document.getElementById('trans-loading').classList.add('hidden');
-            document.getElementById('trans-content').innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-center opacity-80 mt-20">
-                    <i data-lucide="book-x" class="w-12 h-12 mb-3 text-[#991B1B]"></i>
-                    <p class="font-cinzel text-sm uppercase tracking-widest text-[#D4AF37]">Traducción no disponible</p>
-                    <p class="font-serif text-sm mt-4 max-w-sm mx-auto text-gray-300 leading-relaxed">${msgHtml}</p>
-                </div>`;
-            document.getElementById('trans-content').classList.remove('hidden');
-            lucide.createIcons();
-        }
-
         // ----------------------------------------------------------------------------------
-        // MÉTRICA (SCANSIO SEGURO)
+        // MÉTRICA SEGURO (POINTER-EVENTS)
         // ----------------------------------------------------------------------------------
         function toggleScansio() {
             if (STATE.lang !== 'la') return showToast("La escansión automática solo está disponible en latín.");
@@ -700,7 +661,7 @@
         }
 
         // ----------------------------------------------------------------------------------
-        // ORACULUM DEDUPLICADO
+        // ORACULUM DEDUPLICADO Y LIMPIO
         // ----------------------------------------------------------------------------------
         function openPanel(panelId) {
             document.getElementById('sidebar-right').classList.add('open');
@@ -754,19 +715,25 @@
                 const morphLang = STATE.lang === 'la' ? 'lat' : 'grc';
                 const engine = STATE.lang === 'la' ? 'morpheuslat' : 'morpheusgrc';
                 
-                let res = await fetchWithTimeout(`https://morph.perseids.org/analysis/word?lang=${morphLang}&engine=${engine}&word=${encodeURIComponent(wordToTest)}`, { headers: { 'Accept': 'application/json' } }, 4000);
+                // Petición estándar
+                let url = `https://morph.perseids.org/analysis/word?lang=${morphLang}&engine=${engine}&word=${encodeURIComponent(wordToTest)}`;
+                let res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                let proxyData = await res.json();
                 
-                if (res.ok) {
-                    let temp = await res.json();
+                if (proxyData.contents) {
+                    let temp = JSON.parse(proxyData.contents);
                     if (findInJson(temp, 'dict').length > 0) data = temp;
                 }
 
+                // Fallback de enclíticos
                 if (!data && STATE.lang === 'la') {
                     let stripped = stripEnclitics(wordToTest);
                     if (stripped !== wordToTest) {
                         wordToTest = stripped;
-                        let res2 = await fetchWithTimeout(`https://morph.perseids.org/analysis/word?lang=lat&engine=morpheuslat&word=${encodeURIComponent(wordToTest)}`, { headers: { 'Accept': 'application/json' } }, 4000);
-                        if (res2.ok) data = await res2.json();
+                        url = `https://morph.perseids.org/analysis/word?lang=lat&engine=morpheuslat&word=${encodeURIComponent(wordToTest)}`;
+                        res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                        proxyData = await res.json();
+                        if (proxyData.contents) data = JSON.parse(proxyData.contents);
                     }
                 }
 
@@ -795,7 +762,7 @@
 
                 let morphHtml = "";
                 if (allInfls.length > 0) {
-                    // DEDUPLICACIÓN DE ANÁLISIS (Para evitar que Perseus mande 4 veces lo mismo)
+                    // DEDUPLICACIÓN ESTRICTA
                     let uniqueMorphs = new Set();
                     let htmlParts = [];
                     

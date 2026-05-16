@@ -104,10 +104,9 @@
 
         <div class="p-2 border-b border-[#333] bg-[#1A1A1A] shrink-0">
             <div class="relative">
-                <i data-lucide="globe" class="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#D4AF37]"></i>
-                <input type="text" id="search-lib" placeholder="Buscar u pegar URL externa + Enter" onkeyup="handleSearchInput(event)" class="w-full bg-[#121212] border border-[#333] text-sm text-gray-300 rounded pl-8 pr-2 py-1.5 focus:outline-none focus:border-[#D4AF37] transition font-serif">
+                <i data-lucide="search" class="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500"></i>
+                <input type="text" id="search-lib" placeholder="Buscar autor u obra..." onkeyup="filterLibrary()" class="w-full bg-[#121212] border border-[#333] text-sm text-gray-300 rounded pl-8 pr-2 py-1.5 focus:outline-none focus:border-[#D4AF37] transition font-serif">
             </div>
-            <p class="text-[9px] text-gray-500 mt-1 text-center font-cinzel tracking-widest">Motor Local Autónomo & Rescate CORS Activo</p>
         </div>
 
         <div class="flex-1 overflow-y-auto p-2" id="library-content">
@@ -141,7 +140,7 @@
                 <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
                 
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea Escaneada">
+                <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
                     <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
                 </button>
                 
@@ -158,7 +157,7 @@
                     <i data-lucide="book-marked" class="absolute inset-0 m-auto w-10 h-10 text-gray-600"></i>
                 </div>
                 <h2 class="font-cinzel text-2xl text-gray-300 uppercase tracking-widest mb-2">Bibliotheca Antiqua</h2>
-                <p class="font-serif text-gray-500 italic text-sm">Elige un volumen o inyecta una URL libre.</p>
+                <p class="font-serif text-gray-500 italic text-sm">Base de datos inactiva. Elige un volumen.</p>
             </div>
             
             <div id="fetching-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f]/95 backdrop-blur z-20">
@@ -168,9 +167,9 @@
 
             <div id="error-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20">
                 <i data-lucide="alert-triangle" class="w-16 h-16 text-[#991B1B] mb-4 opacity-80"></i>
-                <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Fallo crítico en Extracción</p>
-                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">El recurso externo ha rechazado el tunelado o la estructura no es mapeable.</p>
-                <button onclick="retryLoad()" class="mt-6 px-4 py-2 border border-[#333] text-gray-400 hover:text-white hover:bg-[#333] rounded font-cinzel text-xs uppercase transition">Forzar Reintento</button>
+                <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Error en la Extracción</p>
+                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">El manuscrito no se encuentra disponible o la ruta ha cambiado.</p>
+                <button onclick="retryLoad()" class="mt-6 px-4 py-2 border border-[#333] text-gray-400 hover:text-white hover:bg-[#333] rounded font-cinzel text-xs uppercase transition">Reintentar Conexión</button>
             </div>
 
             <div id="pane-original" class="split-pane reading-text font-greek pb-32"></div>
@@ -178,7 +177,7 @@
             <div id="pane-translation" class="split-pane reading-text font-serif pb-32">
                 <div id="trans-loading" class="flex flex-col items-center justify-center h-full opacity-50 hidden">
                     <div class="loader-ring transform scale-50 mb-2"><div></div><div></div><div></div><div></div></div>
-                    <p class="font-cinzel text-sm uppercase tracking-widest text-gray-300">Rastreando traducción paralela...</p>
+                    <p class="font-cinzel text-sm uppercase tracking-widest text-gray-300">Alineando Traducción Oficial...</p>
                 </div>
                 <div id="trans-content" class="w-full h-full pb-10 hidden">
                     <div id="trans-text-body"></div>
@@ -198,7 +197,7 @@
         <div id="panel-oraculum" class="flex-1 overflow-y-auto p-6 hidden-panel">
             <div class="text-center border-b border-[#333] pb-6 mb-6" id="ora-intro">
                 <i data-lucide="microscope" class="w-12 h-12 text-gray-600 mx-auto mb-4 opacity-50"></i>
-                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del papiro. El motor morfológico procesará raíces e inflexiones en tiempo real.</p>
+                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del texto original. El oráculo consultará la base de datos de Perseus en tiempo real.</p>
             </div>
 
             <div id="ora-loading" class="hidden flex flex-col items-center py-12">
@@ -210,7 +209,6 @@
                 <div class="text-center mb-6">
                     <h2 id="ora-word" class="font-greek text-5xl font-bold text-white mb-2 tracking-tight break-words">palabra</h2>
                     <div id="ora-enclitic-alert" class="hidden text-[10px] text-[#991B1B] font-cinzel font-bold mb-2 uppercase tracking-wider"></div>
-                    <div id="ora-offline-badge" class="hidden text-[10px] text-gray-500 font-cinzel font-bold mb-2 uppercase tracking-wider">Modo Local Autónomo</div>
                     <p id="ora-lemma" class="font-serif text-xl text-[#D4AF37] italic border-b border-[#333] pb-4 inline-block px-4">lema</p>
                 </div>
                 <div class="bg-[#111] border border-[#333] rounded-lg p-5 mb-6 shadow-inner">
@@ -235,7 +233,7 @@
         <div id="panel-statistica" class="flex-1 overflow-y-auto p-6 hidden hidden-panel">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="font-cinzel text-white text-lg flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-[#D4AF37]"></i> Frecuencia Léxica</h3>
-                <button onclick="generateStats()" class="p-2 bg-[#D4AF37] text-black rounded hover:bg-[#B8860B] transition shadow" title="Recalcular"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+                <button onclick="generateStats()" class="p-2 bg-[#D4AF37] text-black rounded hover:bg-yellow-500 transition shadow" title="Recalcular"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
             </div>
             <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de palabras en la transcripción procesada. Conservando ortografía de la fuente.</p>
             <div id="stats-loading" class="hidden text-center py-12"><div class="loader-ring transform scale-50 border-[#D4AF37]"><div></div><div></div><div></div><div></div></div></div>
@@ -246,8 +244,10 @@
     <div id="toast-container"></div>
 
     <script>
+        const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
+
         const STATE = {
-            lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0, currentExternalUrl: null,
+            lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0,
             audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
             lastClickedWord: null, retryParams: null
         };
@@ -271,37 +271,7 @@
             return list;
         };
 
-        const MEMORIA_ESTATICA = {
-            "In_L._Catilinam_oratio_prima_habita_in_senatu": `
-                <p><b>[I]</b> Quo usque tandem abutere, Catilina, patientia nostra? quam diu etiam furor iste tuus nos eludet? quem ad finem sese effrenata iactabit audacia? Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae, nihil timor populi, nihil concursus bonorum omnium, nihil hic munitissimus habendi senatus locus, nihil horum ora vultusque moverunt? Patere tua consilia non sentis, constrictam iam horum omnium scientia teneri coniurationem tuam non vides? Quid proxima, quid superiore nocte egeris, ubi fueris, quos convocaveris, quid consilii ceperis, quem nostrum ignorare arbitraris?</p>
-                <p>O tempora, o mores! Senatus haec intellegit. Consul videt; hic tamen vivit. Vivit? immo vero etiam in senatum venit, fit publici consilii particeps, notat et designat oculis ad caedem unum quemque nostrum. Nos autem fortes viri satis facere rei publicae videmur, si istius furorem ac tela vitemus.</p>
-            `,
-            "Catilinarias/Primera_catilinaria": `
-                <p><b>[I]</b> ¿Hasta cuándo has de abusar de nuestra paciencia, Catilina? ¿Cuándo nos veremos libres de tus frenéticos ataques? ¿A qué extremos se arrojará tu desenfrenada audacia? ¿No han contenido tu audacia ni la guardia nocturna del Palatino, ni las patrullas de la ciudad, ni el terror del pueblo, ni la afluencia de todos los buenos ciudadanos, ni este fortificado lugar donde el Senado se reúne, ni las miradas y semblantes de todos los presentes? ¿No comprendes que tus designios están descubiertos? ¿No ves que tu conjuración está ya encadenada por el conocimiento de todos estos?</p>
-            `,
-            "Carmina_(Catullus)/Carmen_1": `
-                <p>Cui dono lepidum novum libellum<br>arido modo pumice expolitum?<br>Corneli, tibi: namque tu solebas<br>meas esse aliquid putare nugas<br>iam tum, cum ausus es unus Italorum<br>omne aevum tribus explicare cartis<br>doctis, Iuppiter, et laboriosis.<br>Quare habe tibi quidquid hoc libelli<br>qualecumque; quod o patrona virgo<br>plus uno maneat perenne saeclo.</p>
-            `,
-            "Poemas_(Catulo)": `
-                <p>¿A quién dedico este nuevo y gracioso librito, recién pulido con la seca piedra pómez? A ti, Cornelio, porque tú solías pensar que mis cosas valían algo, ya desde el tiempo en que fuiste el único de los italianos que se atrevió a desplegar toda la historia en tres rollos doctrinales ¡por Júpiter! y laboriosos.</p>
-            `
-        };
-
-        const LEXICON_LOCAL = {
-            "quousque": { lemma: "quousque", morph: "Adverbio | Hasta cuándo, hasta dónde." },
-            "tandem": { lemma: "tandem", morph: "Adverbio | Finalmente, al fin, por fin." },
-            "abutere": { lemma: "abutor", morph: "Verbo | 2ª pers. sing. Futuro Indicativo Pasivo o Deponente.<br>Raíz: abutor, abuti, abusus sum (Abusar, consumir)." },
-            "catilina": { lemma: "Catilina", morph: "Sustantivo | Vocativo Masculino Singular.<br>Raíz: Catilina, -ae (Catilina)." },
-            "patientia": { lemma: "patientia", morph: "Sustantivo | Ablativo/Nominativo Femenino Singular.<br>Raíz: patientia, -ae (Paciencia, resistencia)." },
-            "nostra": { lemma: "noster", morph: "Adjetivo | Ablativo/Nominativo Femenino Singular.<br>Raíz: noster, nostra, nostrum (Nuestro)." },
-            "furor": { lemma: "furor", morph: "Sustantivo | Nominativo Masculino Singular.<br>Raíz: furor, furoris (Locura, furor, delirio)." },
-            "eludet": { lemma: "eludo", morph: "Verbo | 3ª pers. sing. Futuro Indicativo Activo.<br>Raíz: eludo, eludere, elusi, elusum (Burlar, esquivar, jugar)." },
-            "vivamus": { lemma: "vivo", morph: "Verbo | 1ª pers. plur. Presente Subjuntivo Activo.<br>Raíz: vivo, vivere, vixi, victum (Vivir)." },
-            "mea": { lemma: "meus", morph: "Adjetivo | Vocativo/Nominativo Femenino Singular.<br>Raíz: meus, mea, meum (Mío)." },
-            "lesbia": { lemma: "Lesbia", morph: "Sustantivo | Vocativo/Nominativo Femenino Singular.<br>Raíz: Lesbia, -ae (Lesbia)." },
-            "amemus": { lemma: "amo", morph: "Verbo | 1ª pers. plur. Presente Subjuntivo Activo.<br>Raíz: amo, amare, amavi, amatum (Amar)." }
-        };
-
+        // CATÁLOGO COMPLETO DE LOS 40 AUTORES CLÁSICOS RESTAURADO ÍNTEGRAMENTE
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -413,7 +383,7 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 9, "Roman", "Ιστορίαι_(Ηροδότου)/", "Los_nueve_libros_de_la_Historia:_Libro_") }
                 ]},
                 { author: "Thucydides", authorEs: "Tucídides", works: [
-                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πεloποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
+                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πελοποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
                 ]},
                 { author: "Aristoteles", authorEs: "Aristóteles", works: [
                     { baseTitle: "Ethica Nicomachea", books: generateBooks("Liber", 10, "Greek", "Ηθικά_Νικομάχεια/", "Moral_a_Nicómaco:_Libro_") },
@@ -444,7 +414,7 @@
                     { baseTitle: "Vitae Parallelae", books: [{ title: "Alexander", search: "Αλέξανδρος", arabic: 1, path: "Βίοι_Παράλληλοι/Αλέξανδρος" }, { title: "Caesar", search: "Καίσαρ", arabic: 2, path: "Βίοι_Παράλληλοι/Καίσαρ" }] }
                 ]},
                 { author: "Demosthenes", authorEs: "Demóstenes", works: [
-                    { baseTitle: "Philippicae", books: generateBooks("Oratio", 3, "Roman", "Κατά_Φιλíππου_") }
+                    { baseTitle: "Philippicae", books: generateBooks("Oratio", 3, "Roman", "Κατά_Φιλίππου_") }
                 ]},
                 { author: "Isocrates", authorEs: "Isócrates", works: [
                     { baseTitle: "Panegyricus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Πανηγυρικός" }] }
@@ -462,7 +432,7 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
                 { author: "Callimachus", authorEs: "Calímaco", works: [
-                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δία", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δía", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
@@ -532,42 +502,55 @@
             list.innerHTML = html;
         }
 
-        function handleSearchInput(event) {
-            if (event.key === "Enter") {
-                const term = event.target.value.trim();
-                if (term.startsWith('http://') || term.startsWith('https://')) {
-                    loadExternalUrl(term);
+        function filterLibrary() {
+            const term = document.getElementById('search-lib').value.toLowerCase();
+            const listId = STATE.lang === 'la' ? 'list-latin' : 'list-greek';
+            const blocks = document.querySelectorAll(`#${listId} .author-block`);
+            let hasResults = false;
+
+            blocks.forEach(block => {
+                const text = block.innerText.toLowerCase();
+                if (text.includes(term)) {
+                    block.style.display = 'block';
+                    hasResults = true;
                 } else {
-                    filterLibrary();
+                    block.style.display = 'none';
                 }
-            } else {
-                filterLibrary();
-            }
+            });
+            document.getElementById('no-results').classList.toggle('hidden', hasResults);
         }
 
-        // CORRECCIÓN: Se añade el keyword 'async function' obligatorio que crasheaba el script
-        async function proxyFetchHTML(url) {
-            try {
-                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-                const res = await fetch(proxyUrl);
-                if (!res.ok) throw new Error();
-                return await res.text();
-            } catch (e) {
-                try {
-                    const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-                    const res2 = await fetch(fallbackUrl);
-                    const data = await res2.json();
-                    return data.contents;
-                } catch (e2) {
-                    return null;
-                }
+        function openPanel(panelId) {
+            document.getElementById('sidebar-right').classList.add('open');
+            document.getElementById('right-backdrop').classList.add('active');
+            
+            document.querySelectorAll('.hidden-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`panel-${panelId}`).classList.remove('hidden');
+            let titles = { 'oraculum': 'Oraculum Filológico', 'statistica': 'Frecuencia Léxica' };
+            document.getElementById('right-panel-title').innerText = titles[panelId];
+            
+            if(panelId === 'statistica') generateStats();
+        }
+        
+        function closeRightPanel() { 
+            document.getElementById('sidebar-right').classList.remove('open'); 
+            document.getElementById('right-backdrop').classList.remove('active');
+        }
+
+        function setFetchState(state, msg="", desc="") {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('fetching-state').classList.add('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+            if(state === 'fetching') {
+                document.getElementById('fetching-state').classList.remove('hidden');
+                if(msg) document.getElementById('fetch-msg').innerText = msg;
+            } else if (state === 'error') {
+                document.getElementById('error-state').classList.remove('hidden');
+                if(desc) document.getElementById('error-desc').innerText = desc;
             }
         }
 
         async function fetchWikisourceAPI(lang, title) {
-            if (MEMORIA_ESTATICA[title]) {
-                return MEMORIA_ESTATICA[title]; 
-            }
             const wikiLang = lang === 'grc' ? 'el' : lang;
             const url = `https://${wikiLang}.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1`;
             try {
@@ -581,70 +564,8 @@
         }
 
         function retryLoad() {
-            if(STATE.currentExternalUrl) {
-                loadExternalUrl(STATE.currentExternalUrl);
-            } else if(STATE.retryParams) {
+            if(STATE.retryParams) {
                 loadText(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
-            }
-        }
-
-        function heuristicClean(doc) {
-            const extremeGarbage = [
-                'script', 'style', 'nav', 'footer', 'header', 'aside', 'iframe', 'noscript', 'table.navbox',
-                '.menu', '#menu', '.sidebar', '#sidebar', '.ads', '.advertising', '.comment', '#comments',
-                '.noprint', '#toc', '.mw-jump-link', '.mw-editsection', '.metadata', '.ambox', '.mw-indicators'
-            ];
-            extremeGarbage.forEach(sel => doc.querySelectorAll(sel).forEach(e => e.remove()));
-            return doc.querySelector('main') || doc.querySelector('#content') || doc.querySelector('.content') || doc.querySelector('.mw-parser-output') || doc.body;
-        }
-
-        async function loadExternalUrl(url) {
-            const taskId = ++STATE.currentTaskId; 
-            stopAudio();
-            closeRightPanel();
-            
-            STATE.currentExternalUrl = url;
-            STATE.work = { arabic: 1, esPath: null }; 
-            STATE.lang = (url.includes('el.wikisource') || url.includes('greek')) ? 'grc' : 'la';
-            STATE.authorEs = "Inyección Libre";
-            STATE.currentWorkStr = "Texto Externo";
-            
-            setFetchState('fetching', `Tunelando firewall remoto y procesando selectores heurísticos...`);
-            document.getElementById('pane-original').innerHTML = '';
-            
-            if (STATE.bilingual) {
-                document.getElementById('trans-text-body').innerHTML = '';
-                document.getElementById('trans-loading').classList.remove('hidden');
-            }
-            
-            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">URL Inyectada</span> <span class="mx-2 opacity-50">/</span> <span class="text-xs text-gray-500 truncate select-all">${url}</span>`;
-            document.getElementById('reader-tools').classList.remove('hidden');
-
-            try {
-                let htmlContent = await proxyFetchHTML(url);
-                if (STATE.currentTaskId !== taskId) return; 
-
-                if (!htmlContent) throw new Error("El túnel proxy ha sido rechazado por el host remoto o la URL es inaccesible.");
-
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlContent, 'text/html');
-                let targetNode = heuristicClean(doc);
-
-                document.getElementById('pane-original').innerHTML = targetNode.innerHTML;
-                setFetchState('fetching', "Mapeando tokens e indexando interactividad...");
-                
-                setTimeout(async () => {
-                    if (STATE.currentTaskId !== taskId) return;
-                    await tokenizeSafeDOMAsync(document.getElementById('pane-original'), taskId);
-                    if (STATE.currentTaskId === taskId) {
-                        setFetchState('done');
-                        lucide.createIcons();
-                        document.getElementById('search-lib').value = '';
-                    }
-                }, 50);
-
-            } catch (error) {
-                if (STATE.currentTaskId === taskId) setFetchState('error', "", error.message);
             }
         }
 
@@ -652,7 +573,6 @@
             const taskId = ++STATE.currentTaskId; 
             stopAudio();
             closeRightPanel();
-            STATE.currentExternalUrl = null;
             
             STATE.retryParams = {langCat, aIndex, wIndex, bIndex};
             STATE.lang = langCat === 'latin' ? 'la' : 'grc';
@@ -764,9 +684,7 @@
             if (!STATE.work) return;
             try {
                 let htmlContent = null;
-                if (STATE.work.esPath && MEMORIA_ESTATICA[STATE.work.esPath]) {
-                    htmlContent = MEMORIA_ESTATICA[STATE.work.esPath];
-                } else if (STATE.work.esPath) {
+                if (STATE.work.esPath) {
                     htmlContent = await fetchWikisourceAPI('es', STATE.work.esPath);
                 }
 
@@ -780,17 +698,6 @@
                     if (sData.query && sData.query.search && sData.query.search.length > 0) {
                         const bestHits = sData.query.search.filter(r => r.ns === 0 && !r.title.includes("Wikisource:"));
                         if(bestHits.length > 0) htmlContent = await fetchWikisourceAPI('es', bestHits[0].title);
-                    }
-                }
-
-                if (!htmlContent && STATE.currentExternalUrl) {
-                    const looseQ = `${STATE.authorEs} ${cleanWork}`;
-                    const searchUrl = `https://es.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(looseQ)}&utf8=&format=json&origin=*`;
-                    const sRes = await fetch(searchUrl);
-                    const sData = await sRes.json();
-                    if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                        const proxyUrl = `https://es.wikipedia.org/wiki/${encodeURIComponent(sData.query.search[0].title)}`;
-                        htmlContent = await proxyFetchHTML(proxyUrl);
                     }
                 }
 
@@ -855,7 +762,6 @@
             document.getElementById('ora-result').classList.add('hidden');
             document.getElementById('ora-error').classList.add('hidden');
             document.getElementById('ora-enclitic-alert').classList.add('hidden');
-            document.getElementById('ora-offline-badge').classList.add('hidden');
 
             let cleanWord = rawWord.toLowerCase().replace(/[.,;:"'«»()\[\]{}\-—!?;·]/g, '').trim();
             if(STATE.lang === 'la') cleanWord = cleanWord.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/v/g, 'u').replace(/j/g, 'i');
@@ -924,7 +830,6 @@
                         let pofs = inf.pofs?.$||''; let case_ = inf.case?.$||''; let num = inf.num?.$||'';
                         let stem = inf.stem?.$||''; let term = inf.term?.$||'';
                         
-                        // CORRECCIÓN: Se repara la variable 'temp' rota por el puntero real 'stem'
                         let uniqueKey = `${stem}-${term}-${pofs}-${case_}-${num}`; 
                         if(!uniqueMorphs.has(uniqueKey)) {
                             uniqueMorphs.add(uniqueKey);
@@ -944,26 +849,9 @@
                 document.getElementById('ora-result').classList.remove('hidden');
 
             } catch (error) {
-                if (LEXICON_LOCAL[stripped]) {
-                    const localData = LEXICON_LOCAL[stripped];
-                    document.getElementById('ora-lemma').innerText = localData.lemma;
-                    document.getElementById('ora-morph').innerHTML = `<div class="p-2 bg-[#222] rounded text-gray-300 text-sm border border-[#333]">${localData.morph}</div>`;
-                    
-                    if (encliticDetected) {
-                        const alertEl = document.getElementById('ora-enclitic-alert');
-                        alertEl.innerText = `Sufijo: ${encliticDetected}`;
-                        alertEl.classList.remove('hidden');
-                    }
-                    
-                    document.getElementById('ora-offline-badge').classList.remove('hidden');
-                    setupExternalDictLinks(localData.lemma, stripped);
-                    document.getElementById('ora-loading').classList.add('hidden');
-                    document.getElementById('ora-result').classList.remove('hidden');
-                } else {
-                    document.getElementById('ora-loading').classList.add('hidden');
-                    document.getElementById('ora-error').classList.remove('hidden');
-                    setupExternalDictLinks(stripped, stripped, true);
-                }
+                document.getElementById('ora-loading').classList.add('hidden');
+                document.getElementById('ora-error').classList.remove('hidden');
+                setupExternalDictLinks(stripped, stripped, true);
             }
         }
 

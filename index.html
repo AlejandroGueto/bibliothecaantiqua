@@ -76,6 +76,8 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table.plainlinks, .ws-noexport { display: none !important; }
+        .wst-poem-header, .ws-header, .wst-navbox, .extiw, .reference, .wst-toc, #ws-data, .subpages { display: none !important; }
+        
         .poem { margin-left: 2rem; margin-bottom: 1.5rem; }
         .poem p { margin-bottom: 0.2rem; }
         
@@ -234,6 +236,26 @@
     <script>
         // Función auxiliar robusta para manejar las discrepancias de JSON en las APIs
         const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
+
+        function findValueByKey(obj, keyToFind) {
+            let results = [];
+            function search(currentObj) {
+                if (typeof currentObj === 'object' && currentObj !== null) {
+                    if (currentObj.hasOwnProperty(keyToFind)) {
+                        results.push(currentObj[keyToFind]);
+                    }
+                    for (let key in currentObj) {
+                        search(currentObj[key]);
+                    }
+                } else if (Array.isArray(currentObj)) {
+                    for (let i = 0; i < currentObj.length; i++) {
+                        search(currentObj[i]);
+                    }
+                }
+            }
+            search(obj);
+            return results;
+        }
 
         const STATE = {
             lang: 'la', work: null, bilingual: false,
@@ -588,16 +610,28 @@
                 if (!htmlContent) {
                     setFetchState('fetching', "Búsqueda inteligente activada...");
                     const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
+                    // Intenta varias combinaciones de búsqueda
                     const cleanBaseTitle = work.baseTitle.replace(/\s*\(.*?\)\s*/g, '').replace(/_/g, ' ');
-                    const searchStr = `${cleanBaseTitle} ${book.title}`;
-                    const searchUrl = `https://${wikiLang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
-                    try {
-                        const sRes = await fetch(searchUrl);
-                        const sData = await sRes.json();
-                        if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                            htmlContent = await fetchWikisourceAPI(STATE.lang, sData.query.search[0].title);
-                        }
-                    } catch(e) { console.warn("Fallback search failed."); }
+                    
+                    let searchQueries = [
+                        `${cleanBaseTitle} ${book.title}`,
+                        `${cleanBaseTitle}`,
+                        `${book.path.replace(/_/g, ' ')}`
+                    ];
+
+                    for (let query of searchQueries) {
+                         const searchUrl = `https://${wikiLang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&utf8=&format=json&origin=*`;
+                         try {
+                            const sRes = await fetch(searchUrl);
+                            const sData = await sRes.json();
+                            if (sData.query && sData.query.search && sData.query.search.length > 0) {
+                                // Prioriza títulos que se parezcan
+                                let bestMatch = sData.query.search[0].title;
+                                htmlContent = await fetchWikisourceAPI(STATE.lang, bestMatch);
+                                if(htmlContent) break; // Si encontró algo, sal del bucle
+                            }
+                        } catch(e) { console.warn("Fallback search failed for query:", query); }
+                    }
                 }
 
                 if (!htmlContent) throw new Error("La obra no existe o la ruta ha cambiado en Wikisource.");
@@ -606,8 +640,19 @@
                 const doc = parser.parseFromString(htmlContent, 'text/html');
                 const root = doc.body;
                 
-                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', 'table.plainlinks', 'script', 'style'];
+                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', 'table.plainlinks', 'script', 'style', '.wst-poem-header', '.ws-header', '.wst-navbox', '.extiw', '.reference', '.wst-toc', '#ws-data', '.subpages', 'table[style*="background-color"]', 'div[style*="border"]'];
                 garbage.forEach(sel => root.querySelectorAll(sel).forEach(e => e.remove()));
+
+                // Eliminar enlaces vacíos que a veces deja Wikisource
+                root.querySelectorAll('a').forEach(a => {
+                    if(!a.innerText.trim()) a.remove();
+                    else {
+                        // Cambiar enlaces por spans para evitar clicks accidentales fuera de la app
+                        let span = document.createElement('span');
+                        span.innerHTML = a.innerHTML;
+                        a.parentNode.replaceChild(span, a);
+                    }
+                });
 
                 document.getElementById('pane-original').innerHTML = root.innerHTML;
                 
@@ -670,13 +715,31 @@
                 if (STATE.work && STATE.work.esPath) {
                     try {
                         let htmlContent = await fetchWikisourceAPI('es', STATE.work.esPath);
+                        
                         if (!htmlContent) {
-                            const searchStr = STATE.work.esPath.replace(/_/g, ' ');
-                            const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
-                            const sRes = await fetch(searchUrl);
-                            const sData = await sRes.json();
-                            if (sData.query && sData.query.search.length > 0) {
-                                htmlContent = await fetchWikisourceAPI('es', sData.query.search[0].title);
+                            // Extraemos el número del libro/canto
+                            let numMatch = STATE.work.title.match(/(\d+|[IVXLCDM]+)$/i);
+                            let num = numMatch ? numMatch[1] : "";
+                            let cleanBaseTitleES = STATE.work.esPath.split('/')[0].replace(/_/g, ' ');
+                            
+                            let searchQueries = [
+                                `${cleanBaseTitleES} ${num}`, // Ej: "La Eneida 1" o "Ilíada I"
+                                `${cleanBaseTitleES} Canto ${num}`,
+                                `${cleanBaseTitleES} Libro ${num}`,
+                                STATE.work.esPath.replace(/_/g, ' ')
+                            ];
+
+                            for (let query of searchQueries) {
+                                const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&utf8=&format=json&origin=*`;
+                                try {
+                                    const sRes = await fetch(searchUrl);
+                                    const sData = await sRes.json();
+                                    if (sData.query && sData.query.search.length > 0) {
+                                        // Coger el primero que parezca lógico
+                                        htmlContent = await fetchWikisourceAPI('es', sData.query.search[0].title);
+                                        if (htmlContent) break;
+                                    }
+                                } catch(e) { console.warn("Fallback ES failed for:", query); }
                             }
                         }
                         if(!htmlContent) throw new Error();
@@ -685,7 +748,9 @@
                         const doc = parser.parseFromString(htmlContent, 'text/html');
                         const root = doc.body;
                         
-                        root.querySelectorAll('.mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table.plainlinks').forEach(e => e.remove());
+                        const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', 'table.plainlinks', '.wst-poem-header', '.ws-header', '.wst-navbox', '.reference'];
+                        garbage.forEach(sel => root.querySelectorAll(sel).forEach(e => e.remove()));
+                        
                         document.getElementById('trans-content').innerHTML = root.innerHTML;
                         
                         document.getElementById('trans-loading').classList.add('hidden');
@@ -741,32 +806,44 @@
                 let baseLemma = cleanWord;
                 let found = false;
 
-                // Estructura extra-robusta usando asArray para evitar fallos si no es un array iterativo
-                let annotations = asArray(data?.RDF?.Annotation);
-                for (let ann of annotations) {
-                    let bodies = asArray(ann?.Body);
-                    let firstValid = bodies.find(b => b?.rest?.entry);
+                // Buscar cualquier cosa que se llame 'hdwd' (headword / lema) en TODO el JSON
+                let headwords = findValueByKey(data, 'hdwd');
+                
+                if (headwords.length > 0) {
+                    found = true;
+                    // Coger el primer lema válido
+                    let hwObj = headwords[0];
+                    baseLemma = hwObj.$ || hwObj || cleanWord;
+                    lemmaStr = baseLemma.toString().replace(/\d+$/, ''); // Quitar números al final (ej: "sum1" -> "sum")
                     
-                    if (firstValid) {
-                        found = true;
-                        let entry = firstValid.rest.entry;
-                        let dictEntry = asArray(entry?.dict)[0];
-                        baseLemma = dictEntry?.hdwd?.$ || cleanWord;
-                        
-                        lemmaStr = baseLemma.replace(/\d+$/, ''); 
-                        
-                        let infls = asArray(entry?.infl);
-                        morphHtml = infls.map(inf => {
-                            const attr = (name) => inf[name]?.$ || '';
+                    // Buscar 'infl' (inflections) en TODO el JSON
+                    let inflections = findValueByKey(data, 'infl');
+                    
+                    // Aplanar si es un array de arrays
+                    if(inflections.length > 0 && Array.isArray(inflections[0])) {
+                        inflections = inflections[0];
+                    }
+
+                    if (inflections.length > 0) {
+                        morphHtml = inflections.map(inf => {
+                            // Helper para sacar el valor si es un objeto con '$' o directo
+                            const attr = (name) => {
+                                if(inf[name]) { return typeof inf[name] === 'object' && inf[name].$ ? inf[name].$ : inf[name]; }
+                                return '';
+                            };
+                            
                             const attrsStr = [attr('pofs'), attr('case'), attr('num'), attr('gend'), attr('pers'), attr('tense'), attr('voice'), attr('mood')].filter(Boolean).join(', ') || 'Forma invariable';
-                            const stem = attr('stem') || ''; const term = attr('term') || '';
+                            const stem = attr('stem') || ''; 
+                            const term = attr('term') || '';
+                            
                             return `<div class="mb-3 pb-3 border-b border-[#333]/50 last:border-0 last:pb-0 last:mb-0"><div class="flex items-baseline gap-2 mb-1"><span class="font-mono text-gray-500 text-base">${stem}<strong class="text-[#D4AF37]">${term}</strong></span></div><p class="italic text-gray-400 text-xs uppercase tracking-wide">${attrsStr}</p></div>`;
                         }).join('');
-                        break;
+                    } else {
+                        morphHtml = `<p class="italic text-gray-400 text-xs uppercase tracking-wide">Forma invariable / No flexiva</p>`;
                     }
                 }
 
-                if (!found) throw new Error("Not found in Morpheus DB");
+                if (!found) throw new Error("Not found anywhere in Morpheus JSON");
 
                 document.getElementById('ora-lemma').innerText = lemmaStr;
                 document.getElementById('ora-morph').innerHTML = morphHtml;

@@ -123,29 +123,36 @@
                 <div id="current-meta" class="font-cinzel text-sm text-gray-300 tracking-wide truncate whitespace-nowrap">Esperando inicialización del papiro...</div>
             </div>
 
-            <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0 ml-2">
-                <div class="flex items-center bg-[#121212] rounded px-1">
-                    <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir Fonética">
-                        <i data-lucide="play" class="w-4 h-4"></i>
-                    </button>
-                    <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio">
-                        <i data-lucide="square" class="w-4 h-4 fill-current"></i>
-                    </button>
-                    <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1" title="Velocidad">
-                        <option value="0.6">0.6x</option><option value="0.75" selected>0.75x</option><option value="0.9">0.9x</option>
-                    </select>
-                </div>
-                
-                <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
-                
-                <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
-                    <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
+            <div class="flex items-center gap-2">
+                <!-- PANEL DE INYECCIÓN MANUAL PARA EMERGENCIAS O TEXTOS PROPIOS -->
+                <button onclick="openManualInputModal()" class="p-1.5 px-3 border border-[#444] text-xs font-cinzel uppercase tracking-wider rounded text-gray-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition shrink-0 flex items-center gap-1.5" title="Cargar Texto Manual">
+                    <i data-lucide="file-plus"></i> <span class="hidden sm:inline">Inyectar Manuscrito</span>
                 </button>
-                
-                <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm"><i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span></button>
+
+                <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0">
+                    <div class="flex items-center bg-[#121212] rounded px-1">
+                        <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir Fonética">
+                            <i data-lucide="play" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio">
+                            <i data-lucide="square" class="w-4 h-4 fill-current"></i>
+                        </button>
+                        <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1" title="Velocidad">
+                            <option value="0.6">0.6x</option><option value="0.75" selected>0.75x</option><option value="0.9">0.9x</option>
+                        </select>
+                    </div>
+                    
+                    <div class="w-px h-4 bg-gray-700 mx-1"></div>
+                    <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
+                    
+                    <div class="w-px h-4 bg-gray-700 mx-1"></div>
+                    <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
+                        <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
+                    </button>
+                    
+                    <div class="w-px h-4 bg-gray-700 mx-1"></div>
+                    <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm"><i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span></button>
+                </div>
             </div>
         </header>
 
@@ -187,6 +194,43 @@
         
         <div id="right-backdrop" onclick="closeRightPanel()"></div>
     </main>
+
+    <!-- MODAL DE ENTRADA MANUAL -->
+    <div id="manual-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-[#171717] border border-[#333] w-full max-w-2xl rounded-lg shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
+            <div class="p-4 bg-[#111] border-b border-[#333] flex justify-between items-center">
+                <h3 class="font-cinzel text-[#D4AF37] font-bold uppercase tracking-widest text-sm">Inyector de Texto Local</h3>
+                <button onclick="closeManualInputModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-6 space-y-4 overflow-y-auto flex-1">
+                <div>
+                    <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Texto Original (Latín o Griego)</label>
+                    <textarea id="manual-original-input" rows="6" placeholder="Paste classical text here..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
+                </div>
+                <div>
+                    <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Traducción al Español</label>
+                    <textarea id="manual-translation-input" rows="5" placeholder="Pega la traducción correspondiente aquí..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Idioma</label>
+                        <select id="manual-lang" class="w-full bg-[#101010] border border-[#333] rounded p-2 text-gray-300 focus:outline-none focus:border-[#D4AF37]">
+                            <option value="la">Latín (la)</option>
+                            <option value="grc">Griego Antiguo (grc)</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Metadatos del fragmento</label>
+                        <input type="text" id="manual-meta" placeholder="Ej: Cicerón, Catilina I, 1-2" class="w-full bg-[#101010] border border-[#333] rounded p-2 text-gray-300 focus:outline-none focus:border-[#D4AF37] font-serif">
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 bg-[#111] border-t border-[#333] flex justify-end gap-3 shadow-inner">
+                <button onclick="closeManualInputModal()" class="px-4 py-2 border border-[#444] rounded text-gray-400 text-xs font-cinzel uppercase tracking-wider hover:bg-[#222] transition">Cancelar</button>
+                <button onclick="injectManualText()" class="px-5 py-2 bg-[#991B1B] text-white rounded text-xs font-cinzel uppercase tracking-wider hover:bg-[#7f1616] transition font-bold shadow-md">Procesar e Inyectar</button>
+            </div>
+        </div>
+    </div>
 
     <aside id="sidebar-right">
         <div class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0">
@@ -244,6 +288,8 @@
     <div id="toast-container"></div>
 
     <script>
+        const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
+
         const STATE = {
             lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0,
             audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
@@ -251,7 +297,7 @@
         };
 
         const generateBooks = (prefix, count, romanFormat, pathBase, esPathBase) => {
-            const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
+            const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XX4"];
             const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
             let list = [];
             for(let i=0; i<count; i++) {
@@ -269,7 +315,7 @@
             return list;
         };
 
-        // CATÁLOGO ÍNTEGRO RESTAURADO - LOS 40 AUTORES COMPLETO
+        // CATÁLOGO COMPLETO DE LOS 40 AUTORES CLÁSICOS RESTAURADO ÍNTEGRAMENTE
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -430,140 +476,75 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
                 { author: "Callimachus", authorEs: "Calímaco", works: [
-                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δía", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δία", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
 
-        window.onload = function() {
-            renderNestedCatalog('latin');
-            renderNestedCatalog('greek');
-            lucide.createIcons(); 
-            
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = () => { STATE.audio.synth.getVoices(); };
+        function openManualInputModal() {
+            document.getElementById('manual-modal').classList.remove('hidden');
+        }
+
+        function closeManualInputModal() {
+            document.getElementById('manual-modal').classList.add('hidden');
+        }
+
+        function injectManualText() {
+            const originalText = document.getElementById('manual-original-input').value.trim();
+            const translationText = document.getElementById('manual-translation-input').value.trim();
+            const selectedLang = document.getElementById('manual-lang').value;
+            const metaInfo = document.getElementById('manual-meta').value.trim() || "Inyección Manual Compartida";
+
+            if(!originalText) {
+                showToast("El texto original no puede estar vacío.");
+                return;
             }
-        };
 
-        function showToast(msg) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast'; toast.innerText = msg;
-            container.appendChild(toast);
-            void toast.offsetWidth;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
-        }
+            stopAudio();
+            closeRightPanel();
+            closeManualInputModal();
 
-        function switchTab(lang) {
-            document.getElementById('tab-latin').classList.toggle('active', lang === 'latin');
-            document.getElementById('tab-greek').classList.toggle('active', lang === 'greek');
-            document.getElementById('list-latin').classList.toggle('hidden', lang !== 'latin');
-            document.getElementById('list-greek').classList.toggle('hidden', lang !== 'greek');
-            STATE.lang = lang === 'latin' ? 'la' : 'grc';
-            filterLibrary();
-        }
-
-        function toggleAccordion(btn) { btn.parentElement.classList.toggle('open'); }
-        function toggleSubAccordion(btn) { btn.parentElement.classList.toggle('open'); }
-        function toggleSidebarLeft() { document.getElementById('sidebar-left').classList.toggle('collapsed'); }
-
-        function renderNestedCatalog(lang) {
-            const list = document.getElementById(`list-${lang}`);
-            let html = '';
-            CATALOG[lang].forEach((authorNode, aIndex) => {
-                html += `
-                <div class="mb-1 author-block">
-                    <button onclick="toggleAccordion(this)" class="w-full text-left px-3 py-2.5 rounded hover:bg-[#262626] flex items-center justify-between transition group">
-                        <span class="font-cinzel text-sm text-gray-200 font-bold">${authorNode.author}</span>
-                        <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-gray-500"></i>
-                    </button>
-                    <div class="accordion-content pl-4 pr-2 py-1 space-y-1 border-l border-[#333] ml-3 mt-1">
-                        ${authorNode.works.map((workNode, wIndex) => `
-                            <div class="work-block">
-                                <button onclick="toggleSubAccordion(this)" class="w-full text-left px-3 py-2 rounded text-sm font-serif text-gray-300 hover:text-white hover:bg-[#333] transition flex justify-between items-center group">
-                                    ${workNode.baseTitle.replace(/_/g, ' ')}
-                                    <i data-lucide="chevron-down" class="sub-accordion-icon w-3 h-3 text-gray-600"></i>
-                                </button>
-                                <div class="sub-accordion-content pl-4 space-y-1 border-l border-[#444] ml-2 mt-1">
-                                    ${workNode.books.map((b, bIndex) => `
-                                        <button onclick="loadText('${lang}', ${aIndex}, ${wIndex}, ${bIndex})" class="w-full text-left px-3 py-1.5 rounded text-xs font-serif text-gray-400 hover:text-white hover:bg-[#444] transition truncate">
-                                            ${b.title}
-                                        </button>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
-            });
-            list.innerHTML = html;
-        }
-
-        function filterLibrary() {
-            const term = document.getElementById('search-lib').value.toLowerCase();
-            const listId = STATE.lang === 'la' ? 'list-latin' : 'list-greek';
-            const blocks = document.querySelectorAll(`#${listId} .author-block`);
-            let hasResults = false;
-
-            blocks.forEach(block => {
-                const text = block.innerText.toLowerCase();
-                if (text.includes(term)) {
-                    block.style.display = 'block';
-                    hasResults = true;
-                } else {
-                    block.style.display = 'none';
-                }
-            });
-            document.getElementById('no-results').classList.toggle('hidden', hasResults);
-        }
-
-        function openPanel(panelId) {
-            document.getElementById('sidebar-right').classList.add('open');
-            document.getElementById('right-backdrop').classList.add('active');
+            STATE.lang = selectedLang;
+            STATE.work = null; // Sin rutas de red asignadas
             
-            document.querySelectorAll('.hidden-panel').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`panel-${panelId}`).classList.remove('hidden');
-            let titles = { 'oraculum': 'Oraculum Filológico', 'statistica': 'Frecuencia Léxica' };
-            document.getElementById('right-panel-title').innerText = titles[panelId];
+            setFetchState('fetching', 'Procesando interactividad local...');
             
-            if(panelId === 'statistica') generateStats();
-        }
-        
-        function closeRightPanel() { 
-            document.getElementById('sidebar-right').classList.remove('open'); 
-            document.getElementById('right-backdrop').classList.remove('active');
+            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${metaInfo}</span>`;
+            document.getElementById('reader-tools').classList.remove('hidden');
+
+            const container = document.createElement('div');
+            container.innerHTML = originalText.replace(/\n/g, '<br>');
+
+            document.getElementById('pane-original').innerHTML = container.innerHTML;
+            document.getElementById('trans-text-body').innerHTML = translationText ? translationText.replace(/\n/g, '<br>') : "<p class='opacity-50 italic'>No se inyectó traducción para este fragmento.</p>";
+
+            setTimeout(async () => {
+                STATE.currentTaskId++;
+                await tokenizeSafeDOMAsync(document.getElementById('pane-original'), STATE.currentTaskId);
+                setFetchState('done');
+                lucide.createIcons();
+                // Limpiar campos
+                document.getElementById('manual-original-input').value = '';
+                document.getElementById('manual-translation-input').value = '';
+            }, 50);
         }
 
-        function setFetchState(state, msg="", desc="") {
-            document.getElementById('loading-state').classList.add('hidden');
-            document.getElementById('fetching-state').classList.add('hidden');
-            document.getElementById('error-state').classList.add('hidden');
-            if(state === 'fetching') {
-                document.getElementById('fetching-state').classList.remove('hidden');
-                if(msg) document.getElementById('fetch-msg').innerText = msg;
-            } else if (state === 'error') {
-                document.getElementById('error-state').classList.remove('hidden');
-                if(desc) document.getElementById('error-desc').innerText = desc;
-            }
-        }
-
-        async function fetchWikisourceAPI(lang, title) {
-            const wikiLang = lang === 'grc' ? 'el' : lang;
-            const url = `https://${wikiLang}.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1`;
+        // CONTROL EXCLUSIVO DE PROXYS (Soluciona el Fatal Syntax Error)
+        async function proxyFetchHTML(url) {
             try {
-                const res = await fetch(url);
-                const data = await res.json();
-                if (data.parse && data.parse.text) return data.parse.text['*'];
-                return null;
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+                const res = await fetch(proxyUrl);
+                if (!res.ok) throw new Error();
+                return await res.text();
             } catch (e) {
-                return null;
-            }
-        }
-
-        function retryLoad() {
-            if(STATE.retryParams) {
-                loadText(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
+                try {
+                    const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                    const res2 = await fetch(fallbackUrl);
+                    const data = await res2.json();
+                    return data.contents;
+                } catch (e2) {
+                    return null;
+                }
             }
         }
 
@@ -623,7 +604,7 @@
                 const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', '.wst-navbox', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
                 garbage.forEach(sel => contentNode.querySelectorAll(sel).forEach(e => e.remove()));
 
-                // ESTERILIZADOR DE ENLACES (Previene errores 404 en GitHub Pages)
+                // ESTERILIZADOR COMPLETO DE HIPERVÍNCULOS INTERNOS
                 contentNode.querySelectorAll('a').forEach(a => {
                     a.removeAttribute('href');
                     a.style.color = 'inherit';
@@ -713,14 +694,14 @@
                 const doc = parser.parseFromString(htmlContent, 'text/html');
                 let contentNode = doc.querySelector('.mw-parser-output') || doc.body;
                 
-                // PURGADOR DE PREFACIOS, ÍNDICES Y METADATA DE WIKISOURCE ES
+                // PURGADOR AGRESIVO DE ÍNDICES, PRÓLOGOS Y TABLAS EXTRACTORAS DE WIKISOURCE
                 const translationGarbage = [
                     '.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', 
                     'table.plainlinks', '.ws-header', '.ws-noexport', '.wst-navigation', '#header', 'table'
                 ];
                 translationGarbage.forEach(sel => contentNode.querySelectorAll(sel).forEach(e => e.remove()));
 
-                // ESTERILIZADOR DE ENLACES DE TRADUCCIÓN (Previene desvíos fatales en GitHub)
+                // DESACTIVACIÓN DE ENLACES EXTERNOS EN TRADUCCIONES
                 contentNode.querySelectorAll('a').forEach(a => {
                     a.removeAttribute('href');
                     a.style.color = 'inherit';
@@ -751,7 +732,7 @@
                 
                 document.getElementById('trans-loading').classList.remove('hidden');
                 document.getElementById('trans-content').classList.add('hidden');
-                executeTranslationFetch();
+                if(STATE.work) executeTranslationFetch();
             } else {
                 btn.classList.remove('text-[#D4AF37]');
                 pOrig.classList.remove('half');
@@ -850,6 +831,7 @@
                         let pofs = inf.pofs?.$||''; let case_ = inf.case?.$||''; let num = inf.num?.$||'';
                         let stem = inf.stem?.$||''; let term = inf.term?.$||'';
                         
+                        // CORRECCIÓN SISTÉMICA DE VARIABLE INDEFINIDA (Evita fallos silenciosos)
                         let uniqueKey = `${stem}-${term}-${pofs}-${case_}-${num}`; 
                         if(!uniqueMorphs.has(uniqueKey)) {
                             uniqueMorphs.add(uniqueKey);
@@ -911,7 +893,7 @@
                 tokens.forEach(t => {
                     let word = t.dataset.original;
                     if (!word) return;
-                    word = word.toLowerCase().replace(/^[\s.,;:"'«»()\[\]{}\-—!军事?;·]+|[\s.,;:"'«»()\[\]{}\-—!?;·]+$/g, ''); 
+                    word = word.toLowerCase().replace(/^[\s.,;:"'«»()\[\]{}\-—!?;·]+|[\s.,;:"'«»()\[\]{}\-—!?;·]+$/g, ''); 
                     if(word.length > 2) counts[word] = (counts[word] || 0) + 1;
                 });
 

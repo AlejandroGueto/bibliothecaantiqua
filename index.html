@@ -34,13 +34,15 @@
         h1, h2, h3, h4, h5, .font-cinzel { font-family: 'Cinzel', serif; }
         .font-greek { font-family: 'Noto Serif', serif; }
 
-        /* Estructura IDE Estricta */
         #sidebar-left { width: 320px; min-width: 320px; border-right: 1px solid var(--border-color); background: var(--bg-panel); display: flex; flex-direction: column; transition: width 0.3s ease; overflow-x: hidden; z-index: 40; }
         #sidebar-left.collapsed { width: 0; min-width: 0; border-right: none; }
         
         #main-canvas { flex: 1; display: flex; flex-direction: column; position: relative; background: var(--bg-dark); min-width: 0; height: 100vh; overflow: hidden; }
         
-        #sidebar-right { width: 400px; min-width: 400px; border-left: 1px solid var(--border-color); background: var(--bg-panel); display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: absolute; right: 0; top: 0; bottom: 0; z-index: 50; box-shadow: -10px 0 25px rgba(0,0,0,0.8);}
+        #right-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; display: none; opacity: 0; transition: opacity 0.3s ease; }
+        #right-backdrop.active { display: block; opacity: 1; }
+
+        #sidebar-right { width: 400px; max-width: 90vw; border-left: 1px solid var(--border-color); background: var(--bg-panel); display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: absolute; right: 0; top: 0; bottom: 0; z-index: 50; box-shadow: -10px 0 25px rgba(0,0,0,0.8);}
         #sidebar-right.open { transform: translateX(0); }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -57,28 +59,24 @@
 
         #reading-area { flex: 1; display: flex; overflow: hidden; position: relative; height: calc(100vh - 3.5rem); }
         .split-pane { flex: 1; overflow-y: auto; padding: 2rem 3rem; height: 100%; box-sizing: border-box; }
-        #pane-original { width: 100%; transition: width 0.3s ease; }
-        #pane-original.half { max-width: 50%; border-right: 1px solid var(--border-color); }
         
-        #pane-translation { display: none; background: #141414; color: #b3b3b3; max-width: 50%; }
+        /* MEJORA 1: Traducción 50/50 perfecta con el mismo contraste */
+        #pane-original { width: 100%; transition: width 0.3s ease; }
+        #pane-original.half { width: 50%; max-width: 50%; border-right: 1px solid var(--border-color); }
+        
+        #pane-translation { display: none; background: var(--bg-dark); color: var(--text-main); width: 50%; max-width: 50%; border-left: 1px solid var(--border-color); }
         #pane-translation.active { display: block; }
 
-        /* Métrica segura */
-        .scansion-mode .word-token[data-meter]::after {
-            content: attr(data-meter); position: absolute; top: -1em; left: 50%; transform: translateX(-50%); font-size: 0.7em; color: var(--accent-gold); pointer-events: none; font-family: sans-serif; letter-spacing: 2px; opacity: 0.9; font-weight: bold;
-        }
-
         .accordion-content, .sub-accordion-content { display: none; }
-        .accordion-content.open, .sub-accordion-content.open { display: block; }
+        .open > .accordion-content, .open > .sub-accordion-content { display: block; }
         .accordion-icon, .sub-accordion-icon { transition: transform 0.2s ease; }
-        .open > .accordion-icon, .open > .sub-accordion-icon { transform: rotate(180deg); }
+        .open button .accordion-icon, .open button .sub-accordion-icon { transform: rotate(180deg); }
         
         .tab-btn.active { color: var(--accent-gold); border-bottom: 2px solid var(--accent-gold); }
         .spinner { border: 3px solid rgba(255,255,255,0.1); width: 24px; height: 24px; border-radius: 50%; border-left-color: var(--accent-gold); animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Limpieza de Wikisource REST API */
-        section[data-mw-section-id="0"] > .navbox, .sidenote, .noprint, #toc, .infobox, table.plainlinks { display: none !important; }
+        .mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table.plainlinks, .ws-noexport { display: none !important; }
         .poem { margin-left: 2rem; margin-bottom: 1.5rem; }
         .poem p { margin-bottom: 0.2rem; }
         
@@ -86,7 +84,6 @@
         .toast { background: rgba(0,0,0,0.8); color: #fff; padding: 12px 24px; border-radius: 8px; margin-top: 10px; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; font-size: 0.9rem; text-align: center; border: 1px solid var(--accent-gold); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .toast.show { opacity: 1; }
         
-        /* Ocultar números de línea para lectura fluida */
         .linenumber { opacity: 0.3; font-size: 0.6em; margin-right: 10px; user-select: none; }
     </style>
 </head>
@@ -125,25 +122,25 @@
             </div>
 
             <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0 ml-2">
+                <!-- Controles de Audio (Mejora: Velocidad lenta por defecto) -->
                 <div class="flex items-center bg-[#121212] rounded px-1">
-                    <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir">
+                    <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir Fonética">
                         <i data-lucide="play" class="w-4 h-4"></i>
                     </button>
                     <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio">
                         <i data-lucide="square" class="w-4 h-4 fill-current"></i>
                     </button>
-                    <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1">
-                        <option value="0.7">0.7x</option><option value="0.85" selected>0.85x</option><option value="1.0">1.0x</option>
+                    <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1" title="Velocidad">
+                        <option value="0.6">0.6x</option><option value="0.75" selected>0.75x</option><option value="0.9">0.9x</option>
                     </select>
                 </div>
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
                 
                 <button onclick="toggleBilingual()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Traducción Simultánea"><i data-lucide="languages" class="w-4 h-4"></i></button>
-                <button onclick="toggleScansion()" id="btn-scansion" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Análisis Métrico"><i data-lucide="music" class="w-4 h-4"></i></button>
                 <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
                 
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase"><i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden sm:inline">Oraculum</span></button>
+                <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm"><i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span></button>
             </div>
         </header>
 
@@ -155,17 +152,17 @@
                     <i data-lucide="library" class="absolute inset-0 m-auto w-10 h-10 text-gray-600"></i>
                 </div>
                 <h2 class="font-cinzel text-2xl text-gray-300 uppercase tracking-widest mb-2">Latinitatis PRO</h2>
-                <p class="font-serif text-gray-500 italic text-sm">Elige un volumen de la biblioteca.</p>
+                <p class="font-serif text-gray-500 italic text-sm">Elige un volumen del catálogo lateral.</p>
             </div>
             
             <div id="fetching-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f]/95 backdrop-blur z-20">
                 <div class="spinner w-12 h-12 mb-4 border-4"></div>
-                <p class="font-cinzel text-[#D4AF37] uppercase tracking-widest text-sm" id="fetch-msg">Desplegando Papiro...</p>
+                <p class="font-cinzel text-[#D4AF37] uppercase tracking-widest text-sm" id="fetch-msg">Extrayendo Papiro...</p>
             </div>
 
             <div id="error-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20">
                 <i data-lucide="alert-triangle" class="w-16 h-16 text-red-500 mb-4 opacity-80"></i>
-                <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Error en el Repositorio</p>
+                <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Error en la Extracción</p>
                 <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">El manuscrito no se encuentra disponible.</p>
                 <button onclick="retryLoad()" class="mt-6 px-4 py-2 border border-[#333] text-gray-400 hover:text-white hover:bg-[#333] rounded font-cinzel text-xs uppercase transition">Reintentar</button>
             </div>
@@ -175,24 +172,25 @@
             <div id="pane-translation" class="split-pane reading-text font-serif pb-32">
                 <div id="trans-loading" class="flex flex-col items-center justify-center h-full opacity-50 hidden">
                     <div class="spinner mb-4 border-gray-500 border-l-gray-300"></div>
-                    <p class="font-cinzel text-sm uppercase tracking-widest">Buscando Edición en Español...</p>
+                    <p class="font-cinzel text-sm uppercase tracking-widest">Localizando Traducción...</p>
                 </div>
                 <div id="trans-content" class="w-full h-full pb-10 hidden"></div>
             </div>
         </div>
+        
+        <div id="right-backdrop" onclick="closeRightPanel()"></div>
     </main>
 
     <aside id="sidebar-right">
         <div class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0">
             <h3 id="right-panel-title" class="font-cinzel text-[#D4AF37] font-bold uppercase tracking-widest text-sm">Oraculum</h3>
-            <button onclick="closeRightPanel()" class="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#333] transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="closeRightPanel()" class="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#333] transition" title="Cerrar Panel"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
-        <!-- Panel Oraculum -->
         <div id="panel-oraculum" class="flex-1 overflow-y-auto p-6 hidden-panel">
             <div class="text-center border-b border-[#333] pb-6 mb-6" id="ora-intro">
                 <i data-lucide="microscope" class="w-12 h-12 text-gray-600 mx-auto mb-4 opacity-50"></i>
-                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del texto original. El oráculo consultará la base de datos de <strong>Perseids (Universidad de Tufts)</strong>.</p>
+                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del texto original. El oráculo consultará la base de datos de <strong>Tufts University</strong>.</p>
             </div>
 
             <div id="ora-loading" class="hidden flex flex-col items-center py-12">
@@ -211,26 +209,25 @@
                 </div>
                 <div class="space-y-3 mt-8">
                     <h4 class="font-cinzel text-[10px] text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="book-open" class="w-4 h-4"></i> Diccionarios Universitarios</h4>
-                    <a id="btn-logeion" href="#" target="_blank" class="hidden w-full py-4 bg-[#8B2323] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#6A1A1A] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Logeion (Chicago)</a>
-                    <a id="btn-perseus" href="#" target="_blank" class="hidden w-full py-4 bg-[#1e3a8a] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#1e40af] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Perseus (Tufts)</a>
+                    <a id="btn-logeion" href="#" target="_blank" class="hidden w-full py-3 bg-[#8B2323] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#6A1A1A] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Logeion (Chicago)</a>
+                    <a id="btn-perseus" href="#" target="_blank" class="hidden w-full py-3 bg-[#1e3a8a] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#1e40af] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Perseus (Tufts)</a>
                 </div>
             </div>
             
             <div id="ora-error" class="hidden text-center py-10">
                 <i data-lucide="alert-circle" class="w-12 h-12 text-red-500/80 mx-auto mb-4"></i>
-                <p class="font-serif text-lg text-gray-300 mb-1">Palabra no encontrada</p>
-                <p class="font-serif text-sm text-gray-500 mb-8">El servicio de Perseids no reconoce esta forma exacta. Puede ser un nombre propio o una grafía inusual.</p>
+                <p class="font-serif text-lg text-gray-300 mb-1">Palabra no identificada</p>
+                <p class="font-serif text-sm text-gray-500 mb-8">El servicio de Perseids no reconoce esta forma. Utiliza los enlaces inferiores para realizar una búsqueda manual.</p>
                 <div id="fallback-links" class="mt-4 space-y-3 border-t border-[#333] pt-6"></div>
             </div>
         </div>
 
-        <!-- Panel Statistica -->
         <div id="panel-statistica" class="flex-1 overflow-y-auto p-6 hidden hidden-panel">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="font-cinzel text-white text-lg flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-[#D4AF37]"></i> Frecuencia Léxica</h3>
                 <button onclick="generateStats()" class="p-2 bg-[#D4AF37] text-black rounded hover:bg-yellow-500 transition shadow" title="Recalcular"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
             </div>
-            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de palabras en este capítulo (respeta tildes y elisiones).</p>
+            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de palabras en este fragmento. Conservando todos los espíritus y acentos griegos intactos.</p>
             <div id="stats-loading" class="hidden text-center py-12"><div class="spinner mx-auto border-gray-600 border-l-[#D4AF37] w-8 h-8"></div></div>
             <div id="stats-list" class="space-y-2"></div>
         </div>
@@ -239,14 +236,12 @@
     <div id="toast-container"></div>
 
     <script>
-        // ESTADO GLOBAL
         const STATE = {
-            lang: 'la', work: null, bilingual: false, scansion: false,
-            audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.85 },
+            lang: 'la', work: null, bilingual: false,
+            audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
             lastClickedWord: null, retryParams: null
         };
 
-        // GENERADORES DINÁMICOS DE RUTAS PARA WIKISOURCE
         const generateBooks = (prefix, count, romanFormat, pathBase, esPathBase) => {
             const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
             const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
@@ -283,14 +278,28 @@
                     { baseTitle: "Laelius de Amicitia", books: [{ title: "Omnia", path: "Laelius_de_amicitia" }] }
                 ]},
                 { author: "Caesar", works: [
-                    { baseTitle: "De Bello Gallico", books: generateBooks("Liber", 8, "Roman", "Commentarii_de_bello_Gallico/Liber_", "Comentarios_a_la_guerra_de_las_Galias:_Libro_") }
+                    { baseTitle: "De Bello Gallico", books: generateBooks("Liber", 8, "Roman", "Commentarii_de_bello_Gallico/Liber_", "Comentarios_a_la_guerra_de_las_Galias:_Libro_") },
+                    { baseTitle: "De Bello Civili", books: generateBooks("Liber", 3, "Roman", "Commentarii_de_bello_civili/Liber_") }
                 ]},
                 { author: "Seneca", works: [
                     { baseTitle: "Epistulae Morales", books: generateBooks("Liber", 20, "Roman", "Epistulae_morales_ad_Lucilium/Liber_") },
-                    { baseTitle: "De Brevitate Vitae", books: [{ title: "Omnia", path: "De_brevitate_vitae", esPath: "De_la_brevedad_de_la_vida" }] }
+                    { baseTitle: "De Brevitate Vitae", books: [{ title: "Omnia", path: "De_brevitate_vitae", esPath: "De_la_brevedad_de_la_vida" }] },
+                    { baseTitle: "De Providentia", books: [{ title: "Omnia", path: "De_providentia" }] }
                 ]},
                 { author: "Catullus", works: [
                     { baseTitle: "Carmina", books: [{ title: "Omnia", path: "Carmina_(Catullus)" }] }
+                ]},
+                { author: "Plautus", works: [
+                    { baseTitle: "Aulularia", books: [{ title: "Omnia", path: "Aulularia" }] },
+                    { baseTitle: "Miles Gloriosus", books: [{ title: "Omnia", path: "Miles_gloriosus" }] }
+                ]},
+                { author: "Horatius", works: [
+                    { baseTitle: "Carmina (Odae)", books: generateBooks("Liber", 4, "Roman", "Carmina_(Horatius)/Liber_") },
+                    { baseTitle: "Ars Poetica", books: [{ title: "Omnia", path: "Ars_poetica" }] }
+                ]},
+                { author: "Tacitus", works: [
+                    { baseTitle: "Annales", books: generateBooks("Liber", 6, "Roman", "Annales_(Tacitus)/Liber_") },
+                    { baseTitle: "Germania", books: [{ title: "Omnia", path: "De_origine_et_situ_Germanorum" }] }
                 ]}
             ],
             greek: [
@@ -300,7 +309,8 @@
                 ]},
                 { author: "Plato", works: [
                     { baseTitle: "Apologia Socratis", books: [{ title: "Omnia", path: "Απολογία_Σωκράτους", esPath: "Apología_de_Sócrates_(Platón)" }] },
-                    { baseTitle: "Symposium", books: [{ title: "Omnia", path: "Συμπόσιον_(Πλάτων)", esPath: "El_Banquete_(Platón)" }] }
+                    { baseTitle: "Symposium", books: [{ title: "Omnia", path: "Συμπόσιον_(Πλάτων)", esPath: "El_Banquete_(Platón)" }] },
+                    { baseTitle: "Res Publica (Politeia)", books: generateBooks("Liber", 10, "Greek", "Πολιτεία/") }
                 ]},
                 { author: "Sophocles", works: [
                     { baseTitle: "Oedipus Rex", books: [{ title: "Omnia", path: "Οιδίπους_Τύραννος", esPath: "Edipo_rey" }] },
@@ -309,7 +319,18 @@
                 ]},
                 { author: "Euripides", works: [
                     { baseTitle: "Medea", books: [{ title: "Omnia", path: "Μήδεια_(Ευριπίδη)", esPath: "Medea" }] },
-                    { baseTitle: "Bacchae", books: [{ title: "Omnia", path: "Βάκχαι" }] }
+                    { baseTitle: "Bacchae", books: [{ title: "Omnia", path: "Βάκχαι" }] },
+                    { baseTitle: "Hippolytus", books: [{ title: "Omnia", path: "Ιππόλυτος_(Ευριπίδη)" }] }
+                ]},
+                { author: "Herodotus", works: [
+                    { baseTitle: "Historiae", books: generateBooks("Liber", 9, "Roman", "Ιστορίαι_(Ηροδότου)/") }
+                ]},
+                { author: "Thucydides", works: [
+                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πελοποννησιακού_Πολέμου/") }
+                ]},
+                { author: "Aristoteles", works: [
+                    { baseTitle: "Ethica Nicomachea", books: generateBooks("Liber", 10, "Greek", "Ηθικά_Νικομάχεια/") },
+                    { baseTitle: "Poetica", books: [{ title: "Omnia", path: "Περί_ποιητικής" }] }
                 ]}
             ]
         };
@@ -318,7 +339,6 @@
             lucide.createIcons();
             renderNestedCatalog('latin');
             renderNestedCatalog('greek');
-            // Cargar voces en background
             if (speechSynthesis.onvoiceschanged !== undefined) {
                 speechSynthesis.onvoiceschanged = () => { STATE.audio.synth.getVoices(); };
             }
@@ -329,7 +349,8 @@
             const toast = document.createElement('div');
             toast.className = 'toast'; toast.innerText = msg;
             container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
+            void toast.offsetWidth;
+            toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
@@ -365,7 +386,7 @@
                                 </button>
                                 <div class="sub-accordion-content pl-4 space-y-1 border-l border-[#444] ml-2 mt-1">
                                     ${workNode.books.map((b, bIndex) => `
-                                        <button onclick="loadText('${lang}', ${aIndex}, ${wIndex}, ${bIndex})" class="w-full text-left px-3 py-1.5 rounded text-xs font-serif text-gray-400 hover:text-white hover:bg-[#444] transition truncate">
+                                        <button onclick="loadText('${lang}', ${aIndex}, ${wIndex}, ${bIndex})" class="w-full text-left px-3 py-1.5 rounded text-xs font-serif text-gray-400 hover:text-white hover:bg-[#444] transition truncate" title="${b.title}">
                                             ${b.title}
                                         </button>
                                     `).join('')}
@@ -409,13 +430,20 @@
 
         function openPanel(panelId) {
             document.getElementById('sidebar-right').classList.add('open');
+            document.getElementById('right-backdrop').classList.add('active');
+            
             document.querySelectorAll('.hidden-panel').forEach(p => p.classList.add('hidden'));
             document.getElementById(`panel-${panelId}`).classList.remove('hidden');
             let titles = { 'oraculum': 'Oraculum Filológico', 'statistica': 'Frecuencia Léxica' };
             document.getElementById('right-panel-title').innerText = titles[panelId];
+            
             if(panelId === 'statistica') generateStats();
         }
-        function closeRightPanel() { document.getElementById('sidebar-right').classList.remove('open'); }
+        
+        function closeRightPanel() { 
+            document.getElementById('sidebar-right').classList.remove('open'); 
+            document.getElementById('right-backdrop').classList.remove('active');
+        }
 
         function setFetchState(state, msg="", desc="") {
             document.getElementById('loading-state').classList.add('hidden');
@@ -430,15 +458,16 @@
             }
         }
 
-        async function fetchWikisourceREST(lang, title) {
-            // Utilizamos la API REST de Wikimedia, que soporta CORS nativamente y devuelve HTML limpio
-            const url = `https://${lang}.wikisource.org/api/rest_v1/page/html/${encodeURIComponent(title)}`;
+        async function fetchWikisourceAPI(lang, title) {
+            const wikiLang = lang === 'grc' ? 'el' : lang;
+            const url = `https://${wikiLang}.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1`;
             try {
                 const res = await fetch(url);
-                if (!res.ok) return null;
-                return await res.text();
+                const data = await res.json();
+                if (data.parse && data.parse.text) return data.parse.text['*'];
+                return null;
             } catch (e) {
-                console.error("Fetch error:", e);
+                console.error("API Fetch error:", e);
                 return null;
             }
         }
@@ -462,49 +491,47 @@
             const book = work.books[bIndex];
             STATE.work = book; 
             
-            setFetchState('fetching', `Contactando repositorios (${STATE.lang})...`);
+            setFetchState('fetching', `Contactando repositorio (${STATE.lang})...`);
             
             document.getElementById('pane-original').innerHTML = '';
             document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title}`;
             document.getElementById('reader-tools').classList.remove('hidden');
 
             try {
-                // 1. Intento Directo (Ruta predefinida)
-                let htmlContent = await fetchWikisourceREST(STATE.lang, book.path);
+                let htmlContent = await fetchWikisourceAPI(STATE.lang, book.path);
                 
-                // 2. Intento de Rescate (Búsqueda en la API si la ruta cambió)
                 if (!htmlContent) {
                     setFetchState('fetching', "Búsqueda inteligente activada...");
-                    const searchUrl = `https://${STATE.lang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(book.path.replace(/_/g, ' '))}&utf8=&format=json&origin=*`;
+                    const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
+                    const cleanBaseTitle = work.baseTitle.replace(/\s*\(.*?\)\s*/g, '').replace(/_/g, ' ');
+                    const searchStr = `${cleanBaseTitle} ${book.title}`;
+                    const searchUrl = `https://${wikiLang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
                     try {
                         const sRes = await fetch(searchUrl);
                         const sData = await sRes.json();
                         if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                            htmlContent = await fetchWikisourceREST(STATE.lang, sData.query.search[0].title);
+                            htmlContent = await fetchWikisourceAPI(STATE.lang, sData.query.search[0].title);
                         }
                     } catch(e) { console.warn("Fallback search failed."); }
                 }
 
-                if (!htmlContent) throw new Error("La obra no existe o no se pudo extraer.");
+                if (!htmlContent) throw new Error("La obra no existe o la ruta ha cambiado en Wikisource.");
 
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlContent, 'text/html');
-                
-                // Extraer el body del HTML REST
                 const root = doc.body;
                 
-                // Limpieza agresiva de basura de Wikisource
-                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', 'table.plainlinks', '.prp-pages-output'];
+                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', 'table.plainlinks'];
                 garbage.forEach(sel => root.querySelectorAll(sel).forEach(e => e.remove()));
 
                 document.getElementById('pane-original').innerHTML = root.innerHTML;
                 
-                setFetchState('fetching', "Procesando filología...");
+                setFetchState('fetching', "Procesando filología y métrica...");
                 setTimeout(() => {
                     tokenizeSafeDOM(document.getElementById('pane-original'));
                     setFetchState('done');
                     lucide.createIcons();
-                }, 50);
+                }, 100);
 
             } catch (error) {
                 setFetchState('error', "", error.message);
@@ -512,13 +539,10 @@
         }
 
         function tokenizeSafeDOM(element) {
-            // Usamos un TreeWalker para NUNCA romper el HTML descargado (ej. negritas, cursivas, saltos de línea)
             const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
             const textNodes = [];
             while(walker.nextNode()) textNodes.push(walker.currentNode);
 
-            // Expresión regular que separa estrictamente por signos de puntuación explícitos.
-            // Esto garantiza que letras con espíritus/tildes NUNCA se corten.
             const splitRegex = /([ \n\t\r,;:"'«»()\[\]{}\-—\.!?;·]+)/;
 
             textNodes.forEach(node => {
@@ -530,14 +554,12 @@
 
                 parts.forEach(part => {
                     if (splitRegex.test(part)) {
-                        // Es un signo de puntuación o espacio, lo mantenemos como nodo de texto
                         fragment.appendChild(document.createTextNode(part)); 
                     } else if (part.trim() !== '') {
-                        // Es una palabra real, la envolvemos
                         const span = document.createElement('span');
                         span.className = 'word-token';
                         span.textContent = part;
-                        span.dataset.original = part;
+                        span.dataset.original = part.trim();
                         span.onclick = function(e) { e.preventDefault(); analyzeWord(this.dataset.original, this); };
                         fragment.appendChild(span);
                     }
@@ -562,12 +584,15 @@
                 
                 if (STATE.work && STATE.work.esPath) {
                     try {
-                        let htmlContent = await fetchWikisourceREST('es', STATE.work.esPath);
+                        let htmlContent = await fetchWikisourceAPI('es', STATE.work.esPath);
                         if (!htmlContent) {
-                            const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(STATE.work.esPath.replace(/_/g, ' '))}&utf8=&format=json&origin=*`;
+                            const searchStr = STATE.work.esPath.replace(/_/g, ' ');
+                            const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
                             const sRes = await fetch(searchUrl);
                             const sData = await sRes.json();
-                            if (sData.query && sData.query.search.length > 0) htmlContent = await fetchWikisourceREST('es', sData.query.search[0].title);
+                            if (sData.query && sData.query.search.length > 0) {
+                                htmlContent = await fetchWikisourceAPI('es', sData.query.search[0].title);
+                            }
                         }
                         if(!htmlContent) throw new Error();
 
@@ -575,14 +600,14 @@
                         const doc = parser.parseFromString(htmlContent, 'text/html');
                         const root = doc.body;
                         
-                        root.querySelectorAll('.mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table').forEach(e => e.remove());
+                        root.querySelectorAll('.mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table.plainlinks').forEach(e => e.remove());
                         document.getElementById('trans-content').innerHTML = root.innerHTML;
                         
                         document.getElementById('trans-loading').classList.add('hidden');
                         document.getElementById('trans-content').classList.remove('hidden');
                         
-                    } catch(e) { showTransError("No se encontró una traducción exacta en Wikisource ES."); }
-                } else { showTransError("Ruta de traducción no definida en el catálogo."); }
+                    } catch(e) { showTransError("No se encontró una traducción exacta en Wikisource ES para este capítulo."); }
+                } else { showTransError("Ruta de traducción no definida en el catálogo principal."); }
             } else {
                 btn.classList.remove('text-[#D4AF37]');
                 pOrig.classList.remove('half');
@@ -596,13 +621,13 @@
                 <div class="flex flex-col items-center justify-center h-full text-center opacity-60 mt-20">
                     <i data-lucide="book-x" class="w-12 h-12 mb-3"></i>
                     <p class="font-cinzel text-sm uppercase tracking-widest text-[#D4AF37]">Traducción no disponible</p>
-                    <p class="font-serif text-xs mt-2">${msg}</p>
+                    <p class="font-serif text-xs mt-2 max-w-xs mx-auto">${msg}</p>
                 </div>`;
             document.getElementById('trans-content').classList.remove('hidden');
             lucide.createIcons();
         }
 
-        async function analyzeWord(word, element) {
+        async function analyzeWord(rawWord, element) {
             if(STATE.lastClickedWord) STATE.lastClickedWord.style.borderBottom = '2px solid transparent';
             STATE.lastClickedWord = element;
             element.style.borderBottom = '2px solid var(--accent-gold)';
@@ -613,43 +638,49 @@
             document.getElementById('ora-result').classList.add('hidden');
             document.getElementById('ora-error').classList.add('hidden');
 
-            const cleanWord = word.replace(/^[«"'\-—]+|[»"';·,.\-—!?]+$/g, '').toLowerCase().trim();
-            document.getElementById('ora-word').innerText = word;
+            // MEJORA 4: Respetar cualquier letra Unicode incluyendo griego politónico para no cortar palabras
+            const cleanWord = rawWord.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, '').toLowerCase();
+            document.getElementById('ora-word').innerText = rawWord;
 
             try {
-                // Conexión DIRECTA a Perseids sin proxies (Soporta CORS nativo)
                 const res = await fetch(`https://morph.perseids.org/analysis/word?lang=${STATE.lang}&word=${encodeURIComponent(cleanWord)}`);
                 if (!res.ok) throw new Error(`API Error`);
                 const data = await res.json();
                 
                 let lemmaStr = "Forma ignota";
                 let morphHtml = "";
-                let rawLemma = cleanWord;
+                let baseLemma = cleanWord;
                 let found = false;
 
-                if (data && data.RDF && data.RDF.Annotation && data.RDF.Annotation.Body) {
-                    let bodies = Array.isArray(data.RDF.Annotation.Body) ? data.RDF.Annotation.Body : [data.RDF.Annotation.Body];
-                    let firstValid = bodies.find(b => b.rest && b.rest.entry);
+                if (data && data.RDF && data.RDF.Annotation) {
+                    let annotations = Array.isArray(data.RDF.Annotation) ? data.RDF.Annotation : [data.RDF.Annotation];
                     
-                    if (firstValid) {
-                        found = true;
-                        let entry = firstValid.rest.entry;
-                        let dictEntry = Array.isArray(entry.dict) ? entry.dict[0] : entry.dict;
-                        rawLemma = dictEntry.hdwd ? dictEntry.hdwd.$ : cleanWord;
+                    for (let ann of annotations) {
+                        if (!ann.Body) continue;
+                        let bodies = Array.isArray(ann.Body) ? ann.Body : [ann.Body];
+                        let firstValid = bodies.find(b => b.rest && b.rest.entry);
                         
-                        lemmaStr = rawLemma.replace(/\d+$/, ''); // Clean numbers from lemma (fix for Logeion)
-                        
-                        let infls = Array.isArray(entry.infl) ? entry.infl : [entry.infl];
-                        morphHtml = infls.map(inf => {
-                            const attr = (name) => inf[name] ? inf[name].$ : '';
-                            const attrsStr = [attr('pofs'), attr('case'), attr('num'), attr('gend'), attr('pers'), attr('tense'), attr('voice'), attr('mood')].filter(Boolean).join(', ') || 'Forma invariable';
-                            const stem = attr('stem') || ''; const term = attr('term') || '';
-                            return `<div class="mb-3 pb-3 border-b border-[#333]/50 last:border-0 last:pb-0 last:mb-0"><div class="flex items-baseline gap-2 mb-1"><span class="font-mono text-gray-500 text-base">${stem}<strong class="text-[#D4AF37]">${term}</strong></span></div><p class="italic text-gray-400 text-xs uppercase tracking-wide">${attrsStr}</p></div>`;
-                        }).join('');
+                        if (firstValid) {
+                            found = true;
+                            let entry = firstValid.rest.entry;
+                            let dictEntry = Array.isArray(entry.dict) ? entry.dict[0] : entry.dict;
+                            baseLemma = dictEntry.hdwd ? dictEntry.hdwd.$ : cleanWord;
+                            
+                            lemmaStr = baseLemma.replace(/\d+$/, ''); 
+                            
+                            let infls = Array.isArray(entry.infl) ? entry.infl : [entry.infl];
+                            morphHtml = infls.map(inf => {
+                                const attr = (name) => inf[name] ? inf[name].$ : '';
+                                const attrsStr = [attr('pofs'), attr('case'), attr('num'), attr('gend'), attr('pers'), attr('tense'), attr('voice'), attr('mood')].filter(Boolean).join(', ') || 'Forma invariable';
+                                const stem = attr('stem') || ''; const term = attr('term') || '';
+                                return `<div class="mb-3 pb-3 border-b border-[#333]/50 last:border-0 last:pb-0 last:mb-0"><div class="flex items-baseline gap-2 mb-1"><span class="font-mono text-gray-500 text-base">${stem}<strong class="text-[#D4AF37]">${term}</strong></span></div><p class="italic text-gray-400 text-xs uppercase tracking-wide">${attrsStr}</p></div>`;
+                            }).join('');
+                            break;
+                        }
                     }
                 }
 
-                if (!found) throw new Error("Not found in Perseids");
+                if (!found) throw new Error("Not found in Morpheus DB");
 
                 document.getElementById('ora-lemma').innerText = lemmaStr;
                 document.getElementById('ora-morph').innerHTML = morphHtml;
@@ -659,7 +690,7 @@
                 document.getElementById('ora-result').classList.remove('hidden');
 
             } catch (error) {
-                console.warn("Oraculum miss, falling back to manual links.");
+                console.warn("Oraculum miss:", error);
                 document.getElementById('ora-loading').classList.add('hidden');
                 document.getElementById('ora-error').classList.remove('hidden');
                 setupExternalDictLinks(cleanWord, cleanWord, true);
@@ -675,7 +706,7 @@
             if (STATE.lang === 'grc') {
                 const url = `https://logeion.uchicago.edu/${targetWord}`;
                 if (isError) {
-                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-2 bg-[#8B2323] text-white rounded text-xs font-cinzel text-center uppercase tracking-widest shadow hover:bg-[#6A1A1A] transition">Buscar en Logeion</a>`;
+                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-3 bg-[#8B2323] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#6A1A1A] transition">Buscar en Logeion</a>`;
                 } else {
                     btnLogeion.href = url; btnLogeion.classList.remove('hidden'); btnLogeion.classList.add('flex');
                     btnPerseus.classList.add('hidden'); btnPerseus.classList.remove('flex');
@@ -683,34 +714,11 @@
             } else {
                 const url = `http://www.perseus.tufts.edu/hopper/morph?l=${targetWord}&la=la`;
                 if (isError) {
-                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-2 bg-[#1e3a8a] text-white rounded text-xs font-cinzel text-center uppercase tracking-widest shadow hover:bg-[#1e40af] transition">Buscar en Perseus</a>`;
+                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-3 bg-[#1e3a8a] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#1e40af] transition">Buscar en Perseus</a>`;
                 } else {
                     btnPerseus.href = url; btnPerseus.classList.remove('hidden'); btnPerseus.classList.add('flex');
                     btnLogeion.classList.add('hidden'); btnLogeion.classList.remove('flex');
                 }
-            }
-        }
-
-        function toggleScansion() {
-            STATE.scansion = !STATE.scansion;
-            const pane = document.getElementById('pane-original');
-            const btn = document.getElementById('btn-scansion');
-            
-            if (STATE.scansion) {
-                btn.classList.add('text-[#D4AF37]');
-                pane.classList.add('scansion-mode');
-                
-                pane.querySelectorAll('.word-token').forEach(t => {
-                    const word = t.innerText.toLowerCase();
-                    // Inyección de CSS puro (sin romper el DOM)
-                    if (word.match(/[āēīōūηω]/)) { t.setAttribute('data-meter', '¯'); } 
-                    else if (word.length > 4) { t.setAttribute('data-meter', Math.random() > 0.6 ? '¯' : '˘'); }
-                });
-                showToast("Análisis Métrico visual activado.");
-            } else {
-                btn.classList.remove('text-[#D4AF37]');
-                pane.classList.remove('scansion-mode');
-                pane.querySelectorAll('.word-token').forEach(t => t.removeAttribute('data-meter'));
             }
         }
 
@@ -725,7 +733,8 @@
                 tokens.forEach(t => {
                     let word = t.dataset.original;
                     if (!word) return;
-                    word = word.toLowerCase(); // Se mantiene estricto sin normalizar para conservar acentos griegos
+                    // MEJORA 4: Uso de \p{L} para preservar griego perfectamente sin NFD destructivo
+                    word = word.toLowerCase().replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ''); 
                     if(word.length > 2) counts[word] = (counts[word] || 0) + 1;
                 });
 
@@ -734,7 +743,7 @@
                 
                 document.getElementById('stats-loading').classList.add('hidden');
                 document.getElementById('stats-list').innerHTML = html || "<p class='text-gray-500 text-sm italic text-center'>Texto insuficiente.</p>";
-            }, 50);
+            }, 100);
         }
 
         function stopAudio() {
@@ -765,6 +774,7 @@
             let chunkMap = []; 
             let currentSentence = "";
             let currentEls = [];
+            
             const endOfSentence = /[.!?;·\n]+/;
 
             tokens.forEach(t => {
@@ -776,7 +786,8 @@
                 
                 if (endOfSentence.test(word) || endOfSentence.test(textAfter) || t === tokens[tokens.length-1]) {
                     let cleanSentence = currentSentence.trim();
-                    // Ignoramos oraciones que solo sean números o símbolos
+                    cleanSentence = cleanSentence.replace(/\b\d+[a-z]?\b|\b[IVXLCDM]+\b/gi, '').trim();
+                    
                     if (cleanSentence && /[a-zA-Z\u0370-\u03FF]/.test(cleanSentence)) { 
                          chunkMap.push({ text: cleanSentence, elements: [...currentEls] });
                     }
@@ -784,7 +795,7 @@
                 }
             });
 
-            if (chunkMap.length === 0) return showToast("No se detectó texto válido para lectura.");
+            if (chunkMap.length === 0) return showToast("No se detectó texto narrativo válido para lectura.");
             STATE.audio.chunks = chunkMap;
             startAudioChunking(0);
         }
@@ -801,14 +812,17 @@
             if (!STATE.audio.reading || STATE.audio.idx >= STATE.audio.chunks.length) { stopAudio(); return; }
 
             const chunk = STATE.audio.chunks[STATE.audio.idx];
-            let spokenText = chunk.text;
+            let spokenText = chunk.text.toLowerCase();
             
             if (STATE.lang === 'la') {
-                // Simulación de Restituta para voz en Español
-                spokenText = spokenText.toLowerCase().replace(/v/g, 'u').replace(/ce/g, 'que').replace(/ci/g, 'qui').replace(/ll/g, 'l-l');
+                spokenText = spokenText
+                    .replace(/v/g, 'u')
+                    .replace(/ce/g, 'que').replace(/ci/g, 'qui')
+                    .replace(/ge/g, 'gue').replace(/gi/g, 'gui')
+                    .replace(/ll/g, 'l l'); 
             } else if (STATE.lang === 'grc') {
-                // Transliteración erasmiana para griego
-                spokenText = spokenText.normalize("NFD").toLowerCase().replace(/[\u0300-\u036f]/g, "")
+                // MEJORA 2: Pronunciación Erasmus mejorada para español
+                spokenText = spokenText.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                     .replace(/αι/g, "ai").replace(/ει/g, "ei").replace(/οι/g, "oi").replace(/υι/g, "ui")
                     .replace(/αυ/g, "au").replace(/ευ/g, "eu").replace(/ου/g, "u")
                     .replace(/φ/g, "f").replace(/θ/g, "z").replace(/χ/g, "j").replace(/γ/g, "g").replace(/κ/g, "k")
@@ -820,11 +834,13 @@
             STATE.audio.activeEls.forEach(el => el.classList.remove('audio-active'));
             STATE.audio.activeEls = chunk.elements;
             STATE.audio.activeEls.forEach(el => el.classList.add('audio-active'));
+            
             if (chunk.elements.length > 0) chunk.elements[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             STATE.audio.utterance = new SpeechSynthesisUtterance(spokenText);
+            
             let voices = STATE.audio.synth.getVoices();
-            let prefVoice = voices.find(v => v.lang.startsWith('es')); // Usamos español para procesar la fonética forzada
+            let prefVoice = voices.find(v => v.lang.startsWith('es')); 
             
             if (prefVoice) STATE.audio.utterance.voice = prefVoice;
             STATE.audio.utterance.rate = STATE.audio.speed;
@@ -832,14 +848,17 @@
             STATE.audio.utterance.onend = function() {
                 if(!STATE.audio.reading) return;
                 STATE.audio.idx++;
-                setTimeout(playNextChunk, 250); 
+                setTimeout(playNextChunk, 200); 
             };
 
             STATE.audio.utterance.onerror = function(e) {
-                if(e.error !== 'canceled' && e.error !== 'interrupted' && STATE.audio.reading) { STATE.audio.idx++; playNextChunk(); }
+                if(e.error !== 'canceled' && e.error !== 'interrupted' && STATE.audio.reading) { 
+                    console.warn("TTS Skip", e);
+                    STATE.audio.idx++; playNextChunk(); 
+                }
             };
 
-            window.speechUtteranceChunk = STATE.audio.utterance; // Prevenir bug de Garbage Collection en Chrome
+            window.speechUtteranceChunk = STATE.audio.utterance; 
             STATE.audio.synth.speak(STATE.audio.utterance);
         }
     </script>

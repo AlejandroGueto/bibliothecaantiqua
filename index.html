@@ -124,7 +124,7 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <button onclick="openManualInputModal()" class="p-1.5 px-3 border border-[#444] text-xs font-cinzel uppercase tracking-wider rounded text-gray-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition shrink-0 flex items-center gap-1.5" title="Cargar Texto Manual">
+                <button onclick="openManualInputModal()" class="p-1.5 px-3 border border-[#444] text-xs font-cinzel uppercase tracking-wider rounded text-gray-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition shrink-0 flex items-center gap-1.5" title="Inyectar Manuscrito Local">
                     <i data-lucide="file-plus"></i> <span class="hidden sm:inline">Inyectar Manuscrito</span>
                 </button>
 
@@ -163,7 +163,7 @@
                     <i data-lucide="book-marked" class="absolute inset-0 m-auto w-10 h-10 text-gray-600"></i>
                 </div>
                 <h2 class="font-cinzel text-2xl text-gray-300 uppercase tracking-widest mb-2">Bibliotheca Antiqua</h2>
-                <p class="font-serif text-gray-500 italic text-sm">Elige un volumen del catálogo lateral.</p>
+                <p class="font-serif text-gray-500 italic text-sm">Elige un volumen del catálogo lateral o inyecta tu propia traducción.</p>
             </div>
             
             <div id="fetching-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f]/95 backdrop-blur z-20">
@@ -194,7 +194,7 @@
         <div id="right-backdrop" onclick="closeRightPanel()"></div>
     </main>
 
-    <!-- COMPONENTE RESTAURADO: Capa estructural del Modal Inyector Local -->
+    <!-- FORMULARIO MODAL INTERNO COMPLETO RECONSTRUIDO -->
     <div id="manual-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-[#171717] border border-[#333] w-full max-w-2xl rounded-lg shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
             <div class="p-4 bg-[#111] border-b border-[#333] flex justify-between items-center">
@@ -210,10 +210,6 @@
                 <div>
                     <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Traducción al Español de Reemplazo</label>
                     <textarea id="manual-translation-input" rows="5" placeholder="Pega tu traducción mejorada aquí..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
-                </div>
-                <div class="flex items-center gap-2 py-1">
-                    <input type="checkbox" id="manual-save-permanent" checked class="accent-[#D4AF37] cursor-pointer">
-                    <label for="manual-save-permanent" class="font-cinzel text-xs text-gray-300 cursor-pointer select-none">Sustituir temporalmente en este navegador (Guardado rápido clase)</label>
                 </div>
                 <div class="flex gap-4">
                     <div class="flex-1">
@@ -269,13 +265,6 @@
                     <a id="btn-perseus" href="#" target="_blank" class="w-full py-3 bg-[#1e3a8a] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#1e40af] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Perseus (Tufts)</a>
                 </div>
             </div>
-            
-            <div id="ora-error" class="hidden text-center py-10">
-                <i data-lucide="alert-circle" class="w-12 h-12 text-[#991B1B] mx-auto mb-4 opacity-80"></i>
-                <p class="font-serif text-lg text-gray-300 mb-1">Forma no identificada</p>
-                <p class="font-serif text-sm text-gray-500 mb-8">El motor filológico no reconoce esta inflexión exacta. Utiliza los enlaces inferiores para realizar una búsqueda manual sobre la raíz.</p>
-                <div id="fallback-links" class="mt-4 space-y-3 border-t border-[#333] pt-6"></div>
-            </div>
         </div>
 
         <div id="panel-statistica" class="flex-1 overflow-y-auto p-6 hidden hidden-panel">
@@ -283,7 +272,7 @@
                 <h3 class="font-cinzel text-white text-lg flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-[#D4AF37]"></i> Frecuencia Léxica</h3>
                 <button onclick="generateStats()" class="p-2 bg-[#D4AF37] text-black rounded hover:bg-yellow-500 transition shadow" title="Recalcular"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
             </div>
-            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de palabras en la transcripción procesada. Conservando ortografía de la fuente.</p>
+            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de palabras en la transcripción procesada.</p>
             <div id="stats-loading" class="hidden text-center py-12"><div class="loader-ring transform scale-50 border-[#D4AF37]"><div></div><div></div><div></div><div></div></div></div>
             <div id="stats-list" class="space-y-2"></div>
         </div>
@@ -292,21 +281,21 @@
     <div id="toast-container"></div>
 
     <script>
-        // HOISTING INMUNE: Declaración de la constructora arriba del todo para evitar ReferenceError
+        // HOISTING PREVENIDO: La constructora corre arriba del objeto de datos de forma limpia
         function generateBooks(prefix, count, romanFormat, pathBase, esPathBase) {
-            const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
-            const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
-            let list = [];
-            for(let i=0; i<count; i++) {
-                let suffix = romanFormat === "Roman" ? roman[i] : (romanFormat === "Greek" ? greek[i] : (i+1));
-                let esSuffix = (esPathBase && esPathBase.includes("Libro_")) ? roman[i] : (i+1); 
+            var roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
+            var greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
+            var list = [];
+            for(var i=0; i<count; i++) {
+                var suffix = romanFormat === "Roman" ? roman[i] : (romanFormat === "Greek" ? greek[i] : (i+1));
+                var esSuffix = (esPathBase && esPathBase.includes("Libro_")) ? roman[i] : (i+1); 
                 
                 list.push({
-                    title: `${prefix} ${suffix}`, 
+                    title: prefix + " " + suffix, 
                     search: suffix,
                     arabic: i+1,
-                    path: pathBase ? `${pathBase}${suffix}` : null,
-                    esPath: esPathBase ? (esPathBase.endsWith("_") ? `${esPathBase}${esSuffix}` : `${esPathBase}${suffix}`) : null
+                    path: pathBase ? pathBase + suffix : null,
+                    esPath: esPathBase ? (esPathBase.endsWith("_") ? esPathBase + esSuffix : esPathBase + suffix) : null
                 });
             }
             return list;
@@ -317,16 +306,16 @@
            ========================================================================= */
         const CORPUS_PROPIO = {
             "In_L._Catilinam_oratio_prima_habita_in_senatu": {
-                original: `<p><b>[I]</b> Quo usque tandem abutere, Catilina, patientia nostra? quam diu etiam furor iste tuus nos eludet? quem ad finem sese effrenata iactabit audacia? Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae, nihil timor populi, nihil concursus bonorum omnium, nihil hic munitissimus habendi senatus locus, nihil horum ora vultusque moverunt?</p>`,
-                translation: `<p><b>[I]</b> ¿Hasta cuándo has de abusar de nuestra paciencia, Catilina? ¿Cuánto tiempo todavía tu locura se burlará de nosotros? ¿A qué extremos se arrojará tu desenfrenada audacia? ¿No han contenido tu audacia ni la guardia nocturna del Palatino...</p>`
+                original: "<p><b>[I]</b> Quo usque tandem abutere, Catilina, patientia nostra? quam diu etiam furor iste tuus nos eludet? quem ad finem sese effrenata iactabit audacia? Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae, nihil timor populi, nihil concursus bonorum omnium, nihil hic munitissimus habendi senatus locus, nihil horum ora vultusque moverunt?</p>",
+                translation: "<p><b>[I]</b> ¿Hasta cuándo has de abusar de nuestra paciencia, Catilina? ¿Cuánto tiempo todavía tu locura se burlará de nosotros? ¿A qué extremos se arrojará tu desenfrenada audacia? ¿No han contenido tu audacia ni la guardia nocturna del Palatino...</p>"
             },
             "Miles_gloriosus": {
-                original: `<p><b>[I.1]</b> PYRGOPOLYNICES: Curate ut splendeat meum scutum... </p>`,
-                translation: `<p><b>[I.1]</b> PIRGOPOLINICES: Procurad que mi escudo reluzca con más brillo que los rayos del sol cuando el cielo está despejado...</p>`
+                original: "<p><b>[I.1]</b> PYRGOPOLYNICES: Curate ut splendeat meum scutum... </p>",
+                translation: "<p><b>[I.1]</b> PIRGOPOLINICES: Procurad que mi escudo reluzca con más brillo que los rayos del sol cuando el cielo está despejado...</p>"
             }
         };
 
-        // CORPUS COMPLETO DE LOS 40 AUTORES CLÁSICOS RESTAURADOS AL 100%
+        // CORPUS DE LOS 40 AUTORES CLÁSICOS ÍNTEGROS DETALLADOS
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -426,9 +415,9 @@
                     { baseTitle: "Res Publica (Politeia)", books: generateBooks("Liber", 10, "Greek", "Πολιτεία/", "La_república:_Libro_") }
                 ]},
                 { author: "Sophocles", authorEs: "Sófocles", works: [
-                    { baseTitle: "Oedipus Rex", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Edipo_rey" }] },
-                    { baseTitle: "Antigone", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Antígona_(Sófocles)" }] },
-                    { baseTitle: "Ajax", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Áyax" }] }
+                    { baseTitle: "Oedipus Rex", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Οιδίπους_Τύραννος", esPath: "Edipo_rey" }] },
+                    { baseTitle: "Antigone", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αντιγόνη", esPath: "Antígona_(Sófocles)" }] },
+                    { baseTitle: "Ajax", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αίας", esPath: "Áyax" }] }
                 ]},
                 { author: "Euripides", authorEs: "Eurípides", works: [
                     { baseTitle: "Medea", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Medea" }] },
@@ -438,7 +427,7 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 9, "Roman", "Ιστορίαι_(Ηροδότου)/", "Los_nueve_libros_de_la_Historia:_Libro_") }
                 ]},
                 { author: "Thucydides", authorEs: "Tucídides", works: [
-                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πεloποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
+                    { baseTitle: "Historia Belli Peloponnesiaci", books: generateBooks("Liber", 8, "Roman", "Ιστορία_του_Πελοποννησιακού_Πολέμου/", "Historia_de_la_guerra_del_Peloponeso:_Libro_") }
                 ]},
                 { author: "Aristoteles", authorEs: "Aristóteles", works: [
                     { baseTitle: "Ethica Nicomachea", books: generateBooks("Liber", 10, "Greek", "Ηθικά_Νικομάχεια/", "Moral_a_Nicómaco:_Libro_") },
@@ -446,7 +435,7 @@
                     { baseTitle: "Politica", books: generateBooks("Liber", 8, "Greek", "Πολιτικά/", "La_Política:_Libro_") }
                 ]},
                 { author: "Aeschylus", authorEs: "Esquilo", works: [
-                    { baseTitle: "Prometheus Vinctus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Προμηθεύς_Δεσμώτης", esPath: "Prometeo_encadenado" }] },
+                    { baseTitle: "Prometheus Vinctus", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Prometeo_encadenado" }] },
                     { baseTitle: "Agamemnon", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αγαμέμνων", esPath: "Agamenón" }] }
                 ]},
                 { author: "Aristophanes", authorEs: "Aristófanes", works: [
@@ -460,7 +449,7 @@
                 ]},
                 { author: "Hesiodus", authorEs: "Hesíodo", works: [
                     { baseTitle: "Theogonia", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Θεογονία" }] },
-                    { baseTitle: "Opera et Dies", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Έργa_και_Ημέραι", esPath: "Los_trabajos_y_los_días" }] }
+                    { baseTitle: "Opera et Dies", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Έργα_και_Ημέραι", esPath: "Los_trabajos_y_los_días" }] }
                 ]},
                 { author: "Xenophon", authorEs: "Jenofonte", works: [
                     { baseTitle: "Anabasis", books: generateBooks("Liber", 7, "Greek", "Κύρου_Ανάβασις/") }
@@ -487,7 +476,7 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
                 { author: "Callimachus", authorEs: "Calímaco", works: [
-                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δία", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δía", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
@@ -521,46 +510,59 @@
         function toggleSubAccordion(btn) { btn.parentElement.classList.toggle('open'); }
         function toggleSidebarLeft() { document.getElementById('sidebar-left').classList.toggle('collapsed'); }
 
+        // RECONSTRUCCIÓN BLINDADA CON BUECLES ESTÁTICOS (Cero errores de escape en Markdown)
         function renderNestedCatalog(lang) {
-            const list = document.getElementById(`list-${lang}`);
-            let html = '';
-            CATALOG[lang].forEach((authorNode, aIndex) => {
-                html += `
-                <div class="mb-1 author-block">
-                    <button onclick="toggleAccordion(this)" class="w-full text-left px-3 py-2.5 rounded hover:bg-[#262626] flex items-center justify-between transition group">
-                        <span class="font-cinzel text-sm text-gray-200 font-bold">${authorNode.authorEs || authorNode.author}</span>
-                        <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-gray-500"></i>
-                    </button>
-                    <div class="accordion-content pl-4 pr-2 py-1 space-y-1 border-l border-[#333] ml-3 mt-1">
-                        ${authorNode.works.map((workNode, wIndex) => `
-                            <div class="work-block">
-                                <button onclick="toggleSubAccordion(this)" class="w-full text-left px-3 py-2 rounded text-sm font-serif text-gray-300 hover:text-white hover:bg-[#333] transition flex justify-between items-center group">
-                                    ${workNode.baseTitle.replace(/_/g, ' ')}
-                                    <i data-lucide="chevron-down" class="sub-accordion-icon w-3 h-3 text-gray-600"></i>
-                                </button>
-                                <div class="sub-accordion-content pl-4 space-y-1 border-l border-[#444] ml-2 mt-1">
-                                    ${workNode.books.map((b, bIndex) => `
-                                        <button onclick="loadText('${lang}', ${aIndex}, ${wIndex}, ${bIndex})" class="w-full text-left px-3 py-1.5 rounded text-xs font-serif text-gray-400 hover:text-white hover:bg-[#444] transition truncate">
-                                            ${b.title}
-                                        </button>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
-            });
+            var list = document.getElementById("list-" + lang);
+            var html = "";
+            var authors = CATALOG[lang];
+            
+            for (var aIndex = 0; aIndex < authors.length; aIndex++) {
+                var authorNode = authors[aIndex];
+                var displayName = authorNode.authorEs || authorNode.author;
+                
+                html += '<div class="mb-1 author-block">';
+                html += '  <button onclick="toggleAccordion(this)" class="w-full text-left px-3 py-2.5 rounded hover:bg-[#262626] flex items-center justify-between transition group">';
+                html += '    <span class="font-cinzel text-sm text-gray-200 font-bold">' + displayName + '</span>';
+                html += '    <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-gray-500"></i>';
+                html += '  </button>';
+                html += '  <div class="accordion-content pl-4 pr-2 py-1 space-y-1 border-l border-[#333] ml-3 mt-1">';
+                
+                for (var wIndex = 0; wIndex < authorNode.works.length; wIndex++) {
+                    var workNode = authorNode.works[wIndex];
+                    var displayTitle = workNode.baseTitle.replace(/_/g, " ");
+                    
+                    html += '    <div class="work-block">';
+                    html += '      <button onclick="toggleSubAccordion(this)" class="w-full text-left px-3 py-2 rounded text-sm font-serif text-gray-300 hover:text-white hover:bg-[#333] transition flex justify-between items-center group">';
+                    html += '        ' + displayTitle;
+                    html += '        <i data-lucide="chevron-down" class="sub-accordion-icon w-3 h-3 text-gray-600"></i>';
+                    html += '      </button>';
+                    html += '      <div class="sub-accordion-content pl-4 space-y-1 border-l border-[#444] ml-2 mt-1">';
+                    
+                    for (var bIndex = 0; bIndex < workNode.books.length; bIndex++) {
+                        var b = workNode.books[bIndex];
+                        html += '        <button onclick="loadText(\'' + lang + '\', ' + aIndex + ', ' + wIndex + ', ' + bIndex + ')" class="w-full text-left px-3 py-1.5 rounded text-xs font-serif text-gray-400 hover:text-white hover:bg-[#444] transition truncate">';
+                        html += '          ' + b.title;
+                        html += '        </button>';
+                    }
+                    
+                    html += '      </div>';
+                    html += '    </div>';
+                }
+                
+                html += '  </div>';
+                html += '</div>';
+            }
             list.innerHTML = html;
         }
 
         function filterLibrary() {
-            const term = document.getElementById('search-lib').value.toLowerCase();
-            const listId = STATE.lang === 'la' ? 'list-latin' : 'list-greek';
-            const blocks = document.querySelectorAll(`#${listId} .author-block`);
-            let hasResults = false;
+            var term = document.getElementById("search-lib").value.toLowerCase();
+            var listId = STATE.lang === 'la' ? 'list-latin' : 'list-greek';
+            var blocks = document.querySelectorAll("#" + listId + " .author-block");
+            var hasResults = false;
 
-            blocks.forEach(block => {
-                const text = block.innerText.toLowerCase();
+            blocks.forEach(function(block) {
+                var text = block.innerText.toLowerCase();
                 if (text.includes(term)) {
                     block.style.display = 'block';
                     hasResults = true;
@@ -572,12 +574,12 @@
         }
 
         function openManualInputModal() {
-            const ind = document.getElementById('manual-target-indicator');
+            var ind = document.getElementById('manual-target-indicator');
             if (STATE.retryParams) {
-                const aut = CATALOG[STATE.retryParams.langCat][STATE.retryParams.aIndex];
-                const wrk = aut.works[STATE.retryParams.wIndex];
-                const bk = wrk.books[STATE.retryParams.bIndex];
-                ind.innerText = `Asociando a: ${aut.authorEs} / ${wrk.baseTitle} - ${bk.title}`;
+                var aut = CATALOG[STATE.retryParams.langCat][STATE.retryParams.aIndex];
+                var wrk = aut.works[STATE.retryParams.wIndex];
+                var bk = wrk.books[STATE.retryParams.bIndex];
+                ind.innerText = "Asociando Reemplazo a: " + (aut.authorEs || aut.author) + " / " + wrk.baseTitle + " - " + bk.title;
                 ind.classList.remove('hidden');
             } else {
                 ind.classList.add('hidden');
@@ -590,14 +592,14 @@
         }
 
         function injectManualText() {
-            const originalText = document.getElementById('manual-original-input').value.trim();
-            const translationText = document.getElementById('manual-translation-input').value.trim();
-            const selectedLang = document.getElementById('manual-lang').value;
-            const metaInfo = document.getElementById('manual-meta').value.trim() || "Manuscrito Personalizado";
-            const savePermanent = document.getElementById('manual-save-permanent').checked;
+            var originalText = document.getElementById('manual-original-input').value.trim();
+            var translationText = document.getElementById('manual-translation-input').value.trim();
+            var selectedLang = document.getElementById('manual-lang').value;
+            var metaInfo = document.getElementById('manual-meta').value.trim() || "Manuscrito Personalizado";
+            var savePermanent = document.getElementById('manual-save-permanent').checked;
 
             if(!originalText) {
-                showToast("El texto original es obligatorio.");
+                alert("El texto original es obligatorio.");
                 return;
             }
 
@@ -605,46 +607,43 @@
             closeRightPanel();
             closeManualInputModal();
 
-            const parsedOriginal = originalText.replace(/\n/g, '<br>');
-            const parsedTranslation = translationText ? translationText.replace(/\n/g, '<br>') : "<p class='opacity-40 italic text-gray-500 text-xs'>Traducción libre ausente.</p>";
+            var parsedOriginal = originalText.replace(/\n/g, '<br>');
+            var parsedTranslation = translationText ? translationText.replace(/\n/g, '<br>') : "<p class='opacity-40 italic text-gray-500 text-xs'>Traducción libre ausente.</p>";
 
             if (savePermanent && STATE.retryParams) {
-                const localKey = `override-${STATE.retryParams.langCat}-${STATE.retryParams.aIndex}-${STATE.retryParams.wIndex}-${STATE.retryParams.bIndex}`;
-                const overrideData = { original: parsedOriginal, translation: parsedTranslation, meta: metaInfo, lang: selectedLang };
+                var localKey = "override-" + STATE.retryParams.langCat + "-" + STATE.retryParams.aIndex + "-" + STATE.retryParams.wIndex + "-" + STATE.retryParams.bIndex;
+                var overrideData = { original: parsedOriginal, translation: parsedTranslation, meta: metaInfo, lang: selectedLang };
                 localStorage.setItem(localKey, JSON.stringify(overrideData));
-                showToast("Guardado local activo.");
             }
 
             STATE.lang = selectedLang;
             setFetchState('fetching', 'Procesando interactividad local...');
             
-            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${metaInfo}</span>`;
+            document.getElementById('current-meta').innerHTML = '<span class="text-[#D4AF37]">' + metaInfo + '</span>';
             document.getElementById('reader-tools').classList.remove('hidden');
 
             document.getElementById('pane-original').innerHTML = parsedOriginal;
             document.getElementById('trans-text-body').innerHTML = parsedTranslation;
 
-            setTimeout(async () => {
+            setTimeout(async function() {
                 STATE.currentTaskId++;
                 await tokenizeSafeDOMAsync(document.getElementById('pane-original'), STATE.currentTaskId);
                 setFetchState('done');
                 lucide.createIcons();
-                document.getElementById('manual-original-input').value = '';
-                document.getElementById('manual-translation-input').value = '';
             }, 50);
         }
 
         async function proxyFetchHTML(url) {
             try {
-                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-                const res = await fetch(proxyUrl);
+                var proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(url);
+                var res = await fetch(proxyUrl);
                 if (!res.ok) throw new Error();
                 return await res.text();
             } catch (e) {
                 try {
-                    const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-                    const res2 = await fetch(fallbackUrl);
-                    const data = await res2.json();
+                    var fallbackUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
+                    var res2 = await fetch(fallbackUrl);
+                    var data = await res2.json();
                     return data.contents;
                 } catch (e2) {
                     return null;
@@ -653,11 +652,11 @@
         }
 
         async function fetchWikisourceAPI(lang, title) {
-            const wikiLang = lang === 'grc' ? 'el' : lang;
-            const url = `https://${wikiLang}.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1`;
+            var wikiLang = lang === 'grc' ? 'el' : lang;
+            var url = "https://" + wikiLang + ".wikisource.org/w/api.php?action=parse&page=" + encodeURIComponent(title) + "&format=json&origin=*&disableeditsection=1&disabletoc=1&redirects=1";
             try {
-                const res = await fetch(url);
-                const data = await res.json();
+                var res = await fetch(url);
+                var data = await res.json();
                 if (data.parse && data.parse.text) return data.parse.text['*'];
                 return null;
             } catch (e) {
@@ -669,9 +668,9 @@
             document.getElementById('sidebar-right').classList.add('open');
             document.getElementById('right-backdrop').classList.add('active');
             
-            document.querySelectorAll('.hidden-panel').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`panel-${panelId}`).classList.remove('hidden');
-            let titles = { 'oraculum': 'Oraculum Filológico', 'statistica': 'Frecuencia Léxica' };
+            document.querySelectorAll('.hidden-panel').forEach(function(p) { p.classList.add('hidden'); });
+            document.getElementById("panel-" + panelId).classList.remove('hidden');
+            var titles = { 'oraculum': 'Oraculum Filológico', 'statistica': 'Frecuencia Léxica' };
             document.getElementById('right-panel-title').innerText = titles[panelId];
             
             if(panelId === 'statistica') generateStats();
@@ -682,7 +681,7 @@
             document.getElementById('right-backdrop').classList.remove('active');
         }
 
-        function setFetchState(state, msg="", desc="") {
+        function setFetchState(state, msg, desc) {
             document.getElementById('loading-state').classList.add('hidden');
             document.getElementById('fetching-state').classList.add('hidden');
             document.getElementById('error-state').classList.add('hidden');
@@ -695,29 +694,23 @@
             }
         }
 
-        function retryLoad() {
-            if(STATE.retryParams) {
-                loadText(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
-            }
-        }
-
         async function loadText(langCat, aIndex, wIndex, bIndex) {
-            const taskId = ++STATE.currentTaskId; 
+            var taskId = ++STATE.currentTaskId; 
             stopAudio();
             closeRightPanel();
             
-            STATE.retryParams = {langCat, aIndex, wIndex, bIndex};
+            STATE.retryParams = {langCat: langCat, aIndex: aIndex, wIndex: wIndex, bIndex: bIndex};
             STATE.lang = langCat === 'latin' ? 'la' : 'grc';
             
-            const author = CATALOG[langCat][aIndex];
-            const work = author.works[wIndex];
-            const book = work.books[bIndex];
+            var author = CATALOG[langCat][aIndex];
+            var work = author.works[wIndex];
+            var book = work.books[bIndex];
             
             STATE.work = book; 
             STATE.authorEs = author.authorEs || author.author;
             STATE.currentWorkStr = work.baseTitle;
 
-            setFetchState('fetching', `Cargando manuscrito...`);
+            setFetchState('fetching', "Cargando manuscrito...");
             document.getElementById('pane-original').innerHTML = '';
             
             if (STATE.bilingual) {
@@ -725,9 +718,9 @@
                 document.getElementById('trans-loading').classList.remove('hidden');
             }
 
-            const localKey = `override-${langCat}-${aIndex}-${wIndex}-${bIndex}`;
-            const localSaved = localStorage.getItem(localKey);
-            let activeDataset = null;
+            var localKey = "override-" + langCat + "-" + aIndex + "-" + wIndex + "-" + bIndex;
+            var localSaved = localStorage.getItem(localKey);
+            var activeDataset = null;
 
             if (CORPUS_PROPIO[book.path]) {
                 activeDataset = CORPUS_PROPIO[book.path];
@@ -736,12 +729,12 @@
             }
 
             if (activeDataset) {
-                document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.authorEs}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title} (Texto de Reemplazo)`;
+                document.getElementById('current-meta').innerHTML = '<span class="text-[#D4AF37]">' + author.authorEs + '</span> <span class="mx-2 opacity-50">/</span> ' + work.baseTitle + ' - ' + book.title + ' (Corpus Propio)';
                 document.getElementById('reader-tools').classList.remove('hidden');
                 document.getElementById('pane-original').innerHTML = activeDataset.original;
                 document.getElementById('trans-text-body').innerHTML = activeDataset.translation;
                 
-                setTimeout(async () => {
+                setTimeout(async function() {
                     if (STATE.currentTaskId !== taskId) return;
                     await tokenizeSafeDOMAsync(document.getElementById('pane-original'), taskId);
                     if (STATE.currentTaskId === taskId) {
@@ -756,24 +749,24 @@
                 return;
             }
             
-            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.authorEs}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title}`;
+            document.getElementById('current-meta').innerHTML = '<span class="text-[#D4AF37]">' + author.authorEs + '</span> <span class="mx-2 opacity-50">/</span> ' + work.baseTitle + ' - ' + book.title;
             document.getElementById('reader-tools').classList.remove('hidden');
 
             try {
-                let htmlContent = await fetchWikisourceAPI(STATE.lang, book.path);
+                var htmlContent = await fetchWikisourceAPI(STATE.lang, book.path);
                 if (STATE.currentTaskId !== taskId) return; 
 
                 if (!htmlContent) {
                     setFetchState('fetching', "Buscando variantes en red...");
-                    const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
-                    const cleanBaseTitle = work.baseTitle.replace(/\s*\(.*?\)\s*/g, '').replace(/_/g, ' ');
-                    const searchStr = `${cleanBaseTitle} ${book.search || ''}`.trim();
-                    const searchUrl = `https://${wikiLang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
+                    var wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
+                    var cleanBaseTitle = work.baseTitle.replace(/\s*\(.*?\)\s*/g, '').replace(/_/g, ' ');
+                    var searchStr = (cleanBaseTitle + " " + (book.search || '')).trim();
+                    var searchUrl = "https://" + wikiLang + ".wikisource.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(searchStr) + "&utf8=&format=json&origin=*";
                     try {
-                        const sRes = await fetch(searchUrl);
-                        const sData = await sRes.json();
+                        var sRes = await fetch(searchUrl);
+                        var sData = await sRes.json();
                         if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                            const bestHits = sData.query.search.filter(r => r.ns === 0);
+                            var bestHits = sData.query.search.filter(function(r) { return r.num === 0; });
                             if(bestHits.length > 0) htmlContent = await fetchWikisourceAPI(STATE.lang, bestHits[0].title);
                         }
                     } catch(e) {}
@@ -781,14 +774,14 @@
 
                 if (!htmlContent) throw new Error("Recurso externo no indexado.");
 
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlContent, 'text/html');
-                let contentNode = doc.querySelector('.mw-parser-output') || doc.body;
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(htmlContent, 'text/html');
+                var contentNode = doc.querySelector('.mw-parser-output') || doc.body;
                 
-                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', '.wst-navbox', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
-                garbage.forEach(sel => contentNode.querySelectorAll(sel).forEach(e => e.remove()));
+                var garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', '.wst-navbox', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
+                garbage.forEach(function(sel) { contentNode.querySelectorAll(sel).forEach(function(e) { e.remove(); }); });
 
-                contentNode.querySelectorAll('a').forEach(a => {
+                contentNode.querySelectorAll('a').forEach(function(a) {
                     a.removeAttribute('href');
                     a.style.color = 'inherit';
                     a.style.textDecoration = 'none';
@@ -797,7 +790,7 @@
 
                 document.getElementById('pane-original').innerHTML = contentNode.innerHTML;
                 
-                setTimeout(async () => {
+                setTimeout(async function() {
                     if (STATE.currentTaskId !== taskId) return;
                     await tokenizeSafeDOMAsync(document.getElementById('pane-original'), taskId);
                     if (STATE.currentTaskId === taskId) {
@@ -813,30 +806,30 @@
         }
 
         async function tokenizeSafeDOMAsync(element, taskId) {
-            const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
-            const textNodes = [];
+            var walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+            var textNodes = [];
             while(walker.nextNode()) textNodes.push(walker.currentNode);
 
-            const splitRegex = /([ \n\t\r,;:"'«»()\[\]{}\-—\.!?;·]+)/;
-            const CHUNK_SIZE = 100; 
+            var splitRegex = /([ \n\t\r,;:"'«»()\[\]{}\-—\.!?;·]+)/;
+            var CHUNK_SIZE = 100; 
 
-            for (let i = 0; i < textNodes.length; i += CHUNK_SIZE) {
+            for (var i = 0; i < textNodes.length; i += CHUNK_SIZE) {
                 if (STATE.currentTaskId !== taskId) return; 
-                await new Promise(resolve => setTimeout(resolve, 5));
+                await new Promise(function(resolve) { setTimeout(resolve, 5); });
                 
-                const chunk = textNodes.slice(i, i + CHUNK_SIZE);
-                chunk.forEach(node => {
-                    const text = node.nodeValue;
+                var chunk = textNodes.slice(i, i + CHUNK_SIZE);
+                chunk.forEach(function(node) {
+                    var text = node.nodeValue;
                     if (!text.trim()) return;
 
-                    const fragment = document.createDocumentFragment();
-                    const parts = text.split(splitRegex);
+                    var fragment = document.createDocumentFragment();
+                    var parts = text.split(splitRegex);
 
-                    parts.forEach(part => {
+                    parts.forEach(function(part) {
                         if (splitRegex.test(part)) {
                             fragment.appendChild(document.createTextNode(part)); 
                         } else if (part.trim() !== '') {
-                            const span = document.createElement('span');
+                            var span = document.createElement('span');
                             span.className = 'word-token';
                             span.textContent = part;
                             span.dataset.original = part.trim();
@@ -854,21 +847,21 @@
             if (CORPUS_PROPIO[STATE.work.path]) return;
 
             try {
-                let htmlContent = null;
+                var htmlContent = null;
                 if (STATE.work.esPath) {
                     htmlContent = await fetchWikisourceAPI('es', STATE.work.esPath);
                 }
 
-                const cleanWork = STATE.currentWorkStr.replace(/\s*\(.*?\)\s*/g, '').trim();
+                var cleanWork = STATE.currentWorkStr.replace(/\s*\(.*?\)\s*/g, '').trim();
                 
                 if (!htmlContent) {
-                    const searchQ = `${cleanWork} ${STATE.work.arabic || ''}`.trim();
-                    const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQ)}&utf8=&format=json&origin=*`;
-                    const sRes = await fetch(searchUrl);
-                    const sData = await sRes.json();
+                    var searchQ = cleanWork + " " + (STATE.work.arabic || '');
+                    var searchUrl = "https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=" + encodeURIComponent(searchQ) + "&utf8=&format=json&origin=*";
+                    var sRes = await fetch(searchUrl);
+                    var sData = await sRes.json();
                     if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                        const bestHits = sData.query.search.filter(r => {
-                            const titleLower = r.title.toLowerCase();
+                        var bestHits = sData.query.search.filter(function(r) {
+                            var titleLower = r.title.toLowerCase();
                             return r.ns === 0 && !titleLower.includes("wikisource:") && 
                                    (titleLower.includes(cleanWork.toLowerCase()) || titleLower.includes(STATE.authorEs.toLowerCase()));
                         });
@@ -878,14 +871,14 @@
 
                 if(!htmlContent) throw new Error();
 
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlContent, 'text/html');
-                let contentNode = doc.querySelector('.mw-parser-output') || doc.body;
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(htmlContent, 'text/html');
+                var contentNode = doc.querySelector('.mw-parser-output') || doc.body;
                 
-                const translationGarbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', 'table.plainlinks', '.ws-header', '.ws-noexport', '.wst-navigation', '#header', 'table'];
-                translationGarbage.forEach(sel => contentNode.querySelectorAll(sel).forEach(e => e.remove()));
+                var translationGarbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', 'table.plainlinks', '.ws-header', '.ws-noexport', '.wst-navigation', '#header', 'table'];
+                translationGarbage.forEach(function(sel) { contentNode.querySelectorAll(sel).forEach(function(e) { e.remove(); }); });
 
-                contentNode.querySelectorAll('a').forEach(a => {
+                contentNode.querySelectorAll('a').forEach(function(a) {
                     a.removeAttribute('href');
                     a.style.color = 'inherit';
                     a.style.textDecoration = 'none';
@@ -903,9 +896,9 @@
 
         function handleBilingualClick() {
             STATE.bilingual = !STATE.bilingual;
-            const pOrig = document.getElementById('pane-original');
-            const pTrans = document.getElementById('pane-translation');
-            const btn = document.getElementById('btn-bilingual');
+            var pOrig = document.getElementById('pane-original');
+            var pTrans = document.getElementById('pane-translation');
+            var btn = document.getElementById('btn-bilingual');
             
             if (STATE.bilingual) {
                 btn.classList.add('text-[#D4AF37]');
@@ -924,10 +917,7 @@
 
         function showTransError() {
             document.getElementById('trans-loading').classList.add('hidden');
-            document.getElementById('trans-text-body').innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full text-center opacity-40 mt-20">
-                    <p class="font-serif text-xs max-w-xs mx-auto italic text-gray-500">Traducción libre no indexada para este fragmento.</p>
-                </div>`;
+            document.getElementById('trans-text-body').innerHTML = '<div class="flex flex-col items-center justify-center h-full text-center opacity-40 mt-20"><p class="font-serif text-xs max-w-xs mx-auto italic text-gray-500">Traducción libre no indexada para este fragmento.</p></div>';
             document.getElementById('trans-content').classList.remove('hidden');
             lucide.createIcons();
         }
@@ -971,13 +961,13 @@
             document.getElementById('ora-error').classList.add('hidden');
             document.getElementById('ora-enclitic-alert').classList.add('hidden');
 
-            let cleanWord = rawWord.toLowerCase().replace(/[.,;:"'«»()\[\]{}\-—!?;·]/g, '').trim();
+            var cleanWord = rawWord.toLowerCase().replace(/[.,;:"'«»()\[\]{}\-—!?;·]/g, '').trim();
             if(STATE.lang === 'la') cleanWord = cleanWord.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/v/g, 'u').replace(/j/g, 'i');
             
             document.getElementById('ora-word').innerText = rawWord;
 
-            let encliticDetected = null;
-            let stripped = cleanWord;
+            var encliticDetected = null;
+            var stripped = cleanWord;
 
             if (STATE.lang === 'la') {
                 if(stripped.endsWith('que') && stripped.length > 5) { stripped = stripped.slice(0, -3); encliticDetected = "-que (Conjunción 'y')"; }
@@ -987,23 +977,22 @@
             }
 
             try {
-                const morphLang = STATE.lang === 'la' ? 'lat' : 'grc';
-                const engine = STATE.lang === 'la' ? 'morpheuslat' : 'morpheusgrc';
+                var morphLang = STATE.lang === 'la' ? 'lat' : 'grc';
+                var engine = STATE.lang === 'la' ? 'morpheuslat' : 'morpheusgrc';
                 
-                let res = await fetch(`https://morph.perseids.org/analysis/word?lang=${morphLang}&engine=${engine}&word=${encodeURIComponent(stripped)}`);
+                var res = await fetch("https://morph.perseids.org/analysis/word?lang=" + morphLang + "&engine=" + engine + "&word=" + encodeURIComponent(stripped));
                 if (!res.ok) throw new Error("API Offline");
-                let data = await res.json();
+                var data = await res.json();
                 
-                let lemmaStr = "Forma ignota";
-                let morphHtml = "";
-                let baseLemma = stripped;
-                let found = false;
+                var lemmaStr = "Forma ignota";
+                var morphHtml = "";
+                var found = false;
 
-                const getDictEntry = (d) => {
+                var getDictEntry = function(d) {
                     if (!d || !d.RDF || !d.RDF.Annotation) return [];
-                    let bodies = Array.isArray(d.RDF.Annotation.Body) ? d.RDF.Annotation.Body : [d.RDF.Annotation.Body];
-                    let entries = [];
-                    bodies.forEach(b => {
+                    var bodies = Array.isArray(d.RDF.Annotation.Body) ? d.RDF.Annotation.Body : [d.RDF.Annotation.Body];
+                    var entries = [];
+                    bodies.forEach(function(b) {
                         if(b && b.rest && b.rest.entry) {
                             if (Array.isArray(b.rest.entry)) entries.push(...b.rest.entry);
                             else entries.push(b.rest.entry);
@@ -1012,36 +1001,38 @@
                     return entries;
                 };
 
-                let entries = getDictEntry(data);
+                var entries = getDictEntry(data);
                 if (entries.length === 0) throw new Error("No entry");
 
                 if (encliticDetected) {
-                    const alertEl = document.getElementById('ora-enclitic-alert');
-                    alertEl.innerText = `Sufijo: ${encliticDetected}`;
+                    var alertEl = document.getElementById('ora-enclitic-alert');
+                    alertEl.innerText = "Sufijo: " + encliticDetected;
                     alertEl.classList.remove('hidden');
                 }
 
-                let uniqueMorphs = new Set();
-                let htmlParts = [];
+                var uniqueMorphs = new Set();
+                var htmlParts = [];
 
-                entries.forEach(entry => {
+                entries.forEach(function(entry) {
                     found = true;
-                    let dictEntry = Array.isArray(entry.dict) ? entry.dict[0] : entry.dict;
+                    var dictEntry = Array.isArray(entry.dict) ? entry.dict[0] : entry.dict;
                     if(dictEntry && dictEntry.hdwd && dictEntry.hdwd.$) {
-                        baseLemma = dictEntry.hdwd.$;
-                        lemmaStr = baseLemma.replace(/\d+$/, ''); 
+                        lemmaStr = dictEntry.hdwd.$.replace(/\d+$/, ''); 
                     }
                     
-                    let infls = Array.isArray(entry.infl) ? entry.infl : [entry.infl];
-                    infls.forEach(inf => {
+                    var infls = Array.isArray(entry.infl) ? entry.infl : [entry.infl];
+                    infls.forEach(function(inf) {
                         if(!inf) return;
-                        let pofs = inf.pofs?.$||''; let case_ = inf.case?.$||''; let num = inf.num?.$||'';
-                        let stem = inf.stem?.$||''; let term = inf.term?.$||'';
+                        var pofs = inf.pofs ? inf.pofs.$ : ''; 
+                        var case_ = inf.case ? inf.case.$ : ''; 
+                        var num = inf.num ? inf.num.$ : '';
+                        var stem = inf.stem ? inf.stem.$ : ''; 
+                        var term = inf.term ? inf.term.$ : '';
                         
-                        let uniqueKey = `${stem}-${term}-${pofs}-${case_}-${num}`; 
+                        var uniqueKey = stem + "-" + term + "-" + pofs + "-" + case_ + "-" + num;
                         if(!uniqueMorphs.has(uniqueKey)) {
                             uniqueMorphs.add(uniqueKey);
-                            htmlParts.push(`<div class="mb-3 border-b border-[#333] pb-2"><span class="text-gray-500">${stem}<strong class="text-[#D4AF37]">${term}</strong></span><p class="text-xs text-gray-400 uppercase mt-1">${pofs} ${case_} ${num}</p></div>`);
+                            htmlParts.push('<div class="mb-3 border-b border-[#333] pb-2"><span class="text-gray-500">' + stem + '<strong class="text-[#D4AF37]">' + term + '</strong></span><p class="text-xs text-gray-400 uppercase mt-1">' + pofs + ' ' + case_ + ' ' + num + '</p></div>');
                         }
                     });
                 });
@@ -1057,18 +1048,13 @@
                 document.getElementById('ora-result').classList.remove('hidden');
 
             } catch (error) {
-                const aiHypothesis = predictMorphologyAI(stripped, STATE.lang);
+                var aiHypothesis = predictMorphologyAI(stripped, STATE.lang);
                 document.getElementById('ora-lemma').innerText = stripped;
-                document.getElementById('ora-morph').innerHTML = `
-                    <div class="p-3 bg-[#1A1A1A] rounded text-gray-300 text-sm border border-[#333] shadow-inner">
-                        <p class="text-[9px] text-[#D4AF37] font-cinzel font-bold mb-1.5 uppercase tracking-widest flex items-center gap-1"><i data-lucide="sparkles" class="w-3 h-3"></i> Análisis Predictivo Co-Piloto IA</p>
-                        <p class="font-serif text-xs leading-relaxed text-gray-300">${aiHypothesis}</p>
-                    </div>
-                `;
+                document.getElementById('ora-morph').innerHTML = '<div class="p-3 bg-[#1A1A1A] rounded text-gray-300 text-sm border border-[#333] shadow-inner"><p class="text-[9px] text-[#D4AF37] font-cinzel font-bold mb-1.5 uppercase tracking-widest flex items-center gap-1"><i data-lucide="sparkles" class="w-3 h-3"></i> Análisis Predictivo Co-Piloto IA</p><p class="font-serif text-xs leading-relaxed text-gray-300">' + aiHypothesis + '</p></div>';
 
                 if (encliticDetected) {
-                    const alertEl = document.getElementById('ora-enclitic-alert');
-                    alertEl.innerText = `Sufijo: ${encliticDetected}`;
+                    var alertEl = document.getElementById('ora-enclitic-alert');
+                    alertEl.innerText = "Sufijo: " + encliticDetected;
                     alertEl.classList.remove('hidden');
                 }
 
@@ -1079,24 +1065,24 @@
             }
         }
 
-        function setupExternalDictLinks(lemma, fallbackWord, isError = false) {
-            const btnLogeion = document.getElementById('btn-logeion');
-            const btnPerseus = document.getElementById('btn-perseus');
-            const fallbackContainer = document.getElementById('fallback-links');
-            const targetWord = encodeURIComponent(lemma || fallbackWord);
+        function setupExternalDictLinks(lemma, fallbackWord, isError) {
+            var btnLogeion = document.getElementById('btn-logeion');
+            var btnPerseus = document.getElementById('btn-perseus');
+            var fallbackContainer = document.getElementById('fallback-links');
+            var targetWord = encodeURIComponent(lemma || fallbackWord);
             
             if (STATE.lang === 'grc') {
-                const url = `https://logeion.uchicago.edu/${targetWord}`;
+                var url = "https://logeion.uchicago.edu/" + targetWord;
                 if (isError) {
-                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-3 bg-[#8B2323] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#6A1A1A] transition">Consultar Logeion</a>`;
+                    fallbackContainer.innerHTML = '<a href="' + url + '" target="_blank" class="block w-full py-3 bg-[#8B2323] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#6A1A1A] transition">Consultar Logeion</a>';
                 } else {
                     btnLogeion.href = url; btnLogeion.classList.remove('hidden'); btnLogeion.classList.add('flex');
                     btnPerseus.classList.add('hidden'); btnPerseus.classList.remove('flex');
                 }
             } else {
-                const url = `https://www.perseus.tufts.edu/hopper/morph?l=${targetWord}&la=la`;
+                var url = "https://www.perseus.tufts.edu/hopper/morph?l=" + targetWord + "&la=la";
                 if (isError) {
-                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-3 bg-[#1e3a8a] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#1e40af] transition">Consultar Perseus</a>`;
+                    fallbackContainer.innerHTML = '<a href="' + url + '" target="_blank" class="block w-full py-3 bg-[#1e3a8a] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#1e40af] transition">Consultar Perseus</a>';
                 } else {
                     btnPerseus.href = url; btnPerseus.classList.remove('hidden'); btnPerseus.classList.add('flex');
                     btnLogeion.classList.add('hidden'); btnLogeion.classList.remove('flex');
@@ -1108,19 +1094,21 @@
             document.getElementById('stats-loading').classList.remove('hidden');
             document.getElementById('stats-list').innerHTML = '';
             
-            setTimeout(() => {
-                const tokens = document.querySelectorAll('#pane-original .word-token');
-                const counts = {};
+            setTimeout(function() {
+                var tokens = document.querySelectorAll('#pane-original .word-token');
+                var counts = {};
                 
-                tokens.forEach(t => {
-                    let word = t.dataset.original;
+                tokens.forEach(function(t) {
+                    var word = t.dataset.original;
                     if (!word) return;
                     word = word.toLowerCase().replace(/^[\s.,;:"'«»()\[\]{}\-—!?;·]+|[\s.,;:"'«»()\[\]{}\-—!?;·]+$/g, ''); 
                     if(word.length > 2) counts[word] = (counts[word] || 0) + 1;
                 });
 
-                const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 50);
-                let html = sorted.map(([w, c], i) => `<div class="flex justify-between items-center p-2 bg-[#1A1A1A] border border-[#333] rounded"><span class="font-greek text-gray-300">${i+1}. ${w}</span><span class="text-[#D4AF37] font-mono text-xs font-bold bg-[#121212] px-2 py-1 rounded">${c}</span></div>`).join('');
+                var sorted = Object.entries(counts).sort(function(a, b) { return b[1] - a[1]; }).slice(0, 50);
+                var html = sorted.map(function(item) { 
+                    return '<div class="flex justify-between items-center p-2 bg-[#1A1A1A] border border-[#333] rounded"><span class="font-greek text-gray-300">' + item[0] + '</span><span class="text-[#D4AF37] font-mono text-xs font-bold bg-[#121212] px-2 py-1 rounded">' + item[1] + '</span></div>'; 
+                }).join('');
                 
                 document.getElementById('stats-loading').classList.add('hidden');
                 document.getElementById('stats-list').innerHTML = html || "<p class='text-gray-500 text-sm italic text-center'>Texto insuficiente.</p>";
@@ -1134,7 +1122,7 @@
             STATE.audio.idx = 0;
             if(STATE.audio.utterance) STATE.audio.utterance.onend = null;
             
-            STATE.audio.activeEls.forEach(el => el.classList.remove('audio-active'));
+            STATE.audio.activeEls.forEach(function(el) { el.classList.remove('audio-active'); });
             STATE.audio.activeEls = [];
             
             document.getElementById('btn-audio-play').classList.remove('hidden');
@@ -1143,29 +1131,29 @@
 
         function changeAudioSpeed() {
             STATE.audio.speed = parseFloat(document.getElementById('audio-speed').value);
-            if (STATE.audio.reading) { const currentIdx = STATE.audio.idx; stopAudio(); startAudioChunking(currentIdx); }
+            if (STATE.audio.reading) { var currentIdx = STATE.audio.idx; stopAudio(); startAudioChunking(currentIdx); }
         }
 
         function toggleAudio() {
             if (STATE.audio.reading) return; 
 
-            const tokens = Array.from(document.querySelectorAll('#pane-original .word-token'));
+            var tokens = Array.from(document.querySelectorAll('#pane-original .word-token'));
             if (tokens.length === 0) return showToast("No hay texto para leer.");
 
-            let chunkMap = []; 
-            let currentSentence = "";
-            let currentEls = [];
-            const endOfSentence = /[.!?;·\n]+/;
+            var chunkMap = []; 
+            var currentSentence = "";
+            var currentEls = [];
+            var endOfSentence = /[.!?;·\n]+/;
 
-            tokens.forEach(t => {
-                let word = t.innerText;
+            tokens.forEach(function(t) {
+                var word = t.innerText;
                 currentSentence += word + " ";
                 currentEls.push(t);
-                let nextNode = t.nextSibling;
-                let textAfter = nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue : "";
+                var nextNode = t.nextSibling;
+                var textAfter = nextNode && nextNode.nodeType === 3 ? nextNode.nodeValue : "";
                 
                 if (endOfSentence.test(word) || endOfSentence.test(textAfter) || t === tokens[tokens.length-1]) {
-                    let cleanSentence = currentSentence.trim();
+                    var cleanSentence = currentSentence.trim();
                     cleanSentence = cleanSentence.replace(/\b\d+[a-z]?\b|\b[IVXLCDM]+\b/g, '').trim();
                     
                     if (cleanSentence && /[a-zA-Z\u0370-\u03FF]/.test(cleanSentence)) { 
@@ -1191,8 +1179,8 @@
         function playNextChunk() {
             if (!STATE.audio.reading || STATE.audio.idx >= STATE.audio.chunks.length) { stopAudio(); return; }
 
-            const chunk = STATE.audio.chunks[STATE.audio.idx];
-            let spokenText = chunk.text.toLowerCase();
+            var chunk = STATE.audio.chunks[STATE.audio.idx];
+            var spokenText = chunk.text.toLowerCase();
             
             if (STATE.lang === 'la') {
                 spokenText = spokenText
@@ -1209,20 +1197,20 @@
                     .replace(/ξ/g, "ks").replace(/ψ/g, "ps").replace(/υ/g, "i").replace(/η/g, "e").replace(/ω/g, "o")
                     .replace(/\u0314/g, "j"); 
                 
-                const gMap = {'α':'a','β':'b','δ':'d','ε':'e','ζ':'ds','ι':'i','λ':'l','μ':'m','ν':'n','ο':'o','π':'p','ρ':'r','σ':'s','ς':'s','τ':'t'};
-                spokenText = Array.from(spokenText).map(c => gMap[c] || c).join('');
+                var gMap = {'α':'a','β':'b','δ':'d','ε':'e','ζ':'ds','ι':'i','λ':'l','μ':'m','ν':'n','ο':'o','π':'p','ρ':'r','σ':'s','ς':'s','τ':'t'};
+                spokenText = Array.from(spokenText).map(function(c) { return gMap[c] || c; }).join('');
             }
 
-            STATE.audio.activeEls.forEach(el => el.classList.remove('audio-active'));
+            STATE.audio.activeEls.forEach(function(el) { el.classList.remove('audio-active'); });
             STATE.audio.activeEls = chunk.elements;
-            STATE.audio.activeEls.forEach(el => el.classList.add('audio-active'));
+            STATE.audio.activeEls.forEach(function(el) { el.classList.add('audio-active'); });
             
             if (chunk.elements.length > 0) chunk.elements[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             STATE.audio.utterance = new SpeechSynthesisUtterance(spokenText);
             
-            let voices = STATE.audio.synth.getVoices();
-            let prefVoice = voices.find(v => v.lang.startsWith('es')); 
+            var voices = STATE.audio.synth.getVoices();
+            var prefVoice = voices.find(function(v) { return v.lang.startsWith('es'); }); 
             
             if (prefVoice) STATE.audio.utterance.voice = prefVoice;
             STATE.audio.utterance.rate = STATE.audio.speed;

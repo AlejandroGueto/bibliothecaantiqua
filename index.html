@@ -244,8 +244,6 @@
     <div id="toast-container"></div>
 
     <script>
-        const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
-
         const STATE = {
             lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0,
             audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
@@ -271,7 +269,7 @@
             return list;
         };
 
-        // CATÁLOGO COMPLETO DE LOS 40 AUTORES CLÁSICOS RESTAURADO ÍNTEGRAMENTE
+        // CATÁLOGO ÍNTEGRO RESTAURADO - LOS 40 AUTORES COMPLETO
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -625,6 +623,14 @@
                 const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', '.wst-navbox', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
                 garbage.forEach(sel => contentNode.querySelectorAll(sel).forEach(e => e.remove()));
 
+                // ESTERILIZADOR DE ENLACES (Previene errores 404 en GitHub Pages)
+                contentNode.querySelectorAll('a').forEach(a => {
+                    a.removeAttribute('href');
+                    a.style.color = 'inherit';
+                    a.style.textDecoration = 'none';
+                    a.style.cursor = 'default';
+                });
+
                 document.getElementById('pane-original').innerHTML = contentNode.innerHTML;
                 setFetchState('fetching', "Procesando interactividad filológica...");
                 
@@ -707,7 +713,21 @@
                 const doc = parser.parseFromString(htmlContent, 'text/html');
                 let contentNode = doc.querySelector('.mw-parser-output') || doc.body;
                 
-                contentNode.querySelectorAll('.mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table.plainlinks').forEach(e => e.remove());
+                // PURGADOR DE PREFACIOS, ÍNDICES Y METADATA DE WIKISOURCE ES
+                const translationGarbage = [
+                    '.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', 
+                    'table.plainlinks', '.ws-header', '.ws-noexport', '.wst-navigation', '#header', 'table'
+                ];
+                translationGarbage.forEach(sel => contentNode.querySelectorAll(sel).forEach(e => e.remove()));
+
+                // ESTERILIZADOR DE ENLACES DE TRADUCCIÓN (Previene desvíos fatales en GitHub)
+                contentNode.querySelectorAll('a').forEach(a => {
+                    a.removeAttribute('href');
+                    a.style.color = 'inherit';
+                    a.style.textDecoration = 'none';
+                    a.style.cursor = 'default';
+                });
+
                 document.getElementById('trans-text-body').innerHTML = contentNode.innerHTML;
                 
                 document.getElementById('trans-loading').classList.add('hidden');
@@ -891,7 +911,7 @@
                 tokens.forEach(t => {
                     let word = t.dataset.original;
                     if (!word) return;
-                    word = word.toLowerCase().replace(/^[\s.,;:"'«»()\[\]{}\-—!?;·]+|[\s.,;:"'«»()\[\]{}\-—!?;·]+$/g, ''); 
+                    word = word.toLowerCase().replace(/^[\s.,;:"'«»()\[\]{}\-—!军事?;·]+|[\s.,;:"'«»()\[\]{}\-—!?;·]+$/g, ''); 
                     if(word.length > 2) counts[word] = (counts[word] || 0) + 1;
                 });
 

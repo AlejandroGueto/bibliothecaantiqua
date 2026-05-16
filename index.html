@@ -55,7 +55,7 @@
         .word-token { cursor: pointer; transition: all 0.2s ease; border-radius: 3px; padding: 0 2px; margin: 0 -2px; display: inline-block; position: relative; }
         .word-token:hover { background-color: rgba(212, 175, 55, 0.2); }
         .word-selected { background-color: var(--accent-gold) !important; color: #000 !important; font-weight: bold; }
-        .audio-active { background-color: rgba(212, 175, 55, 0.4) !important; color: #fff !important; border-radius: 4px; box-shadow: 0 0 10px rgba(212,175,55,0.2); transition: all 0.1s ease; }
+        .audio-active { background-color: rgba(212, 175, 55, 0.4) !important; color: #fff !important; border-radius: 4px; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); transition: all 0.1s ease; }
 
         #reading-area { flex: 1; display: flex; overflow: hidden; position: relative; height: calc(100vh - 3.5rem); }
         .split-pane { flex: 1; overflow-y: auto; padding: 2rem 3rem; height: 100%; box-sizing: border-box; }
@@ -201,13 +201,18 @@
                 <button onclick="closeManualInputModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div class="p-6 space-y-4 overflow-y-auto flex-1">
+                <div id="manual-target-indicator" class="text-xs font-cinzel text-[#D4AF37] bg-[#222] p-2 rounded border border-[#333] hidden"></div>
                 <div>
                     <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Texto Original (Latín o Griego)</label>
-                    <textarea id="manual-original-input" rows="6" placeholder="Paste classical text here..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
+                    <textarea id="manual-original-input" rows="6" placeholder="Pega el texto clásico original aquí..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
                 </div>
                 <div>
-                    <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Traducción al Español</label>
-                    <textarea id="manual-translation-input" rows="5" placeholder="Pega la traducción correspondiente aquí..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
+                    <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Traducción al Español de Reemplazo</label>
+                    <textarea id="manual-translation-input" rows="5" placeholder="Pega tu traducción mejorada aquí..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
+                </div>
+                <div class="flex items-center gap-2 py-1">
+                    <input type="checkbox" id="manual-save-permanent" checked class="accent-[#D4AF37] cursor-pointer">
+                    <label for="manual-save-permanent" class="font-cinzel text-xs text-gray-300 cursor-pointer select-none">Sustituir permanentemente en este dispositivo</label>
                 </div>
                 <div class="flex gap-4">
                     <div class="flex-1">
@@ -218,7 +223,7 @@
                         </select>
                     </div>
                     <div class="flex-1">
-                        <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Metadatos del fragmento</label>
+                        <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Metadatos / Fragmento</label>
                         <input type="text" id="manual-meta" placeholder="Ej: Cicerón, Catilina I, 1-2" class="w-full bg-[#101010] border border-[#333] rounded p-2 text-gray-300 focus:outline-none focus:border-[#D4AF37] font-serif">
                     </div>
                 </div>
@@ -286,6 +291,8 @@
     <div id="toast-container"></div>
 
     <script>
+        const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
+
         const STATE = {
             lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0,
             audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
@@ -311,6 +318,7 @@
             return list;
         };
 
+        // CORPUS COMPLETO RESTAURADO (40 AUTORES CLÁSICOS SIN RECORTES)
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -415,7 +423,7 @@
                     { baseTitle: "Ajax", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αίας", esPath: "Áyax" }] }
                 ]},
                 { author: "Euripides", authorEs: "Eurípides", works: [
-                    { baseTitle: "Medea", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Μήδεια_(Ευριπίδη)", esPath: "Medea" }] },
+                    { baseTitle: "Medea", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Μήδεια_(Ευριpίδη)", esPath: "Medea" }] },
                     { baseTitle: "Bacchae", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Βάκχαι" }] }
                 ]},
                 { author: "Herodotus", authorEs: "Heródoto", works: [
@@ -444,7 +452,7 @@
                 ]},
                 { author: "Hesiodus", authorEs: "Hesíodo", works: [
                     { baseTitle: "Theogonia", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Θεογονία", esPath: "Teogonía" }] },
-                    { baseTitle: "Opera et Dies", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Έργa_και_Ημέραι", esPath: "Los_trabajos_y_los_días" }] }
+                    { baseTitle: "Opera et Dies", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Έργα_και_Ημέραι", esPath: "Los_trabajos_y_los_días" }] }
                 ]},
                 { author: "Xenophon", authorEs: "Jenofonte", works: [
                     { baseTitle: "Anabasis", books: generateBooks("Liber", 7, "Greek", "Κύρου_Ανάβασις/") }
@@ -465,18 +473,28 @@
                     { baseTitle: "Vera Historia", books: generateBooks("Liber", 2, "Greek", "Αληθής_Ιστορία/") }
                 ]},
                 { author: "Epictetus", authorEs: "Epicteto", works: [
-                    { baseTitle: "Enchiridion", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Εγχειρίδιοen_Επictήτου", esPath: "Manual_de_Epicteto" }] }
+                    { baseTitle: "Enchiridion", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Εγχειρίδιον_Επικτήτου", esPath: "Manual_de_Epicteto" }] }
                 ]},
                 { author: "Polybius", authorEs: "Polibio", works: [
                     { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
                 { author: "Callimachus", authorEs: "Calímaco", works: [
-                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δία", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δía", arabic: 1, path: "Ύμνοι/Εις_Δία" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
 
         function openManualInputModal() {
+            const ind = document.getElementById('manual-target-indicator');
+            if (STATE.retryParams) {
+                const aut = CATALOG[STATE.retryParams.langCat][STATE.retryParams.aIndex];
+                const wrk = aut.works[STATE.retryParams.wIndex];
+                const bk = wrk.books[STATE.retryParams.bIndex];
+                ind.innerText = `Asociando a: ${aut.author} / ${wrk.baseTitle} - ${bk.title}`;
+                ind.classList.remove('hidden');
+            } else {
+                ind.classList.add('hidden');
+            }
             document.getElementById('manual-modal').classList.remove('hidden');
         }
 
@@ -488,10 +506,11 @@
             const originalText = document.getElementById('manual-original-input').value.trim();
             const translationText = document.getElementById('manual-translation-input').value.trim();
             const selectedLang = document.getElementById('manual-lang').value;
-            const metaInfo = document.getElementById('manual-meta').value.trim() || "Inyección Manual Compartida";
+            const metaInfo = document.getElementById('manual-meta').value.trim() || "Manuscrito Personalizado";
+            const savePermanent = document.getElementById('manual-save-permanent').checked;
 
             if(!originalText) {
-                showToast("El texto original no puede estar vacío.");
+                showToast("El texto original es obligatorio.");
                 return;
             }
 
@@ -499,19 +518,25 @@
             closeRightPanel();
             closeManualInputModal();
 
+            const parsedOriginal = originalText.replace(/\n/g, '<br>');
+            const parsedTranslation = translationText ? translationText.replace(/\n/g, '<br>') : "<p class='opacity-40 italic text-gray-500 text-xs'>Traducción libre ausente.</p>";
+
+            // SUSTITUCIÓN PERMANENTE EN EL DISPOSITIVO
+            if (savePermanent && STATE.retryParams) {
+                const key = `override-${STATE.retryParams.langCat}-${STATE.retryParams.aIndex}-${STATE.retryParams.wIndex}-${STATE.retryParams.bIndex}`;
+                const overrideData = { original: parsedOriginal, translation: parsedTranslation, meta: metaInfo, lang: selectedLang };
+                localStorage.setItem(key, JSON.stringify(overrideData));
+                showToast("Sustitución guardada. Se ha cancelado la descarga automática para esta obra.");
+            }
+
             STATE.lang = selectedLang;
-            STATE.work = null; 
-            
             setFetchState('fetching', 'Procesando interactividad local...');
             
             document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${metaInfo}</span>`;
             document.getElementById('reader-tools').classList.remove('hidden');
 
-            const container = document.createElement('div');
-            container.innerHTML = originalText.replace(/\n/g, '<br>');
-
-            document.getElementById('pane-original').innerHTML = container.innerHTML;
-            document.getElementById('trans-text-body').innerHTML = translationText ? translationText.replace(/\n/g, '<br>') : "<p class='opacity-40 italic text-gray-500 text-xs'>No se ha asociado traducción local a este fragmento.</p>";
+            document.getElementById('pane-original').innerHTML = parsedOriginal;
+            document.getElementById('trans-text-body').innerHTML = parsedTranslation;
 
             setTimeout(async () => {
                 STATE.currentTaskId++;
@@ -575,13 +600,35 @@
             STATE.work = book; 
             STATE.authorEs = author.authorEs || author.author;
             STATE.currentWorkStr = work.baseTitle;
-            
+
             setFetchState('fetching', `Extrayendo papiro clásico de base de datos...`);
             document.getElementById('pane-original').innerHTML = '';
             
             if (STATE.bilingual) {
                 document.getElementById('trans-text-body').innerHTML = '';
                 document.getElementById('trans-loading').classList.remove('hidden');
+            }
+
+            // COMPROBACIÓN DE SUSTITUCIONES GUARDADAS LOCALMENTE (Filtro prioritario)
+            const overrideKey = `override-${langCat}-${aIndex}-${wIndex}-${bIndex}`;
+            const localOverride = localStorage.getItem(overrideKey);
+            if (localOverride) {
+                const data = JSON.parse(localOverride);
+                STATE.lang = data.lang || STATE.lang;
+                document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${data.meta || author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title} (Sustituido)`;
+                document.getElementById('reader-tools').classList.remove('hidden');
+                document.getElementById('pane-original').innerHTML = data.original;
+                document.getElementById('trans-text-body').innerHTML = data.translation;
+                
+                setTimeout(async () => {
+                    if (STATE.currentTaskId !== taskId) return;
+                    await tokenizeSafeDOMAsync(document.getElementById('pane-original'), taskId);
+                    if (STATE.currentTaskId === taskId) {
+                        setFetchState('done');
+                        lucide.createIcons();
+                    }
+                }, 50);
+                return;
             }
             
             document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title}`;
@@ -762,34 +809,6 @@
             lucide.createIcons();
         }
 
-        // CO-PILOTO ANALIZADOR DE IA LOCAL (Heurística avanzada predictiva anticaídas)
-        function predictMorphologyAI(word, lang) {
-            if (lang === 'la') {
-                if (word.endsWith('orum')) return "Radical Regular | Sustantivo/Adjetivo. Caso <b>Genitivo Plural</b> de la 2ª Declinación (Masculino/Neutro).";
-                if (word.endsWith('arum')) return "Radical Regular | Sustantivo/Adjetivo. Caso <b>Genitivo Plural</b> de la 1ª Declinación (Femenino).";
-                if (word.endsWith('ibus')) return "Radical Regular | Sustantivo/Adjetivo. Caso <b>Dativo o Ablativo Plural</b> de la 3ª o 4ª Declinación.";
-                if (word.endsWith('is') && word.length > 4) return "Inflexión Nominal | Posible Dativo/Ablativo Plural (1ª y 2ª) o Nominativo/Genitivo Singular (3ª).";
-                if (word.endsWith('am')) return "Radical Regular | Sustantivo/Adjetivo. Caso <b>Acusativo Singular</b> de la 1ª Declinación (Femenino).";
-                if (word.endsWith('um')) return "Radical Regular | Sustantivo/Adjetivo. Caso <b>Acusativo Singular</b> (2ª/3ª) o Nominativo Neutro.";
-                if (word.endsWith('nt')) return "Forma Verbal | <b>3ª persona del plural</b>. Desinencia activa de tiempo personal.";
-                if (word.endsWith('at')) return "Forma Verbal | <b>3ª persona del singular</b>. Tiempo Presente de Indicativo (1ª conjugación).";
-                if (word.endsWith('et')) return "Forma Verbal | <b>3ª persona del singular</b>. Presente de indicativo (2ª) o Futuro Imperfecto (3ª/4ª).";
-                if (word.endsWith('it')) return "Forma Verbal | <b>3ª persona del singular</b>. Presente o Perfecto de Indicativo activo.";
-                if (word.endsWith('ba')) return "Inflexión Verbal | Elemento temporal de Imperfecto de Indicativo.";
-                return "Morfología Contextual | Forma clasificada como radical regular léxico. Raíz deducida: <i>" + word + "</i>.";
-            } else {
-                if (word.endsWith('ων')) return "Flexión Helénica | Forma nominal en caso <b>Genitivo Plural</b> (Todas las declinaciones).";
-                if (word.endsWith('οις')) return "Flexión Helénica | Sustantivo/Artículo/Adjetivo en caso <b>Dativo Plural</b> (2ª declinación).";
-                if (word.endsWith('αις')) return "Flexión Helénica | Sustantivo/Artículo/Adjetivo en caso <b>Dativo Plural</b> (1ª declinación).";
-                if (word.endsWith('ος')) return "Flexión Helénica | Caso <b>Nominativo Singular</b> masculino (2ª) o genitivo singular regular (3ª).";
-                if (word.endsWith('ον')) return "Flexión Helénica | Caso <b>Acusativo Singular</b> masculino/femenino o Nominativo Neutro.";
-                if (word.endsWith('ου')) return "Flexión Helénica | Caso <b>Genitivo Singular</b> regular (1ª y 2ª declinación).";
-                if (word.endsWith('σι') || word.endsWith('σιν')) return "Inflexión Verbal/Nominal | Posible 3ª persona plural activa o Dativo Plural de la 3ª declinación.";
-                if (word.endsWith('ει') || word.endsWith('ειν')) return "Forma Verbal | Desinencia regular de 3ª persona del singular o morfema de Infinitivo Activo.";
-                return "Morfología Helénica | Análisis predictivo contextual. Raíz regular inferida: <i>" + word + "</i>.";
-            }
-        }
-
         async function analyzeWord(rawWord, element) {
             if(STATE.lastClickedWord) STATE.lastClickedWord.style.borderBottom = '2px solid transparent';
             STATE.lastClickedWord = element;
@@ -888,32 +907,9 @@
                 document.getElementById('ora-result').classList.remove('hidden');
 
             } catch (error) {
-                // REDIRECCIÓN MÁGICA AL CO-PILOTO IA (Evita pantallas vacías o carteles de error)
-                if (LEXICON_LOCAL[stripped]) {
-                    const localData = LEXICON_LOCAL[stripped];
-                    document.getElementById('ora-lemma').innerText = localData.lemma;
-                    document.getElementById('ora-morph').innerHTML = `<div class="p-2 bg-[#222] rounded text-gray-300 text-sm border border-[#333]">${localData.morph}</div>`;
-                } else {
-                    const aiHypothesis = predictMorphologyAI(stripped, STATE.lang);
-                    document.getElementById('ora-lemma').innerText = stripped;
-                    document.getElementById('ora-morph').innerHTML = `
-                        <div class="p-3 bg-[#1A1A1A] rounded text-gray-300 text-sm border border-[#333] shadow-inner">
-                            <p class="text-[9px] text-[#D4AF37] font-cinzel font-bold mb-1.5 uppercase tracking-widest flex items-center gap-1"><i data-lucide="sparkles" class="w-3 h-3"></i> Análisis Predictivo Co-Piloto IA</p>
-                            <p class="font-serif text-xs leading-relaxed text-gray-300">${aiHypothesis}</p>
-                        </div>
-                    `;
-                }
-
-                if (encliticDetected) {
-                    const alertEl = document.getElementById('ora-enclitic-alert');
-                    alertEl.innerText = `Sufijo: ${encliticDetected}`;
-                    alertEl.classList.remove('hidden');
-                }
-
-                setupExternalDictLinks(stripped, stripped, true);
                 document.getElementById('ora-loading').classList.add('hidden');
-                document.getElementById('ora-result').classList.remove('hidden');
-                lucide.createIcons();
+                document.getElementById('ora-error').classList.remove('hidden');
+                setupExternalDictLinks(stripped, stripped, true);
             }
         }
 

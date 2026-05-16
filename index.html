@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latinitatis PRO | IDE Filológico</title>
+    <title>Bibliotheca Antiqua PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
         #right-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; display: none; opacity: 0; transition: opacity 0.3s ease; }
         #right-backdrop.active { display: block; opacity: 1; }
 
-        #sidebar-right { width: 400px; max-width: 90vw; border-left: 1px solid var(--border-color); background: var(--bg-panel); display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: absolute; right: 0; top: 0; bottom: 0; z-index: 50; box-shadow: -10px 0 25px rgba(0,0,0,0.8);}
+        #sidebar-right { width: 450px; max-width: 90vw; border-left: 1px solid var(--border-color); background: var(--bg-panel); display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: absolute; right: 0; top: 0; bottom: 0; z-index: 50; box-shadow: -10px 0 25px rgba(0,0,0,0.8);}
         #sidebar-right.open { transform: translateX(0); }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -60,7 +60,6 @@
         #reading-area { flex: 1; display: flex; overflow: hidden; position: relative; height: calc(100vh - 3.5rem); }
         .split-pane { flex: 1; overflow-y: auto; padding: 2rem 3rem; height: 100%; box-sizing: border-box; }
         
-        /* MEJORA 1: Traducción 50/50 perfecta con el mismo contraste */
         #pane-original { width: 100%; transition: width 0.3s ease; }
         #pane-original.half { width: 50%; max-width: 50%; border-right: 1px solid var(--border-color); }
         
@@ -83,21 +82,19 @@
         #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100; pointer-events: none; }
         .toast { background: rgba(0,0,0,0.8); color: #fff; padding: 12px 24px; border-radius: 8px; margin-top: 10px; opacity: 0; transition: opacity 0.3s; font-family: 'Cinzel', serif; font-size: 0.9rem; text-align: center; border: 1px solid var(--accent-gold); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .toast.show { opacity: 1; }
-        
-        .linenumber { opacity: 0.3; font-size: 0.6em; margin-right: 10px; user-select: none; }
     </style>
 </head>
 <body>
 
     <aside id="sidebar-left">
         <div class="p-4 border-b border-[#333] flex items-center gap-3 bg-[#111] shrink-0">
-            <div class="w-8 h-8 bg-[#991B1B] rounded flex items-center justify-center font-cinzel font-bold text-white shadow shrink-0">LP</div>
-            <h1 class="font-cinzel text-lg font-bold tracking-widest text-white whitespace-nowrap overflow-hidden">Latinitatis PRO</h1>
+            <div class="w-8 h-8 bg-[#991B1B] rounded flex items-center justify-center font-cinzel font-bold text-white shadow shrink-0">BA</div>
+            <h1 class="font-cinzel text-lg font-bold tracking-widest text-white whitespace-nowrap overflow-hidden">Bibliotheca Antiqua</h1>
         </div>
 
         <div class="flex border-b border-[#333] bg-[#1A1A1A] shrink-0">
-            <button onclick="switchTab('latin')" id="tab-latin" class="tab-btn active flex-1 py-3 font-cinzel text-xs font-bold uppercase tracking-widest text-[#A3A3A3] hover:text-white transition">Latini</button>
-            <button onclick="switchTab('greek')" id="tab-greek" class="tab-btn flex-1 py-3 font-cinzel text-xs font-bold uppercase tracking-widest text-[#A3A3A3] hover:text-white transition">Graeci</button>
+            <button onclick="switchTab('latin')" id="tab-latin" class="tab-btn active flex-1 py-3 font-cinzel text-xs font-bold uppercase tracking-widest text-[#A3A3A3] hover:text-white transition">Auctores Latini</button>
+            <button onclick="switchTab('greek')" id="tab-greek" class="tab-btn flex-1 py-3 font-cinzel text-xs font-bold uppercase tracking-widest text-[#A3A3A3] hover:text-white transition">Auctores Graeci</button>
         </div>
 
         <div class="p-2 border-b border-[#333] bg-[#1A1A1A] shrink-0">
@@ -122,7 +119,6 @@
             </div>
 
             <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0 ml-2">
-                <!-- Controles de Audio (Mejora: Velocidad lenta por defecto) -->
                 <div class="flex items-center bg-[#121212] rounded px-1">
                     <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir Fonética">
                         <i data-lucide="play" class="w-4 h-4"></i>
@@ -151,7 +147,7 @@
                     <div class="absolute inset-0 border-4 border-[#D4AF37] rounded-full border-t-transparent animate-spin"></div>
                     <i data-lucide="library" class="absolute inset-0 m-auto w-10 h-10 text-gray-600"></i>
                 </div>
-                <h2 class="font-cinzel text-2xl text-gray-300 uppercase tracking-widest mb-2">Latinitatis PRO</h2>
+                <h2 class="font-cinzel text-2xl text-gray-300 uppercase tracking-widest mb-2">Bibliotheca Antiqua</h2>
                 <p class="font-serif text-gray-500 italic text-sm">Elige un volumen del catálogo lateral.</p>
             </div>
             
@@ -184,13 +180,13 @@
     <aside id="sidebar-right">
         <div class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0">
             <h3 id="right-panel-title" class="font-cinzel text-[#D4AF37] font-bold uppercase tracking-widest text-sm">Oraculum</h3>
-            <button onclick="closeRightPanel()" class="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#333] transition" title="Cerrar Panel"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="closeRightPanel()" class="text-gray-400 hover:text-white p-2 rounded-md hover:bg-[#333] transition" title="Cerrar Panel"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
 
         <div id="panel-oraculum" class="flex-1 overflow-y-auto p-6 hidden-panel">
             <div class="text-center border-b border-[#333] pb-6 mb-6" id="ora-intro">
                 <i data-lucide="microscope" class="w-12 h-12 text-gray-600 mx-auto mb-4 opacity-50"></i>
-                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del texto original. El oráculo consultará la base de datos de <strong>Tufts University</strong>.</p>
+                <p class="font-serif text-sm text-gray-400 italic leading-relaxed">Selecciona cualquier palabra del texto original. El oráculo consultará la base de datos de la Universidad de Tufts.</p>
             </div>
 
             <div id="ora-loading" class="hidden flex flex-col items-center py-12">
@@ -208,7 +204,7 @@
                     <div id="ora-morph" class="font-serif text-gray-300 space-y-3 text-sm leading-relaxed"></div>
                 </div>
                 <div class="space-y-3 mt-8">
-                    <h4 class="font-cinzel text-[10px] text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="book-open" class="w-4 h-4"></i> Diccionarios Universitarios</h4>
+                    <h4 class="font-cinzel text-[10px] text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="book-open" class="w-4 h-4"></i> Diccionarios Oficiales</h4>
                     <a id="btn-logeion" href="#" target="_blank" class="hidden w-full py-3 bg-[#8B2323] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#6A1A1A] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Logeion (Chicago)</a>
                     <a id="btn-perseus" href="#" target="_blank" class="hidden w-full py-3 bg-[#1e3a8a] text-white text-center rounded text-xs font-cinzel font-bold uppercase tracking-widest hover:bg-[#1e40af] transition shadow-md flex items-center justify-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Perseus (Tufts)</a>
                 </div>
@@ -216,8 +212,8 @@
             
             <div id="ora-error" class="hidden text-center py-10">
                 <i data-lucide="alert-circle" class="w-12 h-12 text-red-500/80 mx-auto mb-4"></i>
-                <p class="font-serif text-lg text-gray-300 mb-1">Palabra no identificada</p>
-                <p class="font-serif text-sm text-gray-500 mb-8">El servicio de Perseids no reconoce esta forma. Utiliza los enlaces inferiores para realizar una búsqueda manual.</p>
+                <p class="font-serif text-lg text-gray-300 mb-1">Análisis directo no disponible</p>
+                <p class="font-serif text-sm text-gray-500 mb-8">La forma flexiva exacta escapa al oráculo en este momento. Consulta las herramientas lexicográficas oficiales para buscarla manualmente:</p>
                 <div id="fallback-links" class="mt-4 space-y-3 border-t border-[#333] pt-6"></div>
             </div>
         </div>
@@ -227,7 +223,7 @@
                 <h3 class="font-cinzel text-white text-lg flex items-center gap-2"><i data-lucide="bar-chart" class="w-5 h-5 text-[#D4AF37]"></i> Frecuencia Léxica</h3>
                 <button onclick="generateStats()" class="p-2 bg-[#D4AF37] text-black rounded hover:bg-yellow-500 transition shadow" title="Recalcular"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
             </div>
-            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de palabras en este fragmento. Conservando todos los espíritus y acentos griegos intactos.</p>
+            <p class="font-serif text-sm text-gray-400 italic mb-6 leading-relaxed border-b border-[#333] pb-4">Ranking de palabras en este fragmento. Conservando la acentuación original.</p>
             <div id="stats-loading" class="hidden text-center py-12"><div class="spinner mx-auto border-gray-600 border-l-[#D4AF37] w-8 h-8"></div></div>
             <div id="stats-list" class="space-y-2"></div>
         </div>
@@ -236,22 +232,30 @@
     <div id="toast-container"></div>
 
     <script>
+        // Función auxiliar robusta para manejar las discrepancias de JSON en las APIs
+        const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
+
         const STATE = {
             lang: 'la', work: null, bilingual: false,
             audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
             lastClickedWord: null, retryParams: null
         };
 
-        const generateBooks = (prefix, count, romanFormat, pathBase, esPathBase) => {
+        const generateBooks = (prefix, count, romanFormat, pathBase, esPathBase, skipNums = []) => {
             const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
             const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
             let list = [];
             for(let i=0; i<count; i++) {
+                if(skipNums.includes(i+1)) continue;
                 let suffix = romanFormat === "Roman" ? roman[i] : (romanFormat === "Greek" ? greek[i] : (i+1));
+                
+                let esSuffix = suffix;
+                if (esPathBase && esPathBase.includes("La_Eneida")) esSuffix = (i+1); 
+                
                 list.push({
                     title: `${prefix} ${suffix}`, 
                     path: pathBase ? `${pathBase}${suffix}` : null,
-                    esPath: esPathBase ? `${esPathBase}${suffix}` : null
+                    esPath: esPathBase ? (esPathBase.endsWith("_") ? `${esPathBase}${i+1}` : `${esPathBase}${suffix}`) : null
                 });
             }
             return list;
@@ -266,7 +270,8 @@
                 ]},
                 { author: "Ovidius", works: [
                     { baseTitle: "Metamorphoses", books: generateBooks("Liber", 15, "Roman", "Metamorphoses_(Ovidius)/Liber_", "Las_metamorfosis/Libro_") },
-                    { baseTitle: "Ars Amatoria", books: generateBooks("Liber", 3, "Roman", "Ars_amatoria/Liber_") }
+                    { baseTitle: "Ars Amatoria", books: generateBooks("Liber", 3, "Roman", "Ars_amatoria/Liber_") },
+                    { baseTitle: "Tristia", books: generateBooks("Liber", 3, "Roman", "Tristia/Liber_") }
                 ]},
                 { author: "Cicero", works: [
                     { baseTitle: "In Catilinam", books: [
@@ -275,7 +280,8 @@
                         { title: "Oratio III", path: "In_Catilinam_oratio_III", esPath: "Catilinarias/Oración_III" },
                         { title: "Oratio IV", path: "In_Catilinam_oratio_IV", esPath: "Catilinarias/Oración_IV" }
                     ]},
-                    { baseTitle: "Laelius de Amicitia", books: [{ title: "Omnia", path: "Laelius_de_amicitia" }] }
+                    { baseTitle: "De Amicitia", books: [{ title: "Omnia", path: "Laelius_de_amicitia" }] },
+                    { baseTitle: "De Senectute", books: [{ title: "Omnia", path: "Cato_Maior_de_senectute" }] }
                 ]},
                 { author: "Caesar", works: [
                     { baseTitle: "De Bello Gallico", books: generateBooks("Liber", 8, "Roman", "Commentarii_de_bello_Gallico/Liber_", "Comentarios_a_la_guerra_de_las_Galias:_Libro_") },
@@ -284,7 +290,7 @@
                 { author: "Seneca", works: [
                     { baseTitle: "Epistulae Morales", books: generateBooks("Liber", 20, "Roman", "Epistulae_morales_ad_Lucilium/Liber_") },
                     { baseTitle: "De Brevitate Vitae", books: [{ title: "Omnia", path: "De_brevitate_vitae", esPath: "De_la_brevedad_de_la_vida" }] },
-                    { baseTitle: "De Providentia", books: [{ title: "Omnia", path: "De_providentia" }] }
+                    { baseTitle: "De Ira", books: [{ title: "Omnia", path: "De_ira" }] }
                 ]},
                 { author: "Catullus", works: [
                     { baseTitle: "Carmina", books: [{ title: "Omnia", path: "Carmina_(Catullus)" }] }
@@ -300,6 +306,41 @@
                 { author: "Tacitus", works: [
                     { baseTitle: "Annales", books: generateBooks("Liber", 6, "Roman", "Annales_(Tacitus)/Liber_") },
                     { baseTitle: "Germania", books: [{ title: "Omnia", path: "De_origine_et_situ_Germanorum" }] }
+                ]},
+                { author: "Livius", works: [
+                    { baseTitle: "Ab Urbe Condita", books: generateBooks("Liber", 10, "Roman", "Ab_urbe_condita/Liber_") }
+                ]},
+                { author: "Lucretius", works: [
+                    { baseTitle: "De Rerum Natura", books: generateBooks("Liber", 6, "Roman", "De_rerum_natura/Liber_") }
+                ]},
+                { author: "Martialis", works: [
+                    { baseTitle: "Epigrammata", books: generateBooks("Liber", 14, "Roman", "Epigrammata_(Martialis)/Liber_") }
+                ]},
+                { author: "Propertius", works: [
+                    { baseTitle: "Elegiae", books: generateBooks("Liber", 4, "Roman", "Elegiae_(Propertius)/Liber_") }
+                ]},
+                { author: "Quintilianus", works: [
+                    { baseTitle: "Institutio Oratoria", books: generateBooks("Liber", 12, "Roman", "Institutio_Oratoria/Liber_") }
+                ]},
+                { author: "Sallustius", works: [
+                    { baseTitle: "De Catilinae coniuratione", books: [{ title: "Omnia", path: "De_Catilinae_coniuratione" }] },
+                    { baseTitle: "Bellum Iugurthinum", books: [{ title: "Omnia", path: "Bellum_Iugurthinum" }] }
+                ]},
+                { author: "Suetonius", works: [
+                    { baseTitle: "De vita Caesarum", books: generateBooks("Liber", 8, "Roman", "De_vita_Caesarum/Liber_") }
+                ]},
+                { author: "Terentius", works: [
+                    { baseTitle: "Andria", books: [{ title: "Omnia", path: "Andria" }] },
+                    { baseTitle: "Eunuchus", books: [{ title: "Omnia", path: "Eunuchus" }] }
+                ]},
+                { author: "Tibullus", works: [
+                    { baseTitle: "Elegiae", books: generateBooks("Liber", 3, "Roman", "Elegiae_(Tibullus)/Liber_") }
+                ]},
+                { author: "Apuleius", works: [
+                    { baseTitle: "Metamorphoses", books: generateBooks("Liber", 11, "Roman", "Metamorphoses_(Apuleius)/Liber_") }
+                ]},
+                { author: "Plinius Minor", works: [
+                    { baseTitle: "Epistulae", books: generateBooks("Liber", 10, "Roman", "Epistulae_(Plinius_Minor)/Liber_") }
                 ]}
             ],
             greek: [
@@ -315,12 +356,11 @@
                 { author: "Sophocles", works: [
                     { baseTitle: "Oedipus Rex", books: [{ title: "Omnia", path: "Οιδίπους_Τύραννος", esPath: "Edipo_rey" }] },
                     { baseTitle: "Antigone", books: [{ title: "Omnia", path: "Αντιγόνη", esPath: "Antígona_(Sófocles)" }] },
-                    { baseTitle: "Ajax", books: [{ title: "Omnia", path: "Αίας_(Σοφοκλής)" }] }
+                    { baseTitle: "Ajax", books: [{ title: "Omnia", path: "Αίας", esPath: "Áyax" }] }
                 ]},
                 { author: "Euripides", works: [
                     { baseTitle: "Medea", books: [{ title: "Omnia", path: "Μήδεια_(Ευριπίδη)", esPath: "Medea" }] },
-                    { baseTitle: "Bacchae", books: [{ title: "Omnia", path: "Βάκχαι" }] },
-                    { baseTitle: "Hippolytus", books: [{ title: "Omnia", path: "Ιππόλυτος_(Ευριπίδη)" }] }
+                    { baseTitle: "Bacchae", books: [{ title: "Omnia", path: "Βάκχαι" }] }
                 ]},
                 { author: "Herodotus", works: [
                     { baseTitle: "Historiae", books: generateBooks("Liber", 9, "Roman", "Ιστορίαι_(Ηροδότου)/") }
@@ -330,7 +370,52 @@
                 ]},
                 { author: "Aristoteles", works: [
                     { baseTitle: "Ethica Nicomachea", books: generateBooks("Liber", 10, "Greek", "Ηθικά_Νικομάχεια/") },
-                    { baseTitle: "Poetica", books: [{ title: "Omnia", path: "Περί_ποιητικής" }] }
+                    { baseTitle: "Poetica", books: [{ title: "Omnia", path: "Περί_ποιητικής" }] },
+                    { baseTitle: "Politica", books: generateBooks("Liber", 8, "Greek", "Πολιτικά/") }
+                ]},
+                { author: "Aeschylus", works: [
+                    { baseTitle: "Prometheus Vinctus", books: [{ title: "Omnia", path: "Προμηθεύς_Δεσμώτης", esPath: "Prometeo_encadenado" }] },
+                    { baseTitle: "Agamemnon", books: [{ title: "Omnia", path: "Αγαμέμνων", esPath: "Agamenón" }] }
+                ]},
+                { author: "Aristophanes", works: [
+                    { baseTitle: "Nubes", books: [{ title: "Omnia", path: "Νεφέλαι" }] },
+                    { baseTitle: "Ranae", books: [{ title: "Omnia", path: "Βάτραχοι" }] },
+                    { baseTitle: "Lysistrata", books: [{ title: "Omnia", path: "Λυσιστράτη" }] }
+                ]},
+                { author: "Pindarus", works: [
+                    { baseTitle: "Olympia", books: generateBooks("Oda", 14, "Roman", "Ολυμπιόνικοι/") },
+                    { baseTitle: "Pythia", books: generateBooks("Oda", 12, "Roman", "Πυθιόνικοι/") }
+                ]},
+                { author: "Hesiodus", works: [
+                    { baseTitle: "Theogonia", books: [{ title: "Omnia", path: "Θεογονία" }] },
+                    { baseTitle: "Opera et Dies", books: [{ title: "Omnia", path: "Έργα_και_Ημέραι" }] }
+                ]},
+                { author: "Xenophon", works: [
+                    { baseTitle: "Anabasis", books: generateBooks("Liber", 7, "Greek", "Κύρου_Ανάβασις/") }
+                ]},
+                { author: "Plutarchus", works: [
+                    { baseTitle: "Vitae Parallelae", books: [{ title: "Alexander", path: "Βίοι_Παράλληλοι/Αλέξανδρος" }, { title: "Caesar", path: "Βίοι_Παράλληλοι/Καίσαρ" }] }
+                ]},
+                { author: "Demosthenes", works: [
+                    { baseTitle: "Philippicae", books: generateBooks("Oratio", 3, "Roman", "Κατά_Φιλίππου_") }
+                ]},
+                { author: "Isocrates", works: [
+                    { baseTitle: "Panegyricus", books: [{ title: "Omnia", path: "Πανηγυρικός" }] }
+                ]},
+                { author: "Lysias", works: [
+                    { baseTitle: "Contra Eratosthenem", books: [{ title: "Omnia", path: "Κατά_Ερατοσθένους" }] }
+                ]},
+                { author: "Lucianus", works: [
+                    { baseTitle: "Vera Historia", books: generateBooks("Liber", 2, "Greek", "Αληθής_Ιστορία/") }
+                ]},
+                { author: "Epictetus", works: [
+                    { baseTitle: "Enchiridion", books: [{ title: "Omnia", path: "Εγχειρίδιον_Επικτήτου" }] }
+                ]},
+                { author: "Polybius", works: [
+                    { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
+                ]},
+                { author: "Callimachus", works: [
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", path: "Ύμνοι/Εις_Δία" }, { title: "In Apollinem", path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
@@ -521,12 +606,12 @@
                 const doc = parser.parseFromString(htmlContent, 'text/html');
                 const root = doc.body;
                 
-                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', 'table.plainlinks'];
+                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', 'table.plainlinks', 'script', 'style'];
                 garbage.forEach(sel => root.querySelectorAll(sel).forEach(e => e.remove()));
 
                 document.getElementById('pane-original').innerHTML = root.innerHTML;
                 
-                setFetchState('fetching', "Procesando filología y métrica...");
+                setFetchState('fetching', "Procesando filología...");
                 setTimeout(() => {
                     tokenizeSafeDOM(document.getElementById('pane-original'));
                     setFetchState('done');
@@ -543,7 +628,7 @@
             const textNodes = [];
             while(walker.nextNode()) textNodes.push(walker.currentNode);
 
-            const splitRegex = /([ \n\t\r,;:"'«»()\[\]{}\-—\.!?;·]+)/;
+            const splitRegex = /([ \n\t\r,;:"'«»()\[\]{}\-—\.!?;·]+)/;
 
             textNodes.forEach(node => {
                 const text = node.nodeValue;
@@ -638,12 +723,16 @@
             document.getElementById('ora-result').classList.add('hidden');
             document.getElementById('ora-error').classList.add('hidden');
 
-            // MEJORA 4: Respetar cualquier letra Unicode incluyendo griego politónico para no cortar palabras
-            const cleanWord = rawWord.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, '').toLowerCase();
+            const cleanWord = rawWord.replace(/^[\s.,;:"'«»()\[\]{}\-—!?;·]+|[\s.,;:"'«»()\[\]{}\-—!?;·]+$/g, '').toLowerCase();
             document.getElementById('ora-word').innerText = rawWord;
 
             try {
-                const res = await fetch(`https://morph.perseids.org/analysis/word?lang=${STATE.lang}&word=${encodeURIComponent(cleanWord)}`);
+                // Perseids exige "lat" y "grc". Pasarle "la" da error silencioso.
+                const morphLang = STATE.lang === 'la' ? 'lat' : 'grc';
+                const engine = morphLang === 'lat' ? 'morpheuslat' : 'morpheusgrc';
+                const url = `https://morph.perseids.org/analysis/word?lang=${morphLang}&engine=${engine}&word=${encodeURIComponent(cleanWord)}`;
+                
+                const res = await fetch(url);
                 if (!res.ok) throw new Error(`API Error`);
                 const data = await res.json();
                 
@@ -652,31 +741,28 @@
                 let baseLemma = cleanWord;
                 let found = false;
 
-                if (data && data.RDF && data.RDF.Annotation) {
-                    let annotations = Array.isArray(data.RDF.Annotation) ? data.RDF.Annotation : [data.RDF.Annotation];
+                // Estructura extra-robusta usando asArray para evitar fallos si no es un array iterativo
+                let annotations = asArray(data?.RDF?.Annotation);
+                for (let ann of annotations) {
+                    let bodies = asArray(ann?.Body);
+                    let firstValid = bodies.find(b => b?.rest?.entry);
                     
-                    for (let ann of annotations) {
-                        if (!ann.Body) continue;
-                        let bodies = Array.isArray(ann.Body) ? ann.Body : [ann.Body];
-                        let firstValid = bodies.find(b => b.rest && b.rest.entry);
+                    if (firstValid) {
+                        found = true;
+                        let entry = firstValid.rest.entry;
+                        let dictEntry = asArray(entry?.dict)[0];
+                        baseLemma = dictEntry?.hdwd?.$ || cleanWord;
                         
-                        if (firstValid) {
-                            found = true;
-                            let entry = firstValid.rest.entry;
-                            let dictEntry = Array.isArray(entry.dict) ? entry.dict[0] : entry.dict;
-                            baseLemma = dictEntry.hdwd ? dictEntry.hdwd.$ : cleanWord;
-                            
-                            lemmaStr = baseLemma.replace(/\d+$/, ''); 
-                            
-                            let infls = Array.isArray(entry.infl) ? entry.infl : [entry.infl];
-                            morphHtml = infls.map(inf => {
-                                const attr = (name) => inf[name] ? inf[name].$ : '';
-                                const attrsStr = [attr('pofs'), attr('case'), attr('num'), attr('gend'), attr('pers'), attr('tense'), attr('voice'), attr('mood')].filter(Boolean).join(', ') || 'Forma invariable';
-                                const stem = attr('stem') || ''; const term = attr('term') || '';
-                                return `<div class="mb-3 pb-3 border-b border-[#333]/50 last:border-0 last:pb-0 last:mb-0"><div class="flex items-baseline gap-2 mb-1"><span class="font-mono text-gray-500 text-base">${stem}<strong class="text-[#D4AF37]">${term}</strong></span></div><p class="italic text-gray-400 text-xs uppercase tracking-wide">${attrsStr}</p></div>`;
-                            }).join('');
-                            break;
-                        }
+                        lemmaStr = baseLemma.replace(/\d+$/, ''); 
+                        
+                        let infls = asArray(entry?.infl);
+                        morphHtml = infls.map(inf => {
+                            const attr = (name) => inf[name]?.$ || '';
+                            const attrsStr = [attr('pofs'), attr('case'), attr('num'), attr('gend'), attr('pers'), attr('tense'), attr('voice'), attr('mood')].filter(Boolean).join(', ') || 'Forma invariable';
+                            const stem = attr('stem') || ''; const term = attr('term') || '';
+                            return `<div class="mb-3 pb-3 border-b border-[#333]/50 last:border-0 last:pb-0 last:mb-0"><div class="flex items-baseline gap-2 mb-1"><span class="font-mono text-gray-500 text-base">${stem}<strong class="text-[#D4AF37]">${term}</strong></span></div><p class="italic text-gray-400 text-xs uppercase tracking-wide">${attrsStr}</p></div>`;
+                        }).join('');
+                        break;
                     }
                 }
 
@@ -698,28 +784,32 @@
         }
 
         function setupExternalDictLinks(lemma, fallbackWord, isError = false) {
-            const btnLogeion = document.getElementById('btn-logeion');
-            const btnPerseus = document.getElementById('btn-perseus');
-            const fallbackContainer = document.getElementById('fallback-links');
             const targetWord = encodeURIComponent(lemma || fallbackWord);
             
-            if (STATE.lang === 'grc') {
-                const url = `https://logeion.uchicago.edu/${targetWord}`;
-                if (isError) {
-                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-3 bg-[#8B2323] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#6A1A1A] transition">Buscar en Logeion</a>`;
-                } else {
-                    btnLogeion.href = url; btnLogeion.classList.remove('hidden'); btnLogeion.classList.add('flex');
-                    btnPerseus.classList.add('hidden'); btnPerseus.classList.remove('flex');
-                }
+            // Logeion soporta ambos idiomas sin parámetros extra.
+            const logeionUrl = `https://logeion.uchicago.edu/${targetWord}`;
+            
+            // Perseus NECESITA saber si es la=la o la=greek explícitamente en la URL y HTTPS.
+            const perseusLang = STATE.lang === 'la' ? 'la' : 'greek';
+            const perseusUrl = `https://www.perseus.tufts.edu/hopper/morph?l=${targetWord}&la=${perseusLang}`;
+            
+            if (isError) {
+                const fallbackContainer = document.getElementById('fallback-links');
+                fallbackContainer.innerHTML = `
+                    <a href="${logeionUrl}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 bg-[#8B2323] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#6A1A1A] transition mb-2"><i data-lucide="external-link" class="w-4 h-4"></i> Consultar Logeion</a>
+                    <a href="${perseusUrl}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 bg-[#1e3a8a] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#1e40af] transition"><i data-lucide="external-link" class="w-4 h-4"></i> Consultar Perseus</a>
+                `;
             } else {
-                const url = `http://www.perseus.tufts.edu/hopper/morph?l=${targetWord}&la=la`;
-                if (isError) {
-                    fallbackContainer.innerHTML = `<a href="${url}" target="_blank" class="block w-full py-3 bg-[#1e3a8a] text-white rounded text-xs font-cinzel font-bold text-center uppercase tracking-widest shadow hover:bg-[#1e40af] transition">Buscar en Perseus</a>`;
-                } else {
-                    btnPerseus.href = url; btnPerseus.classList.remove('hidden'); btnPerseus.classList.add('flex');
-                    btnLogeion.classList.add('hidden'); btnLogeion.classList.remove('flex');
-                }
+                const btnLogeion = document.getElementById('btn-logeion');
+                const btnPerseus = document.getElementById('btn-perseus');
+                
+                btnLogeion.href = logeionUrl; 
+                btnLogeion.classList.remove('hidden'); btnLogeion.classList.add('flex');
+                
+                btnPerseus.href = perseusUrl; 
+                btnPerseus.classList.remove('hidden'); btnPerseus.classList.add('flex');
             }
+            lucide.createIcons();
         }
 
         function generateStats() {
@@ -733,8 +823,7 @@
                 tokens.forEach(t => {
                     let word = t.dataset.original;
                     if (!word) return;
-                    // MEJORA 4: Uso de \p{L} para preservar griego perfectamente sin NFD destructivo
-                    word = word.toLowerCase().replace(/^[^\p{L}]+|[^\p{L}]+$/gu, ''); 
+                    word = word.toLowerCase().replace(/^[\s.,;:"'«»()\[\]{}\-—!?;·]+|[\s.,;:"'«»()\[\]{}\-—!?;·]+$/g, ''); 
                     if(word.length > 2) counts[word] = (counts[word] || 0) + 1;
                 });
 
@@ -775,7 +864,7 @@
             let currentSentence = "";
             let currentEls = [];
             
-            const endOfSentence = /[.!?;·\n]+/;
+            const endOfSentence = /[.!?;·\n]+/;
 
             tokens.forEach(t => {
                 let word = t.innerText;
@@ -821,7 +910,6 @@
                     .replace(/ge/g, 'gue').replace(/gi/g, 'gui')
                     .replace(/ll/g, 'l l'); 
             } else if (STATE.lang === 'grc') {
-                // MEJORA 2: Pronunciación Erasmus mejorada para español
                 spokenText = spokenText.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                     .replace(/αι/g, "ai").replace(/ει/g, "ei").replace(/οι/g, "oi").replace(/υι/g, "ui")
                     .replace(/αυ/g, "au").replace(/ευ/g, "eu").replace(/ου/g, "u")

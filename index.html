@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bibliotheca Antiqua PRO - Ultimate</title>
+    <title>Bibliotheca Antiqua PRO - Red Blindada</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -44,7 +44,6 @@
         .word-token:hover { background-color: rgba(153, 27, 27, 0.3); color: #fff; }
         .audio-active { background-color: rgba(212, 175, 55, 0.4) !important; color: #fff !important; border-radius: 4px; box-shadow: 0 0 10px rgba(212,175,55,0.2); transition: all 0.1s ease; }
 
-        /* Métrica blindada: pointer-events: none evita que el clic lea la etiqueta HTML en vez del texto */
         .scansio-long { color: var(--accent-red); font-weight: 700; pointer-events: none; }
         .scansio-short { color: #6b7280; pointer-events: none; }
 
@@ -80,7 +79,6 @@
 </head>
 <body>
 
-    <!-- CATÁLOGO LATERAL (40 AUTORES INTACTOS) -->
     <aside id="sidebar-left">
         <div class="p-4 border-b border-[#333] flex items-center gap-3 bg-[#111] shrink-0">
             <div class="w-8 h-8 bg-[#991B1B] rounded flex items-center justify-center font-cinzel font-bold text-white shadow shrink-0">BA</div>
@@ -105,7 +103,6 @@
         </div>
     </aside>
 
-    <!-- LIENZO PRINCIPAL -->
     <main id="main-canvas">
         <header class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0 shadow-md z-10 w-full">
             <div class="flex items-center gap-3 overflow-hidden">
@@ -122,16 +119,13 @@
                     </select>
                 </div>
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                
                 <button onclick="toggleScansio()" id="btn-scansio" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Métrica (Scansio)"><i data-lucide="ruler" class="w-4 h-4"></i></button>
                 <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                
                 <button onclick="toggleBilingual()" id="btn-bilingual" class="p-1.5 px-3 text-gray-400 hover:text-[#D4AF37] rounded transition flex items-center gap-2" title="Traducción">
                     <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
                 </button>
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                
                 <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm">
                     <i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span>
                 </button>
@@ -159,7 +153,6 @@
 
             <div id="pane-original" class="split-pane reading-text font-greek"></div>
             
-            <!-- PANEL DE TRADUCCIÓN INTEGRADO UNIVERSAL -->
             <div id="pane-translation" class="bg-[#111]">
                 <div class="bg-[#1A1A1A] p-3 border-b border-[#333] flex justify-between items-center shrink-0">
                     <span class="font-cinzel text-xs text-[#D4AF37] uppercase tracking-widest font-bold" id="trans-title">Traducción Universal</span>
@@ -172,7 +165,6 @@
         <div id="right-backdrop" onclick="closeRightPanel()"></div>
     </main>
 
-    <!-- ORACULUM Y ESTADÍSTICAS -->
     <aside id="sidebar-right">
         <div class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0">
             <h3 id="right-panel-title" class="font-cinzel text-[#D4AF37] font-bold uppercase tracking-widest text-sm">Oraculum</h3>
@@ -234,9 +226,6 @@
             audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 }
         };
 
-        // ----------------------------------------------------------------------------------
-        // CATÁLOGO CON RUTAS A THE LATIN LIBRARY Y WIKISOURCE GRIEGO
-        // ----------------------------------------------------------------------------------
         const generateBooks = (count, format) => {
             const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
             const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
@@ -290,7 +279,7 @@
                     { title: "Germania", books: [{title: "Omnia", n: 1}], tll: "tacitus/germ.shtml" }
                 ]},
                 { author: "Livius", esAuthor: "Tito Livio", works: [
-                    { title: "Ab Urbe Condita", books: generateBooks(10, "Roman"), tll: "livy/liv.1.shtml" } // Mapping full Livy is complex, simplified for MVP
+                    { title: "Ab Urbe Condita", books: generateBooks(10, "Roman"), tll: "livy/liv.1.shtml" } 
                 ]},
                 { author: "Lucretius", esAuthor: "Lucrecio", works: [
                     { title: "De Rerum Natura", books: generateBooks(6, "Roman"), tll: "lucretius/lucretius{n}.shtml" }
@@ -326,7 +315,6 @@
                 ]}
             ],
             greek: [
-                // Greek uses Wikisource as TLL does not have Greek texts.
                 { author: "Homerus", esAuthor: "Homero", works: [
                     { title: "Ιλιάς", books: generateBooks(24, "Greek"), ws: "Ιλιάς/" },
                     { title: "Οδύσσεια", books: generateBooks(24, "Greek"), ws: "Οδύσσεια/" }
@@ -460,20 +448,35 @@
         }
 
         // ----------------------------------------------------------------------------------
-        // EXTRACCIÓN HÍBRIDA: THE LATIN LIBRARY (LA) / WIKISOURCE (GRC)
+        // EXTRACCIÓN CON PROXY ROTATIVO ROBUSTO
         // ----------------------------------------------------------------------------------
         function setUIState(state) {
             ['loading-state', 'fetching-state', 'error-state'].forEach(id => document.getElementById(id).classList.add('hidden'));
             if(state) document.getElementById(state).classList.remove('hidden');
         }
 
-        async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+        async function fetchWithTimeout(url, options = {}, timeout = 6000) {
             if (STATE.abortController) STATE.abortController.abort();
             STATE.abortController = new AbortController();
             const id = setTimeout(() => STATE.abortController.abort(), timeout);
             const response = await fetch(url, { ...options, signal: STATE.abortController.signal });
             clearTimeout(id);
             return response;
+        }
+
+        async function fetchWithProxy(targetUrl) {
+            const proxies = [
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
+                `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+            ];
+            for (let p of proxies) {
+                try {
+                    let r = await fetchWithTimeout(p, {}, 5000);
+                    if (r.ok) return await r.text();
+                } catch(e) { console.warn("Proxy falló, saltando al siguiente..."); }
+            }
+            throw new Error("Todos los servidores puente están caídos.");
         }
 
         async function initiateLoadOriginal(langCat, aIndex, wIndex, bIndex) {
@@ -497,22 +500,15 @@
             try {
                 let html = "";
                 if (STATE.lang === 'la' && work.tll) {
-                    // THE LATIN LIBRARY VIA CORS PROXY
                     const targetUrl = `https://www.thelatinlibrary.com/${work.tll.replace('{n}', book.n)}`;
-                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-                    const res = await fetchWithTimeout(proxyUrl);
-                    const data = await res.json();
-                    if (!data.contents) throw new Error("TLL Empty");
+                    const htmlRaw = await fetchWithProxy(targetUrl);
                     
                     const parser = new DOMParser();
-                    const doc = parser.parseFromString(data.contents, 'text/html');
-                    
-                    // Extraer los párrafos válidos de TLL
+                    const doc = parser.parseFromString(htmlRaw, 'text/html');
                     const paragraphs = Array.from(doc.querySelectorAll('p')).filter(p => !p.className.includes('internal_navigation') && !p.className.includes('pagehead') && p.textContent.trim().length > 5);
                     html = paragraphs.map(p => `<p>${p.innerHTML}</p>`).join('');
                     
                 } else if (STATE.lang === 'grc' && work.ws) {
-                    // WIKISOURCE PARA GRIEGO
                     const exactPath = `${work.ws}${book.num}`;
                     const url = `https://el.wikisource.org/w/api.php?action=parse&page=${encodeURIComponent(exactPath)}&format=json&origin=*&disableeditsection=1&disabletoc=1`;
                     const res = await fetchWithTimeout(url);
@@ -535,7 +531,8 @@
                 if(STATE.scansioActive) applyScansio();
                 lucide.createIcons();
             } catch (e) {
-                if(e.name !== 'AbortError') setUIState('error-state');
+                setUIState('error-state');
+                document.getElementById('error-desc').innerText = e.message || "Error al conectar con los archivos.";
             }
         }
 
@@ -581,7 +578,7 @@
         }
 
         // ----------------------------------------------------------------------------------
-        // BUSCADOR UNIVERSAL DE TRADUCCIONES (IFRAME SEGURO)
+        // BUSCADOR UNIVERSAL (IFRAME)
         // ----------------------------------------------------------------------------------
         function toggleBilingual() {
             if (!STATE.currentBook) return;
@@ -599,7 +596,6 @@
                 const { author, work, book } = STATE.currentBook;
                 const query = `site:es.wikisource.org OR site:cervantesvirtual.com "${author.esAuthor}" "${work.esTitle}" "${book.title}"`;
                 
-                // Utilizamos DuckDuckGo sin cabeceras restrictivas para que funcione en iframe
                 document.getElementById('trans-iframe').src = `https://duckduckgo.com/?q=${encodeURIComponent(query)}&ia=web`;
                 
             } else {
@@ -611,7 +607,7 @@
         }
 
         // ----------------------------------------------------------------------------------
-        // MÉTRICA SEGURO (POINTER-EVENTS)
+        // MÉTRICA
         // ----------------------------------------------------------------------------------
         function toggleScansio() {
             if (STATE.lang !== 'la') return showToast("La escansión automática solo está disponible en latín.");
@@ -661,7 +657,7 @@
         }
 
         // ----------------------------------------------------------------------------------
-        // ORACULUM DEDUPLICADO Y LIMPIO
+        // ORACULUM DEDUPLICADO
         // ----------------------------------------------------------------------------------
         function openPanel(panelId) {
             document.getElementById('sidebar-right').classList.add('open');
@@ -715,7 +711,6 @@
                 const morphLang = STATE.lang === 'la' ? 'lat' : 'grc';
                 const engine = STATE.lang === 'la' ? 'morpheuslat' : 'morpheusgrc';
                 
-                // Petición estándar
                 let url = `https://morph.perseids.org/analysis/word?lang=${morphLang}&engine=${engine}&word=${encodeURIComponent(wordToTest)}`;
                 let res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
                 let proxyData = await res.json();
@@ -725,7 +720,6 @@
                     if (findInJson(temp, 'dict').length > 0) data = temp;
                 }
 
-                // Fallback de enclíticos
                 if (!data && STATE.lang === 'la') {
                     let stripped = stripEnclitics(wordToTest);
                     if (stripped !== wordToTest) {
@@ -762,7 +756,6 @@
 
                 let morphHtml = "";
                 if (allInfls.length > 0) {
-                    // DEDUPLICACIÓN ESTRICTA
                     let uniqueMorphs = new Set();
                     let htmlParts = [];
                     

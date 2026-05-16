@@ -123,35 +123,29 @@
                 <div id="current-meta" class="font-cinzel text-sm text-gray-300 tracking-wide truncate whitespace-nowrap">Esperando inicialización del papiro...</div>
             </div>
 
-            <div class="flex items-center gap-2">
-                <button onclick="openManualInputModal()" class="p-1.5 px-3 border border-[#444] text-xs font-cinzel uppercase tracking-wider rounded text-gray-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition shrink-0 flex items-center gap-1.5" title="Cargar Texto Manual">
-                    <i data-lucide="file-plus"></i> <span class="hidden sm:inline">Inyectar Manuscrito</span>
-                </button>
-
-                <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0 ml-2">
-                    <div class="flex items-center bg-[#121212] rounded px-1">
-                        <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir Fonética">
-                            <i data-lucide="play" class="w-4 h-4"></i>
-                        </button>
-                        <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio">
-                            <i data-lucide="square" class="w-4 h-4 fill-current"></i>
-                        </button>
-                        <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1" title="Velocidad">
-                            <option value="0.6">0.6x</option><option value="0.75" selected>0.75x</option><option value="0.9">0.9x</option>
-                        </select>
-                    </div>
-                    
-                    <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                    <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
-                    
-                    <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                    <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
-                        <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
+            <div id="reader-tools" class="hidden flex items-center gap-1 bg-[#1A1A1A] p-1 rounded-md border border-[#333] shrink-0 ml-2">
+                <div class="flex items-center bg-[#121212] rounded px-1">
+                    <button onclick="toggleAudio()" id="btn-audio-play" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Reproducir Fonética">
+                        <i data-lucide="play" class="w-4 h-4"></i>
                     </button>
-                    
-                    <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                    <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm"><i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span></button>
+                    <button onclick="stopAudio()" id="btn-audio-stop" class="p-1.5 text-red-500 hover:text-red-400 rounded transition hidden" title="Detener Audio">
+                        <i data-lucide="square" class="w-4 h-4 fill-current"></i>
+                    </button>
+                    <select id="audio-speed" onchange="changeAudioSpeed()" class="bg-transparent text-gray-400 text-xs font-mono outline-none cursor-pointer border-none appearance-none pr-1 pl-1" title="Velocidad">
+                        <option value="0.6">0.6x</option><option value="0.75" selected>0.75x</option><option value="0.9">0.9x</option>
+                    </select>
                 </div>
+                
+                <div class="w-px h-4 bg-gray-700 mx-1"></div>
+                <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
+                
+                <div class="w-px h-4 bg-gray-700 mx-1"></div>
+                <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
+                    <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
+                </button>
+                
+                <div class="w-px h-4 bg-gray-700 mx-1"></div>
+                <button onclick="openPanel('oraculum')" class="flex items-center gap-1.5 p-1.5 px-3 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black rounded transition font-cinzel text-xs font-bold uppercase shadow-sm"><i data-lucide="book-open" class="w-3 h-3"></i> <span class="hidden md:inline">Oraculum</span></button>
             </div>
         </header>
 
@@ -193,47 +187,6 @@
         
         <div id="right-backdrop" onclick="closeRightPanel()"></div>
     </main>
-
-    <div id="manual-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-[#171717] border border-[#333] w-full max-w-2xl rounded-lg shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
-            <div class="p-4 bg-[#111] border-b border-[#333] flex justify-between items-center">
-                <h3 class="font-cinzel text-[#D4AF37] font-bold uppercase tracking-widest text-sm">Inyector de Texto Local</h3>
-                <button onclick="closeManualInputModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <div class="p-6 space-y-4 overflow-y-auto flex-1">
-                <div id="manual-target-indicator" class="text-xs font-cinzel text-[#D4AF37] bg-[#222] p-2 rounded border border-[#333] hidden"></div>
-                <div>
-                    <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Texto Original (Latín o Griego)</label>
-                    <textarea id="manual-original-input" rows="6" placeholder="Pega el texto clásico original aquí..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
-                </div>
-                <div>
-                    <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Traducción al Español de Reemplazo</label>
-                    <textarea id="manual-translation-input" rows="5" placeholder="Pega tu traducción mejorada aquí..." class="w-full bg-[#101010] border border-[#333] rounded p-3 text-gray-200 focus:outline-none focus:border-[#D4AF37] font-serif leading-relaxed"></textarea>
-                </div>
-                <div class="flex items-center gap-2 py-1">
-                    <input type="checkbox" id="manual-save-permanent" checked class="accent-[#D4AF37] cursor-pointer">
-                    <label for="manual-save-permanent" class="font-cinzel text-xs text-gray-300 cursor-pointer select-none">Sustituir permanentemente en este dispositivo</label>
-                </div>
-                <div class="flex gap-4">
-                    <div class="flex-1">
-                        <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Idioma</label>
-                        <select id="manual-lang" class="w-full bg-[#101010] border border-[#333] rounded p-2 text-gray-300 focus:outline-none focus:border-[#D4AF37]">
-                            <option value="la">Latín (la)</option>
-                            <option value="grc">Griego Antiguo (grc)</option>
-                        </select>
-                    </div>
-                    <div class="flex-1">
-                        <label class="block font-cinzel text-xs text-gray-400 uppercase tracking-wider mb-2">Metadatos / Fragmento</label>
-                        <input type="text" id="manual-meta" placeholder="Ej: Cicerón, Catilina I, 1-2" class="w-full bg-[#101010] border border-[#333] rounded p-2 text-gray-300 focus:outline-none focus:border-[#D4AF37] font-serif">
-                    </div>
-                </div>
-            </div>
-            <div class="p-4 bg-[#111] border-t border-[#333] flex justify-end gap-3 shadow-inner">
-                <button onclick="closeManualInputModal()" class="px-4 py-2 border border-[#444] rounded text-gray-400 text-xs font-cinzel uppercase tracking-wider hover:bg-[#222] transition">Cancelar</button>
-                <button onclick="injectManualText()" class="px-5 py-2 bg-[#991B1B] text-white rounded text-xs font-cinzel uppercase tracking-wider hover:bg-[#7f1616] transition font-bold shadow-md">Procesar e Inyectar</button>
-            </div>
-        </div>
-    </div>
 
     <aside id="sidebar-right">
         <div class="h-14 border-b border-[#333] bg-[#111] flex items-center justify-between px-4 shrink-0">
@@ -291,34 +244,26 @@
     <div id="toast-container"></div>
 
     <script>
-        const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
-
-        const STATE = {
-            lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0,
-            audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
-            lastClickedWord: null, retryParams: null
-        };
-
-        const generateBooks = (prefix, count, romanFormat, pathBase, esPathBase) => {
-            const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
-            const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
-            let list = [];
-            for(let i=0; i<count; i++) {
-                let suffix = romanFormat === "Roman" ? roman[i] : (romanFormat === "Greek" ? greek[i] : (i+1));
-                let esSuffix = (esPathBase && esPathBase.includes("Libro_")) ? roman[i] : (i+1); 
-                
-                list.push({
-                    title: `${prefix} ${suffix}`, 
-                    search: suffix,
-                    arabic: i+1,
-                    path: pathBase ? `${pathBase}${suffix}` : null,
-                    esPath: esPathBase ? (esPathBase.endsWith("_") ? `${esPathBase}${esSuffix}` : `${esPathBase}${suffix}`) : null
-                });
+        /* =========================================================================
+           === CORPUS PROPIO: TU BASE DE DATOS FILOLÓGICA PARA EXPEDIENTE ROMA ===
+           =========================================================================
+           Instrucciones: Cuando quieras sustituir una obra de internet para TODO EL MUNDO,
+           escribe aquí su "path" exacto (tal como aparece abajo en el CATALOG) seguido de
+           tu texto original y tu traducción limpia. 
+           ========================================================================= */
+        const CORPUS_PROPIO = {
+            "In_L._Catilinam_oratio_prima_habita_in_senatu": {
+                original: `<p><b>[I]</b> Quo usque tandem abutere, Catilina, patientia nostra? quam diu etiam furor iste tuus nos eludet? quem ad finem sese effrenata iactabit audacia? Nihilne te nocturnum praesidium Palati, nihil urbis vigiliae, nihil timor populi, nihil concursus bonorum omnium, nihil hic munitissimus habendi senatus locus, nihil horum ora vultusque moverunt?</p>`,
+                translation: `<p><b>[I]</b> ¿Hasta cuándo has de abusar de nuestra paciencia, Catilina? ¿Cuánto tiempo todavía tu locura se burlará de nosotros? ¿A qué extremos se arrojará tu desenfrenada audacia? ¿No han contenido tu audacia ni la guardia nocturna del Palatino...</p>`
+            },
+            "Aulularia": {
+                original: `<p>Aulularia original text placeholder...</p>`,
+                translation: `<p>Traducción corregida de la Aulularia...</p>`
             }
-            return list;
+            // Puedes añadir más líneas aquí siguiendo la misma estructura:
+            // "Ruta_De_La_Obra": { original: `Texto`, translation: `Traducción` }
         };
 
-        // CORPUS COMPLETO RESTAURADO (40 AUTORES CLÁSICOS SIN RECORTES)
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -420,7 +365,7 @@
                 { author: "Sophocles", authorEs: "Sófocles", works: [
                     { baseTitle: "Oedipus Rex", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Οιδίπους_Τύραννος", esPath: "Edipo_rey" }] },
                     { baseTitle: "Antigone", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αντιγόνη", esPath: "Antígona_(Sófocles)" }] },
-                    { baseTitle: "Ajax", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αίας", esPath: "Áyax" }] }
+                    { baseTitle: "Ajax", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Αías", esPath: "Áyax" }] }
                 ]},
                 { author: "Euripides", authorEs: "Eurípides", works: [
                     { baseTitle: "Medea", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Μήδεια_(Ευριpίδη)", esPath: "Medea" }] },
@@ -479,75 +424,75 @@
                     { baseTitle: "Historiae", books: generateBooks("Liber", 5, "Roman", "Ιστορίαι_(Πολύβιος)/") }
                 ]},
                 { author: "Callimachus", authorEs: "Calímaco", works: [
-                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δía", arabic: 1, path: "Ύμνοι/Εις_Δία" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
+                    { baseTitle: "Hymni", books: [{ title: "In Iovem", search: "Δία", arabic: 1, path: "Ύμνοι/Εις_Δía" }, { title: "In Apollinem", search: "Απόλλωνα", arabic: 2, path: "Ύμνοι/Εις_Απόλλωνα" }] }
                 ]}
             ]
         };
 
-        function openManualInputModal() {
-            const ind = document.getElementById('manual-target-indicator');
-            if (STATE.retryParams) {
-                const aut = CATALOG[STATE.retryParams.langCat][STATE.retryParams.aIndex];
-                const wrk = aut.works[STATE.retryParams.wIndex];
-                const bk = wrk.books[STATE.retryParams.bIndex];
-                ind.innerText = `Asociando a: ${aut.author} / ${wrk.baseTitle} - ${bk.title}`;
-                ind.classList.remove('hidden');
-            } else {
-                ind.classList.add('hidden');
-            }
-            document.getElementById('manual-modal').classList.remove('hidden');
+        function switchTab(lang) {
+            document.getElementById('tab-latin').classList.toggle('active', lang === 'latin');
+            document.getElementById('tab-greek').classList.toggle('active', lang === 'greek');
+            document.getElementById('list-latin').classList.toggle('hidden', lang !== 'latin');
+            document.getElementById('list-greek').classList.toggle('hidden', lang !== 'greek');
+            STATE.lang = lang === 'latin' ? 'la' : 'grc';
+            filterLibrary();
         }
 
-        function closeManualInputModal() {
-            document.getElementById('manual-modal').classList.add('hidden');
+        function toggleAccordion(btn) { btn.parentElement.classList.toggle('open'); }
+        function toggleSubAccordion(btn) { btn.parentElement.classList.toggle('open'); }
+        function toggleSidebarLeft() { document.getElementById('sidebar-left').classList.toggle('collapsed'); }
+
+        function renderNestedCatalog(lang) {
+            const list = document.getElementById(`list-${lang}`);
+            let html = '';
+            CATALOG[lang].forEach((authorNode, aIndex) => {
+                html += `
+                <div class="mb-1 author-block">
+                    <button onclick="toggleAccordion(this)" class="w-full text-left px-3 py-2.5 rounded hover:bg-[#262626] flex items-center justify-between transition group">
+                        <span class="font-cinzel text-sm text-gray-200 font-bold">${authorNode.author}</span>
+                        <i data-lucide="chevron-down" class="accordion-icon w-4 h-4 text-gray-500"></i>
+                    </button>
+                    <div class="accordion-content pl-4 pr-2 py-1 space-y-1 border-l border-[#333] ml-3 mt-1">
+                        ${authorNode.works.map((workNode, wIndex) => `
+                            <div class="work-block">
+                                <button onclick="toggleSubAccordion(this)" class="w-full text-left px-3 py-2 rounded text-sm font-serif text-gray-300 hover:text-white hover:bg-[#333] transition flex justify-between items-center group">
+                                    ${workNode.baseTitle.replace(/_/g, ' ')}
+                                    <i data-lucide="chevron-down" class="sub-accordion-icon w-3 h-3 text-gray-600"></i>
+                                </button>
+                                <div class="sub-accordion-content pl-4 space-y-1 border-l border-[#444] ml-2 mt-1">
+                                    ${workNode.books.map((b, bIndex) => `
+                                        <button onclick="loadText('${lang}', ${aIndex}, ${wIndex}, ${bIndex})" class="w-full text-left px-3 py-1.5 rounded text-xs font-serif text-gray-400 hover:text-white hover:bg-[#444] transition truncate">
+                                            ${b.title}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            });
+            list.innerHTML = html;
         }
 
-        function injectManualText() {
-            const originalText = document.getElementById('manual-original-input').value.trim();
-            const translationText = document.getElementById('manual-translation-input').value.trim();
-            const selectedLang = document.getElementById('manual-lang').value;
-            const metaInfo = document.getElementById('manual-meta').value.trim() || "Manuscrito Personalizado";
-            const savePermanent = document.getElementById('manual-save-permanent').checked;
+        function filterLibrary() {
+            const term = document.getElementById('search-lib').value.toLowerCase();
+            const listId = STATE.lang === 'la' ? 'list-latin' : 'list-greek';
+            const blocks = document.querySelectorAll(`#${listId} .author-block`);
+            let hasResults = false;
 
-            if(!originalText) {
-                showToast("El texto original es obligatorio.");
-                return;
-            }
-
-            stopAudio();
-            closeRightPanel();
-            closeManualInputModal();
-
-            const parsedOriginal = originalText.replace(/\n/g, '<br>');
-            const parsedTranslation = translationText ? translationText.replace(/\n/g, '<br>') : "<p class='opacity-40 italic text-gray-500 text-xs'>Traducción libre ausente.</p>";
-
-            // SUSTITUCIÓN PERMANENTE EN EL DISPOSITIVO
-            if (savePermanent && STATE.retryParams) {
-                const key = `override-${STATE.retryParams.langCat}-${STATE.retryParams.aIndex}-${STATE.retryParams.wIndex}-${STATE.retryParams.bIndex}`;
-                const overrideData = { original: parsedOriginal, translation: parsedTranslation, meta: metaInfo, lang: selectedLang };
-                localStorage.setItem(key, JSON.stringify(overrideData));
-                showToast("Sustitución guardada. Se ha cancelado la descarga automática para esta obra.");
-            }
-
-            STATE.lang = selectedLang;
-            setFetchState('fetching', 'Procesando interactividad local...');
-            
-            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${metaInfo}</span>`;
-            document.getElementById('reader-tools').classList.remove('hidden');
-
-            document.getElementById('pane-original').innerHTML = parsedOriginal;
-            document.getElementById('trans-text-body').innerHTML = parsedTranslation;
-
-            setTimeout(async () => {
-                STATE.currentTaskId++;
-                await tokenizeSafeDOMAsync(document.getElementById('pane-original'), STATE.currentTaskId);
-                setFetchState('done');
-                lucide.createIcons();
-                document.getElementById('manual-original-input').value = '';
-                document.getElementById('manual-translation-input').value = '';
-            }, 50);
+            blocks.forEach(block => {
+                const text = block.innerText.toLowerCase();
+                if (text.includes(term)) {
+                    block.style.display = 'block';
+                    hasResults = true;
+                } else {
+                    block.style.display = 'none';
+                }
+            });
+            document.getElementById('no-results').classList.toggle('hidden', hasResults);
         }
 
+        // FIX: Inyección del keyword estructural "function" obligatorio
         async function proxyFetchHTML(url) {
             try {
                 const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
@@ -600,25 +545,23 @@
             STATE.work = book; 
             STATE.authorEs = author.authorEs || author.author;
             STATE.currentWorkStr = work.baseTitle;
-
-            setFetchState('fetching', `Extrayendo papiro clásico de base de datos...`);
+            
+            setFetchState('fetching', `Cargando papiro...`);
             document.getElementById('pane-original').innerHTML = '';
             
             if (STATE.bilingual) {
                 document.getElementById('trans-text-body').innerHTML = '';
                 document.getElementById('trans-loading').classList.remove('hidden');
             }
+            
+            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title}`;
+            document.getElementById('reader-tools').classList.remove('hidden');
 
-            // COMPROBACIÓN DE SUSTITUCIONES GUARDADAS LOCALMENTE (Filtro prioritario)
-            const overrideKey = `override-${langCat}-${aIndex}-${wIndex}-${bIndex}`;
-            const localOverride = localStorage.getItem(overrideKey);
-            if (localOverride) {
-                const data = JSON.parse(localOverride);
-                STATE.lang = data.lang || STATE.lang;
-                document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${data.meta || author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title} (Sustituido)`;
-                document.getElementById('reader-tools').classList.remove('hidden');
-                document.getElementById('pane-original').innerHTML = data.original;
-                document.getElementById('trans-text-body').innerHTML = data.translation;
+            // 1. FILTRO PRIORITARIO GLOBAL: Si el papiro está definido en tu CORPUS_PROPIO, cancela internet
+            if (CORPUS_PROPIO[book.path]) {
+                const manualData = CORPUS_PROPIO[book.path];
+                document.getElementById('pane-original').innerHTML = manualData.original;
+                document.getElementById('trans-text-body').innerHTML = manualData.translation;
                 
                 setTimeout(async () => {
                     if (STATE.currentTaskId !== taskId) return;
@@ -626,20 +569,22 @@
                     if (STATE.currentTaskId === taskId) {
                         setFetchState('done');
                         lucide.createIcons();
+                        if (STATE.bilingual) {
+                            document.getElementById('trans-loading').classList.add('hidden');
+                            document.getElementById('trans-content').classList.remove('hidden');
+                        }
                     }
                 }, 50);
                 return;
             }
-            
-            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title}`;
-            document.getElementById('reader-tools').classList.remove('hidden');
 
+            // 2. FILTRO DE RESPALDO AUTOMÁTICO VÍA WIKISOURCE
             try {
                 let htmlContent = await fetchWikisourceAPI(STATE.lang, book.path);
                 if (STATE.currentTaskId !== taskId) return; 
 
                 if (!htmlContent) {
-                    setFetchState('fetching', "Ruta base fallida. Buscando en la biblioteca...");
+                    setFetchState('fetching', "Escaneando repositorios de respaldo...");
                     const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
                     const cleanBaseTitle = work.baseTitle.replace(/\s*\(.*?\)\s*/g, '').replace(/_/g, ' ');
                     const searchStr = `${cleanBaseTitle} ${book.search || ''}`.trim();
@@ -654,7 +599,7 @@
                     } catch(e) {}
                 }
 
-                if (!htmlContent) throw new Error("Recurso no indexado en servidor externo.");
+                if (!htmlContent) throw new Error("Obra no localizada. Puedes inyectarla manualmente en el código.");
 
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlContent, 'text/html');
@@ -671,7 +616,6 @@
                 });
 
                 document.getElementById('pane-original').innerHTML = contentNode.innerHTML;
-                setFetchState('fetching', "Procesando interactividad filológica...");
                 
                 setTimeout(async () => {
                     if (STATE.currentTaskId !== taskId) return;
@@ -727,6 +671,9 @@
 
         async function executeTranslationFetch() {
             if (!STATE.work) return;
+            // Si la obra pertenece al corpus propio, su traducción ya ha sido inyectada arriba
+            if (CORPUS_PROPIO[STATE.work.path]) return;
+
             try {
                 let htmlContent = null;
                 if (STATE.work.esPath) {
@@ -756,10 +703,7 @@
                 const doc = parser.parseFromString(htmlContent, 'text/html');
                 let contentNode = doc.querySelector('.mw-parser-output') || doc.body;
                 
-                const translationGarbage = [
-                    '.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', 
-                    'table.plainlinks', '.ws-header', '.ws-noexport', '.wst-navigation', '#header', 'table'
-                ];
+                const translationGarbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', 'table.plainlinks', '.ws-header', '.ws-noexport', '.wst-navigation', '#header', 'table'];
                 translationGarbage.forEach(sel => contentNode.querySelectorAll(sel).forEach(e => e.remove()));
 
                 contentNode.querySelectorAll('a').forEach(a => {
@@ -791,7 +735,7 @@
                 
                 document.getElementById('trans-loading').classList.remove('hidden');
                 document.getElementById('trans-content').classList.add('hidden');
-                if(STATE.work) executeTranslationFetch();
+                executeTranslationFetch();
             } else {
                 btn.classList.remove('text-[#D4AF37]');
                 pOrig.classList.remove('half');
@@ -888,6 +832,7 @@
                         let pofs = inf.pofs?.$||''; let case_ = inf.case?.$||''; let num = inf.num?.$||'';
                         let stem = inf.stem?.$||''; let term = inf.term?.$||'';
                         
+                        // FIX: Corrección explícita de variable no definida (Evita fallos silenciosos en bucles)
                         let uniqueKey = `${stem}-${term}-${pofs}-${case_}-${num}`; 
                         if(!uniqueMorphs.has(uniqueKey)) {
                             uniqueMorphs.add(uniqueKey);

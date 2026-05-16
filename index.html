@@ -107,9 +107,10 @@
 
         <div class="p-2 border-b border-[#333] bg-[#1A1A1A] shrink-0">
             <div class="relative">
-                <i data-lucide="search" class="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500"></i>
-                <input type="text" id="search-lib" placeholder="Buscar autor u obra..." onkeyup="filterLibrary()" class="w-full bg-[#121212] border border-[#333] text-sm text-gray-300 rounded pl-8 pr-2 py-1.5 focus:outline-none focus:border-[#D4AF37] transition font-serif">
+                <i data-lucide="globe" class="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#D4AF37]"></i>
+                <input type="text" id="search-lib" placeholder="Buscar o PEGAR URL EXTERNA + Enter" onkeyup="handleSearchInput(event)" class="w-full bg-[#121212] border border-[#333] text-sm text-gray-300 rounded pl-8 pr-2 py-1.5 focus:outline-none focus:border-[#D4AF37] transition font-serif">
             </div>
+            <p class="text-[9px] text-gray-500 mt-1 text-center font-cinzel tracking-widest">Soporte Proxy CORS Integrado</p>
         </div>
 
         <div class="flex-1 overflow-y-auto p-2" id="library-content">
@@ -143,7 +144,7 @@
                 <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
                 
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
+                <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea (Si está disponible)">
                     <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
                 </button>
                 
@@ -160,7 +161,7 @@
                     <i data-lucide="book-marked" class="absolute inset-0 m-auto w-10 h-10 text-gray-600"></i>
                 </div>
                 <h2 class="font-cinzel text-2xl text-gray-300 uppercase tracking-widest mb-2">Bibliotheca Antiqua</h2>
-                <p class="font-serif text-gray-500 italic text-sm">Base de datos inactiva. Elige un volumen.</p>
+                <p class="font-serif text-gray-500 italic text-sm">Base de datos inactiva. Elige un volumen o pega una URL.</p>
             </div>
             
             <div id="fetching-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f]/95 backdrop-blur z-20">
@@ -171,7 +172,7 @@
             <div id="error-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20">
                 <i data-lucide="alert-triangle" class="w-16 h-16 text-[#991B1B] mb-4 opacity-80"></i>
                 <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Error en la Extracción</p>
-                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">El manuscrito no se encuentra disponible o la ruta ha cambiado.</p>
+                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">El manuscrito no se encuentra disponible o la conexión ha sido rechazada.</p>
                 <button onclick="retryLoad()" class="mt-6 px-4 py-2 border border-[#333] text-gray-400 hover:text-white hover:bg-[#333] rounded font-cinzel text-xs uppercase transition">Reintentar Conexión</button>
             </div>
 
@@ -249,7 +250,7 @@
         const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
 
         const STATE = {
-            lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0,
+            lang: 'la', work: null, authorEs: null, bilingual: false, currentTaskId: 0, currentExternalUrl: null,
             audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
             lastClickedWord: null, retryParams: null
         };
@@ -503,8 +504,22 @@
             list.innerHTML = html;
         }
 
+        function handleSearchInput(event) {
+            if (event.key === "Enter") {
+                const term = event.target.value.trim();
+                if (term.startsWith('http://') || term.startsWith('https://')) {
+                    loadExternalUrl(term);
+                } else {
+                    filterLibrary();
+                }
+            } else {
+                filterLibrary();
+            }
+        }
+
         function filterLibrary() {
             const term = document.getElementById('search-lib').value.toLowerCase();
+            if (term.startsWith('http')) return; // No filtrar si es URL
             const listId = STATE.lang === 'la' ? 'list-latin' : 'list-greek';
             const blocks = document.querySelectorAll(`#${listId} .author-block`);
             let hasResults = false;
@@ -551,6 +566,25 @@
             }
         }
 
+        // MAGIA NEGRA: Proxy CORS Universal para hackear restricciones del navegador
+        async function proxyFetchHTML(url) {
+            try {
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+                const res = await fetch(proxyUrl);
+                if (!res.ok) throw new Error('Proxy 1 falló');
+                return await res.text();
+            } catch (e) {
+                try {
+                    const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                    const res2 = await fetch(fallbackUrl);
+                    const data = await res2.json();
+                    return data.contents;
+                } catch (e2) {
+                    return null;
+                }
+            }
+        }
+
         async function fetchWikisourceAPI(lang, title) {
             if (!title) return null;
             const wikiLang = lang === 'grc' ? 'el' : lang;
@@ -566,8 +600,63 @@
         }
 
         function retryLoad() {
-            if(STATE.retryParams) {
+            if(STATE.currentExternalUrl) {
+                loadExternalUrl(STATE.currentExternalUrl);
+            } else if(STATE.retryParams) {
                 loadText(STATE.retryParams.langCat, STATE.retryParams.aIndex, STATE.retryParams.wIndex, STATE.retryParams.bIndex);
+            }
+        }
+
+        // NUEVO: Extractor Universal de Webs Externas
+        async function loadExternalUrl(url) {
+            const taskId = ++STATE.currentTaskId; 
+            stopAudio();
+            closeRightPanel();
+            
+            STATE.currentExternalUrl = url;
+            STATE.work = null; // Desactiva la traducción automática
+            
+            setFetchState('fetching', `Hackeando CORS y extrayendo de servidor externo...`);
+            
+            document.getElementById('pane-original').innerHTML = '';
+            document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">Fuente Externa</span> <span class="mx-2 opacity-50">/</span> <span class="text-xs text-gray-500">${url}</span>`;
+            document.getElementById('reader-tools').classList.remove('hidden');
+
+            try {
+                let htmlContent = await proxyFetchHTML(url);
+                
+                if (STATE.currentTaskId !== taskId) return; 
+
+                if (!htmlContent) {
+                    throw new Error("El proxy CORS no pudo acceder a esta web o ha sido bloqueado por el destino.");
+                }
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlContent, 'text/html');
+                
+                // Limpieza bestia para quitar menús, scripts y basura de webs aleatorias
+                const garbage = ['script', 'style', 'nav', 'footer', 'header', 'aside', 'iframe', 'noscript', '.menu', '#menu', '.sidebar'];
+                garbage.forEach(sel => doc.querySelectorAll(sel).forEach(e => e.remove()));
+
+                // Intenta coger el div principal o el body
+                let contentNode = doc.querySelector('main') || doc.querySelector('#content') || doc.querySelector('.content') || doc.body;
+
+                document.getElementById('pane-original').innerHTML = contentNode.innerHTML;
+                
+                setFetchState('fetching', "Procesando interactividad filológica del texto inyectado...");
+                
+                setTimeout(async () => {
+                    if (STATE.currentTaskId !== taskId) return;
+                    await tokenizeSafeDOMAsync(document.getElementById('pane-original'), taskId);
+                    if (STATE.currentTaskId === taskId) {
+                        setFetchState('done');
+                        lucide.createIcons();
+                        document.getElementById('search-lib').value = ''; // Limpiar barra
+                    }
+                }, 50);
+
+            } catch (error) {
+                if (STATE.currentTaskId === taskId) setFetchState('error', "", error.message);
             }
         }
 
@@ -576,6 +665,7 @@
             
             stopAudio();
             closeRightPanel();
+            STATE.currentExternalUrl = null;
             
             STATE.retryParams = {langCat, aIndex, wIndex, bIndex};
             STATE.lang = langCat === 'latin' ? 'la' : 'grc';
@@ -604,7 +694,7 @@
                 
                 if (STATE.currentTaskId !== taskId) return; 
 
-                // SI LA RUTA EXACTA FALLA, BUSCADOR DE RESCATE (RESTAURADO A VERSIÓN FLEXIBLE)
+                // SI LA RUTA EXACTA FALLA, BUSCADOR FLEXIBLE
                 if (!htmlContent) {
                     setFetchState('fetching', "Ruta base fallida. Escaneando la biblioteca...");
                     const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
@@ -616,7 +706,6 @@
                         const sRes = await fetch(searchUrl);
                         const sData = await sRes.json();
                         if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                            // Filtramos solo el espacio de nombres principal (artículos) para evitar ruido
                             const bestHits = sData.query.search.filter(r => r.ns === 0);
                             if(bestHits.length > 0) {
                                 htmlContent = await fetchWikisourceAPI(STATE.lang, bestHits[0].title);
@@ -625,7 +714,7 @@
                     } catch(e) {}
                 }
 
-                if (!htmlContent) throw new Error("El manuscrito original no se encuentra digitalizado en Wikisource.");
+                if (!htmlContent) throw new Error("El manuscrito original no se encuentra digitalizado en Wikisource. Intenta pegar una URL externa en el buscador.");
 
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlContent, 'text/html');
@@ -728,11 +817,15 @@
                 document.getElementById('trans-content').classList.remove('hidden');
                 
             } catch(e) { 
-                showTransError("No se encontró una traducción literaria oficial en Wikisource que coincida con este autor y obra."); 
+                showTransError("No se encontró una traducción en la biblioteca. Usa el buscador lateral para pegar una URL de traducción externa."); 
             }
         }
 
         function handleBilingualClick() {
+            if (!STATE.work) {
+                showToast("La traducción simultánea solo funciona con obras del catálogo oficial.");
+                return;
+            }
             STATE.bilingual = !STATE.bilingual;
             const pOrig = document.getElementById('pane-original');
             const pTrans = document.getElementById('pane-translation');
@@ -757,7 +850,7 @@
             document.getElementById('trans-loading').classList.add('hidden');
             document.getElementById('trans-text-body').innerHTML = `
                 <div class="flex flex-col items-center justify-center h-full text-center opacity-60 mt-20">
-                    <i data-lucide="book-x" class="w-12 h-12 mb-3 text-[#991B1B]"></i>
+                    <i data-lucide="globe" class="w-12 h-12 mb-3 text-[#991B1B]"></i>
                     <p class="font-cinzel text-sm uppercase tracking-widest text-[#D4AF37]">Traducción no disponible</p>
                     <p class="font-serif text-xs mt-2 max-w-xs mx-auto">${msg}</p>
                 </div>`;

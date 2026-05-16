@@ -537,7 +537,7 @@
         }
 
         // --- FETCHING ROBUSTO (Proxies Múltiples para eludir CORS/400) ---
-        async function fetchWithFallback(url) {
+        async function fetchWithFallback(url, isWiki = false) {
             let errors = [];
             
             // 1. Intento Directo (Suele fallar por CORS en APIs públicas si no es JSONP/CORS-enabled)
@@ -547,24 +547,36 @@
                 errors.push(`Direct: ${res.status}`);
             } catch(e) { errors.push(`Direct: ${e.message}`); }
 
-            // 2. CorsProxy.io (Estable y rápido)
+            // 2. JSONP (Infalible para APIs de MediaWiki en Iframes o Sandboxes restrictivos)
+            if (isWiki) {
+                try {
+                    return await new Promise((resolve, reject) => {
+                        const callbackName = 'jsonp_cb_' + Math.round(Math.random() * 10000000);
+                        window[callbackName] = function(data) {
+                            delete window[callbackName];
+                            resolve(data);
+                        };
+                        const script = document.createElement('script');
+                        let cleanUrl = url.replace('&origin=*', '');
+                        script.src = cleanUrl + '&callback=' + callbackName;
+                        script.onerror = () => {
+                            delete window[callbackName];
+                            reject(new Error('JSONP Blocked'));
+                        };
+                        document.body.appendChild(script);
+                    });
+                } catch(e) {
+                    errors.push(`JSONP: ${e.message}`);
+                }
+            }
+
+            // 3. Proxy de Rescate (AllOrigins Raw - evita el error 400 de GET parseado)
             try {
-                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
                 const res = await fetch(proxyUrl);
                 if (res.ok) return await res.json();
-                errors.push(`CorsProxy: ${res.status}`);
-            } catch(e) { errors.push(`CorsProxy: ${e.message}`); }
-
-            // 3. AllOrigins (Usando GET y parseando 'contents' para evitar error 400)
-            try {
-                const proxyUrl2 = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-                const res = await fetch(proxyUrl2);
-                if (res.ok) {
-                    const data = await res.json();
-                    if(data.contents) return JSON.parse(data.contents);
-                }
-                errors.push(`AllOrigins: ${res.status}`);
-            } catch(e) { errors.push(`AllOrigins: ${e.message}`); }
+                errors.push(`AllOrigins Raw: ${res.status}`);
+            } catch(e) { errors.push(`AllOrigins Raw: ${e.message}`); }
 
             console.error("Fetch Fallbacks Failed:", errors);
             throw new Error("No se pudo conectar a la API a través de ningún método.");
@@ -619,7 +631,7 @@
                     const searchUrl = `https://${STATE.lang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(STATE.work.path.replace(/_/g, ' '))}&utf8=&format=json&origin=*`;
                     
                     try {
-                        const searchData = await fetchWithFallback(searchUrl);
+                        const searchData = await fetchWithFallback(searchUrl, true);
                         if (searchData.query && searchData.query.search && searchData.query.search.length > 0) {
                             const realTitle = searchData.query.search[0].title;
                             console.log(`Encontrada alternativa: ${realTitle}`);
@@ -666,7 +678,7 @@
             // Utilizamos action=parse, pidiendo 'text', resolvemos redirects.
             const url = `https://${lang}.wikisource.org/w/api.php?action=parse&format=json&page=${encodeURIComponent(title)}&prop=text&redirects=1&origin=*`;
             try {
-                const data = await fetchWithFallback(url);
+                const data = await fetchWithFallback(url, true);
                 if (data.error) {
                     console.warn(`Wiki API Error: ${data.error.info}`);
                     return null;
@@ -772,7 +784,7 @@
                 if (!htmlContent) {
                     const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(path.replace(/_/g, ' '))}&utf8=&format=json&origin=*`;
                     try {
-                        const searchData = await fetchWithFallback(searchUrl);
+                        const searchData = await fetchWithFallback(searchUrl, true);
                         if (searchData.query && searchData.query.search.length > 0) {
                             htmlContent = await fetchWikisource('es', searchData.query.search[0].title);
                         }

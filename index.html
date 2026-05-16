@@ -80,7 +80,7 @@
         .loader-ring div:nth-child(1) { animation-delay: -0.45s; } .loader-ring div:nth-child(2) { animation-delay: -0.3s; } .loader-ring div:nth-child(3) { animation-delay: -0.15s; }
         @keyframes loader-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Purgador Estricto: Respeta el texto pero elimina menús de Wikisource */
+        /* Purgador Estricto */
         .mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, .ws-noexport, 
         .wst-poem-header, .ws-header, .ext-phonos, sup.reference, .wst-navbox, .metadata, .ambox, .navbox-title, .navbox-abovebelow { display: none !important; }
         
@@ -143,7 +143,7 @@
                 <button onclick="openPanel('statistica')" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
                 
                 <div class="w-px h-4 bg-gray-700 mx-1"></div>
-                <button onclick="toggleBilingual()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
+                <button onclick="handleBilingualClick()" id="btn-bilingual" class="p-1.5 text-gray-400 hover:text-[#D4AF37] rounded transition flex gap-2 items-center" title="Traducción Simultánea">
                     <i data-lucide="languages" class="w-4 h-4"></i> <span class="font-cinzel text-xs font-bold uppercase hidden md:inline">Traducción</span>
                 </button>
                 
@@ -171,7 +171,7 @@
             <div id="error-state" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#0f0f0f] z-20">
                 <i data-lucide="alert-triangle" class="w-16 h-16 text-[#991B1B] mb-4 opacity-80"></i>
                 <p class="font-cinzel text-xl text-gray-300 mb-2 uppercase tracking-wide">Error en la Extracción</p>
-                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">El manuscrito no se encuentra disponible o ha sido alterado.</p>
+                <p class="text-sm text-gray-500 font-serif max-w-md text-center" id="error-desc">El manuscrito no se encuentra disponible o la ruta de Wikisource ha cambiado.</p>
                 <button onclick="retryLoad()" class="mt-6 px-4 py-2 border border-[#333] text-gray-400 hover:text-white hover:bg-[#333] rounded font-cinzel text-xs uppercase transition">Reintentar Conexión</button>
             </div>
 
@@ -183,13 +183,6 @@
                     <p class="font-cinzel text-sm uppercase tracking-widest text-gray-300">Alineando Traducción Oficial...</p>
                 </div>
                 <div id="trans-content" class="w-full h-full pb-10 hidden">
-                    <!-- AVISO ACADÉMICO PARA LOS ALUMNOS -->
-                    <div class="bg-[#1A1A1A] border border-[#333] p-3 mb-6 rounded text-center shadow-md">
-                        <p class="font-cinzel text-[#D4AF37] text-[10px] uppercase tracking-widest flex items-center justify-center gap-2">
-                            <i data-lucide="info" class="w-3 h-3"></i> Nota Académica
-                        </p>
-                        <p class="text-gray-400 text-xs mt-1">Traducción literaria histórica. La estructura en párrafos puede no coincidir métrica ni textualmente de forma exacta con la fuente original.</p>
-                    </div>
                     <div id="trans-text-body"></div>
                 </div>
             </div>
@@ -256,7 +249,7 @@
         const asArray = (val) => (val === undefined || val === null) ? [] : (Array.isArray(val) ? val : [val]);
 
         const STATE = {
-            lang: 'la', work: null, bilingual: false,
+            lang: 'la', work: null, bilingual: false, currentTaskId: 0,
             audio: { synth: window.speechSynthesis, reading: false, chunks: [], idx: 0, activeEls: [], utterance: null, speed: 0.75 },
             lastClickedWord: null, retryParams: null
         };
@@ -267,7 +260,7 @@
             let list = [];
             for(let i=0; i<count; i++) {
                 let suffix = romanFormat === "Roman" ? roman[i] : (romanFormat === "Greek" ? greek[i] : (i+1));
-                let esSuffix = (esPathBase && (esPathBase.includes("La_Eneida") || esPathBase.includes("Catilinarias"))) ? roman[i] : (i+1); 
+                let esSuffix = (esPathBase && (esPathBase.includes("La_Eneida"))) ? roman[i] : (i+1); 
                 
                 list.push({
                     title: `${prefix} ${suffix}`, 
@@ -280,7 +273,7 @@
             return list;
         };
 
-        // CATÁLOGO CORREGIDO: Rutas precisas para Catulo, Cicerón y otras obras irregulares en Wikisource
+        // RUTAS EXACTAS DE WIKISOURCE (Corregido Cicerón y Catulo)
         const CATALOG = {
             latin: [
                 { author: "Vergilius", works: [
@@ -295,10 +288,10 @@
                 ]},
                 { author: "Cicero", works: [
                     { baseTitle: "In Catilinam", books: [
-                        { title: "Oratio I", search: "I", arabic: 1, path: "In_Catilinam_oratio_I", esPath: "Catilinarias/Oración_I" },
-                        { title: "Oratio II", search: "II", arabic: 2, path: "In_Catilinam_oratio_II", esPath: "Catilinarias/Oración_II" },
-                        { title: "Oratio III", search: "III", arabic: 3, path: "In_Catilinam_oratio_III", esPath: "Catilinarias/Oración_III" },
-                        { title: "Oratio IV", search: "IV", arabic: 4, path: "In_Catilinam_oratio_IV", esPath: "Catilinarias/Oración_IV" }
+                        { title: "Oratio I", search: "Oratio prima", arabic: 1, path: "In_L._Catilinam_orationes/Oratio_prima", esPath: "Catilinarias" },
+                        { title: "Oratio II", search: "Oratio secunda", arabic: 2, path: "In_L._Catilinam_orationes/Oratio_secunda", esPath: "Catilinarias" },
+                        { title: "Oratio III", search: "Oratio tertia", arabic: 3, path: "In_L._Catilinam_orationes/Oratio_tertia", esPath: "Catilinarias" },
+                        { title: "Oratio IV", search: "Oratio quarta", arabic: 4, path: "In_L._Catilinam_orationes/Oratio_quarta", esPath: "Catilinarias" }
                     ]},
                     { baseTitle: "De Amicitia", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Laelius_de_amicitia", esPath: "Laelio,_ó_De_la_amistad" }] },
                     { baseTitle: "De Senectute", books: [{ title: "Omnia", search: "1", arabic: 1, path: "Cato_Maior_de_senectute", esPath: "Cato_Maior,_ó_De_la_vejez" }] }
@@ -314,10 +307,10 @@
                 ]},
                 { author: "Catullus", works: [
                     { baseTitle: "Carmina Selecta", books: [
-                        { title: "Carmen I", search: "I", arabic: 1, path: "Carmina_(Catullus)_I", esPath: "Poemas_(Catulo)" },
-                        { title: "Carmen II", search: "II", arabic: 2, path: "Carmina_(Catullus)_II", esPath: "Poemas_(Catulo)" },
-                        { title: "Carmen III", search: "III", arabic: 3, path: "Carmina_(Catullus)_III", esPath: "Poemas_(Catulo)" },
-                        { title: "Carmen V", search: "V", arabic: 5, path: "Carmina_(Catullus)_V", esPath: "Poemas_(Catulo)" }
+                        { title: "Carmen I", search: "Carmen 1", arabic: 1, path: "Carmina_(Catullus)/Carmen_1", esPath: "Poemas_(Catulo)" },
+                        { title: "Carmen II", search: "Carmen 2", arabic: 2, path: "Carmina_(Catullus)/Carmen_2", esPath: "Poemas_(Catulo)" },
+                        { title: "Carmen III", search: "Carmen 3", arabic: 3, path: "Carmina_(Catullus)/Carmen_3", esPath: "Poemas_(Catulo)" },
+                        { title: "Carmen V", search: "Carmen 5", arabic: 5, path: "Carmina_(Catullus)/Carmen_5", esPath: "Poemas_(Catulo)" }
                     ]}
                 ]},
                 { author: "Plautus", works: [
@@ -448,8 +441,6 @@
         window.onload = function() {
             renderNestedCatalog('latin');
             renderNestedCatalog('greek');
-            
-            // Los iconos DEBEN inicializarse después del render
             lucide.createIcons(); 
             
             if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -580,8 +571,10 @@
         }
 
         async function loadText(langCat, aIndex, wIndex, bIndex) {
+            // Protección contra clicks concurrentes
+            const taskId = ++STATE.currentTaskId;
+            
             stopAudio();
-            if(STATE.bilingual) toggleBilingual(); 
             closeRightPanel();
             
             STATE.retryParams = {langCat, aIndex, wIndex, bIndex};
@@ -591,58 +584,58 @@
             const work = author.works[wIndex];
             const book = work.books[bIndex];
             STATE.work = book; 
+            STATE.currentAuthorStr = author.author;
+            STATE.currentWorkStr = work.baseTitle;
             
             setFetchState('fetching', `Contactando repositorio (${STATE.lang})...`);
             
             document.getElementById('pane-original').innerHTML = '';
+            if (STATE.bilingual) {
+                document.getElementById('trans-text-body').innerHTML = '';
+                document.getElementById('trans-loading').classList.remove('hidden');
+            }
+            
             document.getElementById('current-meta').innerHTML = `<span class="text-[#D4AF37]">${author.author}</span> <span class="mx-2 opacity-50">/</span> ${work.baseTitle} - ${book.title}`;
             document.getElementById('reader-tools').classList.remove('hidden');
 
             try {
                 let htmlContent = await fetchWikisourceAPI(STATE.lang, book.path);
                 
-                if (!htmlContent) {
-                    setFetchState('fetching', "Ruta base fallida. Búsqueda inteligente activada...");
-                    const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
-                    const cleanBaseTitle = work.baseTitle.replace(/\s*\(.*?\)\s*/g, '').replace(/_/g, ' ');
-                    const searchStr = `${cleanBaseTitle} ${book.search}`.trim();
-                    
-                    const searchUrl = `https://${wikiLang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
-                    try {
-                        const sRes = await fetch(searchUrl);
-                        const sData = await sRes.json();
-                        if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                            htmlContent = await fetchWikisourceAPI(STATE.lang, sData.query.search[0].title);
-                        }
-                    } catch(e) {}
-                }
+                if (STATE.currentTaskId !== taskId) return; // Se cancela si el usuario clicó en otro libro
 
-                if (!htmlContent) throw new Error("La obra original no existe en la base de datos.");
+                if (!htmlContent) {
+                    throw new Error("Manuscrito no disponible o no digitalizado con esta ruta en Wikisource.");
+                }
 
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlContent, 'text/html');
-                const root = doc.body;
                 
-                // Limpieza respetando las tablas de poesía griega
-                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', '.wst-navbox', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
-                garbage.forEach(sel => root.querySelectorAll(sel).forEach(e => e.remove()));
+                // Extracción limpia solo del contenido real, ignorando barras laterales de Wikipedia
+                let contentNode = doc.querySelector('.mw-parser-output') || doc.body;
+                
+                const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', '.wst-navbox', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow', 'table'];
+                garbage.forEach(sel => contentNode.querySelectorAll(sel).forEach(e => e.remove()));
 
-                document.getElementById('pane-original').innerHTML = root.innerHTML;
+                document.getElementById('pane-original').innerHTML = contentNode.innerHTML;
                 
                 setFetchState('fetching', "Procesando interactividad filológica...");
                 
                 setTimeout(async () => {
-                    await tokenizeSafeDOMAsync(document.getElementById('pane-original'));
-                    setFetchState('done');
-                    lucide.createIcons();
+                    if (STATE.currentTaskId !== taskId) return;
+                    await tokenizeSafeDOMAsync(document.getElementById('pane-original'), taskId);
+                    if (STATE.currentTaskId === taskId) {
+                        setFetchState('done');
+                        lucide.createIcons();
+                        if (STATE.bilingual) executeTranslationFetch();
+                    }
                 }, 50);
 
             } catch (error) {
-                setFetchState('error', "", error.message);
+                if (STATE.currentTaskId === taskId) setFetchState('error', "", error.message);
             }
         }
 
-        async function tokenizeSafeDOMAsync(element) {
+        async function tokenizeSafeDOMAsync(element, taskId) {
             const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
             const textNodes = [];
             while(walker.nextNode()) textNodes.push(walker.currentNode);
@@ -651,6 +644,7 @@
             const CHUNK_SIZE = 100; 
 
             for (let i = 0; i < textNodes.length; i += CHUNK_SIZE) {
+                if (STATE.currentTaskId !== taskId) return; // Cancela si hay una nueva petición
                 await new Promise(resolve => setTimeout(resolve, 5));
                 
                 const chunk = textNodes.slice(i, i + CHUNK_SIZE);
@@ -678,42 +672,47 @@
             }
         }
 
-        async function smartFetchTranslation(authorEs, workEsTitle, bookArabic, esPath) {
-            if (esPath) {
-                let html = await fetchWikisourceAPI('es', esPath);
-                if (html) return html;
-            }
-
-            const cleanWork = workEsTitle.replace(/\s*\(.*?\)\s*/g, '').trim();
-            const patterns = [
-                `${cleanWork} ${bookArabic}`,
-                `${cleanWork}: ${bookArabic}`,
-                `${cleanWork} (Libro ${bookArabic})`,
-                `${cleanWork} (Canto ${bookArabic})`
-            ];
-
-            for (let p of patterns) {
-                let html = await fetchWikisourceAPI('es', p.replace(/ /g, '_'));
-                if (html) return html;
-            }
-
-            const searchQ = `${authorEs} ${cleanWork} ${bookArabic}`;
+        async function executeTranslationFetch() {
+            if (!STATE.work) return;
             try {
-                const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQ)}&utf8=&format=json&origin=*`;
-                const sRes = await fetch(searchUrl);
-                const sData = await sRes.json();
-                
-                if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                    const bestHits = sData.query.search.filter(r => !r.title.includes("Wikisource:") && !r.title.includes("Discusión:"));
-                    if(bestHits.length > 0) {
-                        return await fetchWikisourceAPI('es', bestHits[0].title);
+                let htmlContent = null;
+                if (STATE.work.esPath) {
+                    htmlContent = await fetchWikisourceAPI('es', STATE.work.esPath);
+                }
+
+                // Búsquedas seguras y limitadas
+                if (!htmlContent) {
+                    const cleanWork = STATE.currentWorkStr.replace(/\s*\(.*?\)\s*/g, '').trim();
+                    const patterns = [
+                        `${cleanWork} ${STATE.work.arabic}`,
+                        `${cleanWork}: ${STATE.work.arabic}`,
+                        `${cleanWork} (Libro ${STATE.work.arabic})`
+                    ];
+
+                    for (let p of patterns) {
+                        htmlContent = await fetchWikisourceAPI('es', p.replace(/ /g, '_'));
+                        if (htmlContent) break;
                     }
                 }
-            } catch(e) {}
-            return null;
+
+                if(!htmlContent) throw new Error();
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlContent, 'text/html');
+                let contentNode = doc.querySelector('.mw-parser-output') || doc.body;
+                
+                contentNode.querySelectorAll('.mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table.plainlinks').forEach(e => e.remove());
+                document.getElementById('trans-text-body').innerHTML = contentNode.innerHTML;
+                
+                document.getElementById('trans-loading').classList.add('hidden');
+                document.getElementById('trans-content').classList.remove('hidden');
+                
+            } catch(e) { 
+                showTransError("No se encontró una traducción literaria en Wikisource que coincida con la ruta oficial."); 
+            }
         }
 
-        async function toggleBilingual() {
+        function handleBilingualClick() {
             STATE.bilingual = !STATE.bilingual;
             const pOrig = document.getElementById('pane-original');
             const pTrans = document.getElementById('pane-translation');
@@ -726,30 +725,7 @@
                 
                 document.getElementById('trans-loading').classList.remove('hidden');
                 document.getElementById('trans-content').classList.add('hidden');
-                
-                if (STATE.work) {
-                    try {
-                        const htmlContent = await smartFetchTranslation(
-                            document.getElementById('current-meta').innerText.split('/')[0].trim(), 
-                            document.getElementById('current-meta').innerText.split('/')[1].split('-')[0].trim(), 
-                            STATE.work.arabic, 
-                            STATE.work.esPath
-                        );
-
-                        if(!htmlContent) throw new Error();
-
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(htmlContent, 'text/html');
-                        const root = doc.body;
-                        
-                        root.querySelectorAll('.mw-editsection, .sidenote, .noprint, #toc, .navbox, .infobox, table.plainlinks').forEach(e => e.remove());
-                        document.getElementById('trans-text-body').innerHTML = root.innerHTML;
-                        
-                        document.getElementById('trans-loading').classList.add('hidden');
-                        document.getElementById('trans-content').classList.remove('hidden');
-                        
-                    } catch(e) { showTransError("No se encontró una traducción en la base de datos que coincida exactamente con este manuscrito."); }
-                }
+                executeTranslationFetch();
             } else {
                 btn.classList.remove('text-[#D4AF37]');
                 pOrig.classList.remove('half');
@@ -798,12 +774,19 @@
                 let baseLemma = cleanWord;
                 let found = false;
 
+                // Parcheo robusto para el API de Perseids (Array vs Object)
                 const getDictEntry = (d) => {
                     if (!d || !d.RDF || !d.RDF.Annotation) return [];
                     let bodies = Array.isArray(d.RDF.Annotation.Body) ? d.RDF.Annotation.Body : [d.RDF.Annotation.Body];
                     let entries = [];
                     bodies.forEach(b => {
-                        if(b && b.rest && b.rest.entry) entries.push(b.rest.entry);
+                        if(b && b.rest && b.rest.entry) {
+                            if (Array.isArray(b.rest.entry)) {
+                                entries.push(...b.rest.entry);
+                            } else {
+                                entries.push(b.rest.entry);
+                            }
+                        }
                     });
                     return entries;
                 };

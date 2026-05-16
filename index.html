@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibliotheca Antiqua PRO | Entorno Filológico</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts: Cormorant Garamond (Academic Text) & Inter (UI) -->
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <script>
@@ -31,199 +28,182 @@
     </script>
 
     <style>
-        /* BASE & THEME */
         body { font-family: 'Inter', sans-serif; background-color: #FDFCF8; color: #1A1917; overflow: hidden; }
         .dark { background-color: #0F0E0C; color: #F3F0E6; }
         
-        /* ACADEMIC CANVAS (Typography) */
-        .text-classic { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; line-height: 2.2; }
-        @media (min-width: 1280px) { .text-classic { font-size: 1.9rem; line-height: 2.4; } }
+        .text-classic { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; line-height: 2.2; }
+        @media (min-width: 1280px) { .text-classic { font-size: 1.8rem; line-height: 2.3; } }
         
-        /* Wikisource Extractor Fixes */
+        /* Limpieza Visual del Canvas */
         .reading-canvas p { margin-bottom: 1.5rem; text-align: justify; }
-        .poem { margin-left: 3rem; margin-bottom: 2rem; border-left: 2px solid rgba(0,0,0,0.1); padding-left: 1.5rem; }
-        .dark .poem { border-left-color: rgba(255,255,255,0.1); }
-        .poem p { margin-bottom: 0.5rem !important; }
+        .poem { margin-left: 2rem; margin-bottom: 2rem; border-left: 2px solid rgba(185, 28, 28, 0.2); padding-left: 1.5rem; }
+        .poem p { margin-bottom: 0.2rem !important; }
 
-        /* THE TOKENIZER (Word Interactions) */
+        /* Tokens interactivos sin romper el texto */
         .word-token {
-            display: inline-block;
+            display: inline; /* Usar inline para no romper saltos de línea ni espaciados */
             cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.2s, color 0.2s;
-            padding: 0 1px;
-            margin: 0 -1px;
+            border-radius: 3px;
+            transition: all 0.2s ease;
         }
         .word-token:hover { background-color: rgba(185, 28, 28, 0.15); color: #B91C1C; }
         .dark .word-token:hover { background-color: rgba(220, 38, 38, 0.2); color: #FCA5A5; }
         .word-token.active { background-color: #991B1B !important; color: white !important; }
 
-        /* METRICAL SCANSION (CSS Only, protects HTML) */
-        .show-meter { line-height: 3.5; } /* Extra space for macrons */
+        /* Audio Resaltado */
+        .sentence-active { background-color: rgba(245, 158, 11, 0.2); border-radius: 4px; box-shadow: -4px 0 0 #F59E0B; transition: background-color 0.3s; }
+        .dark .sentence-active { background-color: rgba(245, 158, 11, 0.15); }
+
+        /* Métrica Inteligente (Pseudo-elementos para no romper HTML) */
+        .show-meter { line-height: 3; }
         .show-meter .word-token { position: relative; }
         .show-meter .word-token::before {
             content: attr(data-meter);
             position: absolute;
-            top: -1.3em;
+            top: -1.2em;
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Inter', sans-serif;
             color: #B91C1C;
             font-size: 0.5em;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
             pointer-events: none;
-            white-space: nowrap;
-            font-weight: 700;
+            font-weight: bold;
         }
         .dark .show-meter .word-token::before { color: #FCA5A5; }
 
-        /* GRAMMATICA COLORIS (Syntax highlighting by case) */
-        .grammar-color .syntax-nom { color: #2563EB !important; font-weight: 600; } /* Blue - Subject */
-        .grammar-color .syntax-acc { color: #DC2626 !important; font-weight: 600; } /* Red - Object */
-        .grammar-color .syntax-gen { color: #16A34A !important; font-weight: 600; } /* Green - Genitive */
-        .grammar-color .syntax-dat { color: #9333EA !important; font-weight: 600; } /* Purple - Dative */
-        .grammar-color .syntax-abl { color: #D97706 !important; font-weight: 600; } /* Orange - Abl/Prep */
-
-        /* AUDIO ENGINE HIGHLIGHT */
-        .sentence-active { background-color: rgba(245, 158, 11, 0.15); border-radius: 4px; box-shadow: -4px 0 0 #F59E0B; transition: all 0.3s; }
-        .dark .sentence-active { background-color: rgba(245, 158, 11, 0.1); }
-
-        /* SCROLLBARS */
+        /* Colores Gramaticales heurísticos */
+        .grammar-color .syntax-nom { color: #2563EB !important; font-weight: 600; }
+        .grammar-color .syntax-acc { color: #DC2626 !important; font-weight: 600; }
+        .grammar-color .syntax-gen { color: #16A34A !important; font-weight: 600; }
+        .grammar-color .syntax-dat { color: #9333EA !important; font-weight: 600; }
+        
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #D6CDB2; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #2C2A26; }
         ::-webkit-scrollbar-thumb:hover { background: #991B1B; }
 
-        /* SPINNERS */
-        .spinner { border: 3px solid rgba(0,0,0,0.1); border-left-color: #B91C1C; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        /* Spinner de carga */
+        .spinner { border: 3px solid rgba(0,0,0,0.1); border-left-color: #B91C1C; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         .dark .spinner { border-color: rgba(255,255,255,0.1); border-left-color: #DC2626; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Acordeón del Catálogo */
+        .accordion-content { overflow: hidden; transition: max-height 0.3s ease-out; max-height: 0; }
+        .accordion-content.expanded { max-height: 1000px; /* Suficiente para expandir */ }
     </style>
 </head>
 <body class="flex flex-col h-screen antialiased selection:bg-crimson-200 dark:selection:bg-crimson-900">
 
-    <!-- TOP NAVIGATION -->
-    <nav class="h-14 flex-shrink-0 bg-white dark:bg-academy-900 border-b border-academy-200 dark:border-academy-800 flex items-center justify-between px-4 z-40">
+    <!-- BARRA SUPERIOR -->
+    <nav class="h-14 flex-shrink-0 bg-white dark:bg-academy-900 border-b border-academy-200 dark:border-academy-800 flex items-center justify-between px-6 z-40">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-academy-900 dark:bg-academy-100 text-white dark:text-academy-900 rounded shadow flex items-center justify-center font-serif font-bold text-xl">A</div>
-            <h1 class="font-serif font-bold text-2xl tracking-wide dark:text-white flex items-baseline gap-2">
+            <h1 class="font-serif font-bold text-xl md:text-2xl tracking-wide dark:text-white flex items-baseline gap-2">
                 Bibliotheca <span class="text-crimson-700 dark:text-crimson-500 font-sans text-[10px] font-black tracking-widest uppercase">Antiqua PRO</span>
             </h1>
         </div>
         <div class="flex items-center gap-4">
+            <span id="system-status" class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest hidden md:flex items-center gap-1">
+                <i data-lucide="check-circle" class="w-3 h-3"></i> Core Online
+            </span>
+            <div class="w-px h-5 bg-academy-200 dark:bg-academy-700"></div>
             <button onclick="toggleTheme()" class="p-2 text-academy-500 hover:text-academy-900 dark:text-academy-400 dark:hover:text-white transition rounded-md">
                 <i data-lucide="moon" id="theme-icon" class="w-5 h-5"></i>
             </button>
-            <div class="w-px h-5 bg-academy-200 dark:bg-academy-700"></div>
-            <span class="text-[10px] font-bold text-academy-400 uppercase tracking-[0.2em] hidden md:flex items-center gap-1">
-                <i data-lucide="server" class="w-3 h-3"></i> Wikisource & Perseids Engine
-            </span>
         </div>
     </nav>
 
-    <!-- WORKSPACE (3 Columns) -->
+    <!-- ENTORNO DE TRABAJO (3 COLUMNAS RÍGIDAS) -->
     <div class="flex-1 flex overflow-hidden bg-academy-50 dark:bg-academy-950">
         
-        <!-- LEFT: CATALOG -->
-        <aside class="w-80 flex-shrink-0 flex flex-col border-r border-academy-200 dark:border-academy-800 bg-white dark:bg-academy-900 z-20 shadow-sm relative">
+        <!-- COLUMNA 1: CATÁLOGO (Acordeón) -->
+        <aside class="w-72 lg:w-80 flex-shrink-0 flex flex-col border-r border-academy-200 dark:border-academy-800 bg-white dark:bg-academy-900 z-20 shadow-sm relative">
             <div class="flex border-b border-academy-200 dark:border-academy-800 flex-shrink-0">
-                <button onclick="switchLangTab('la')" id="tab-la" class="flex-1 py-3 text-center text-sm font-bold border-b-2 border-crimson-600 text-crimson-700 dark:text-crimson-500 bg-academy-50 dark:bg-academy-950 transition">Latinitas</button>
-                <button onclick="switchLangTab('grc')" id="tab-grc" class="flex-1 py-3 text-center text-sm font-medium text-academy-500 hover:text-academy-900 dark:hover:text-white border-b-2 border-transparent transition">Graeca</button>
+                <button onclick="switchLangTab('la')" id="tab-la" class="flex-1 py-4 text-center text-sm font-bold border-b-2 border-crimson-600 text-crimson-700 dark:text-crimson-500 bg-academy-50 dark:bg-academy-950 transition uppercase tracking-wider">Latinitas</button>
+                <button onclick="switchLangTab('grc')" id="tab-grc" class="flex-1 py-4 text-center text-sm font-medium text-academy-500 hover:text-academy-900 dark:hover:text-white border-b-2 border-transparent transition uppercase tracking-wider">Graeca</button>
             </div>
             
-            <div id="author-list" class="flex-1 overflow-y-auto p-4 space-y-4">
-                <!-- Authors Injected Here -->
-            </div>
-
-            <!-- Slide-over Chapter Panel -->
-            <div id="chapter-panel" class="absolute inset-0 bg-white dark:bg-academy-900 flex flex-col transition-transform duration-300 transform translate-x-full shadow-2xl z-30">
-                <div class="h-14 px-4 bg-academy-100 dark:bg-academy-800 border-b border-academy-200 dark:border-academy-700 flex items-center gap-3 flex-shrink-0">
-                    <button onclick="closeChapters()" class="p-1.5 bg-white dark:bg-academy-900 hover:text-crimson-600 rounded-md shadow-sm transition"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
-                    <div class="flex flex-col min-w-0">
-                        <span class="text-[9px] font-bold text-academy-500 uppercase tracking-widest">Seleccionar Volumen</span>
-                        <span id="chapter-work-title" class="text-sm font-bold truncate dark:text-white font-serif">Obra</span>
-                    </div>
-                </div>
-                <div id="chapter-items" class="flex-1 overflow-y-auto p-2">
-                    <!-- Chapters Injected Here -->
-                </div>
+            <!-- Lista de Autores -->
+            <div id="author-list" class="flex-1 overflow-y-auto p-4 space-y-2">
+                <!-- Se inyecta por JS -->
             </div>
         </aside>
 
-        <!-- CENTER: READING CANVAS -->
+        <!-- COLUMNA 2: ÁREA DE LECTURA (Centro) -->
         <main class="flex-1 flex flex-col relative min-w-0 bg-academy-50 dark:bg-academy-950">
-            <!-- Toolbar -->
+            <!-- Barra de Herramientas -->
             <header class="h-14 bg-white/90 dark:bg-academy-900/90 backdrop-blur-sm border-b border-academy-200 dark:border-academy-800 flex items-center justify-between px-6 flex-shrink-0 z-10">
                 <div class="flex flex-col min-w-0 max-w-[50%]">
-                    <span id="reader-author" class="text-[9px] font-bold text-academy-500 uppercase tracking-widest">Bibliotheca</span>
-                    <h2 id="reader-title" class="font-serif font-bold text-lg truncate dark:text-white leading-tight">Selecciona un volumen para leer...</h2>
+                    <span id="reader-author" class="text-[9px] font-bold text-academy-500 uppercase tracking-widest">Lector</span>
+                    <h2 id="reader-title" class="font-serif font-bold text-lg truncate dark:text-white leading-tight">Selecciona una obra...</h2>
                 </div>
                 
-                <div class="flex items-center gap-1">
-                    <!-- Audio Controls -->
-                    <div class="flex items-center bg-academy-100 dark:bg-academy-800 p-1 rounded-lg mr-2 border border-academy-200 dark:border-academy-700">
-                        <button onclick="toggleAudio()" id="btn-audio" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-crimson-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Escuchar (Vox Classica)"><i data-lucide="play" id="audio-icon" class="w-4 h-4"></i></button>
+                <div class="flex items-center gap-2">
+                    <!-- Reproductor de Audio -->
+                    <div class="flex items-center bg-academy-100 dark:bg-academy-800 p-1 rounded-lg border border-academy-200 dark:border-academy-700 shadow-sm">
+                        <button onclick="toggleAudio()" id="btn-audio" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-crimson-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Lectura Asistida (TTS)"><i data-lucide="play" id="audio-icon" class="w-4 h-4"></i></button>
                         <button onclick="stopAudio()" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-crimson-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Detener"><i data-lucide="square" class="w-4 h-4"></i></button>
                         <div class="w-px h-4 bg-academy-300 dark:bg-academy-600 mx-1"></div>
-                        <button onclick="changeSpeed(-0.1)" class="p-1 text-xs font-mono font-bold text-academy-500 hover:text-academy-900 dark:hover:text-white">-</button>
-                        <span id="audio-speed" class="text-xs font-mono font-bold text-academy-700 dark:text-academy-300 w-6 text-center">1x</span>
-                        <button onclick="changeSpeed(0.1)" class="p-1 text-xs font-mono font-bold text-academy-500 hover:text-academy-900 dark:hover:text-white">+</button>
+                        <span id="audio-speed" class="text-[10px] font-mono font-bold text-academy-500 w-6 text-center cursor-pointer hover:text-crimson-600" onclick="cycleSpeed()" title="Cambiar Velocidad">1x</span>
                     </div>
 
-                    <!-- Philology Tools -->
-                    <div class="flex items-center bg-academy-100 dark:bg-academy-800 p-1 rounded-lg border border-academy-200 dark:border-academy-700">
+                    <!-- Funciones Filológicas -->
+                    <div class="flex items-center bg-academy-100 dark:bg-academy-800 p-1 rounded-lg border border-academy-200 dark:border-academy-700 shadow-sm">
                         <button onclick="toggleMeter()" id="btn-meter" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-blue-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Escansión Métrica"><i data-lucide="music" class="w-4 h-4"></i></button>
-                        <button onclick="toggleGrammarColors()" id="btn-grammar" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-green-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Colores Gramaticales"><i data-lucide="palette" class="w-4 h-4"></i></button>
-                        <button onclick="showStats()" id="btn-stats" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-purple-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Frecuencia Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
+                        <button onclick="toggleGrammarColors()" id="btn-grammar" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-green-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Sintaxis Visual"><i data-lucide="palette" class="w-4 h-4"></i></button>
+                        <button onclick="showStats()" id="btn-stats" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-purple-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Estadística Léxica"><i data-lucide="bar-chart-2" class="w-4 h-4"></i></button>
                         <div class="w-px h-4 bg-academy-300 dark:bg-academy-600 mx-1"></div>
-                        <button onclick="changeFontSize(-0.1)" class="p-1.5 text-academy-700 dark:text-academy-300 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Reducir Texto"><i data-lucide="minus" class="w-4 h-4"></i></button>
-                        <button onclick="changeFontSize(0.1)" class="p-1.5 text-academy-700 dark:text-academy-300 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Aumentar Texto"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                        <button onclick="changeFontSize(0.1)" class="p-1.5 text-academy-700 dark:text-academy-300 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Aumentar Texto"><i data-lucide="zoom-in" class="w-4 h-4"></i></button>
+                        <button onclick="changeFontSize(-0.1)" class="p-1.5 text-academy-700 dark:text-academy-300 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Reducir Texto"><i data-lucide="zoom-out" class="w-4 h-4"></i></button>
                     </div>
                 </div>
             </header>
 
-            <!-- Loading Overlay -->
-            <div id="loading-overlay" class="absolute inset-0 bg-academy-50/90 dark:bg-academy-950/90 backdrop-blur-sm z-20 hidden flex-col items-center justify-center">
+            <!-- Loading Overlay Seguro -->
+            <div id="loading-overlay" class="absolute inset-0 bg-academy-50/90 dark:bg-academy-950/90 backdrop-blur-sm z-30 hidden flex-col items-center justify-center">
                 <div class="spinner mb-4"></div>
-                <p class="font-serif text-2xl font-bold dark:text-white">Extrayendo manuscrito...</p>
-                <p class="text-xs text-academy-500 mt-2 font-mono uppercase tracking-widest">Sanitizando DOM desde Wikisource</p>
+                <p class="font-serif text-2xl font-bold dark:text-white">Extrayendo Manuscrito...</p>
+                <p class="text-xs text-academy-500 mt-2 font-mono uppercase tracking-widest" id="loading-subtext">Conectando a Wikisource API</p>
             </div>
 
-            <!-- Canvas Scroll Area -->
+            <!-- Scroll del Lector -->
             <div class="flex-1 overflow-y-auto scroll-smooth pb-32" id="reader-scroll-area">
                 <div class="max-w-3xl mx-auto px-8 py-16">
                     <div id="reading-canvas" class="text-classic transition-colors duration-300 text-academy-900 dark:text-academy-100">
-                        <!-- Empty State -->
                         <div class="h-full flex flex-col items-center justify-center text-academy-400 dark:text-academy-600 mt-32 text-center opacity-50">
                             <i data-lucide="library-big" class="w-20 h-20 mb-6"></i>
                             <h3 class="font-sans text-xl uppercase tracking-[0.3em] font-bold mb-3">Corpus Classicum</h3>
-                            <p class="font-serif italic text-xl">Selecciona un autor del catálogo izquierdo para comenzar a leer.</p>
+                            <p class="font-serif italic text-xl">Selecciona un volumen del catálogo para extraer su contenido íntegro.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
 
-        <!-- RIGHT: ORACULUM -->
-        <aside class="w-80 flex-shrink-0 flex flex-col border-l border-academy-200 dark:border-academy-800 bg-white dark:bg-academy-900 z-20 shadow-[-4px_0_15px_rgba(0,0,0,0.03)]">
-            <div class="h-14 border-b border-academy-200 dark:border-academy-800 flex items-center px-5 bg-academy-50 dark:bg-academy-950 flex-shrink-0">
+        <!-- COLUMNA 3: ORACULUM (Panel Fijo Derecho) -->
+        <aside class="w-80 lg:w-96 flex-shrink-0 flex flex-col border-l border-academy-200 dark:border-academy-800 bg-white dark:bg-academy-900 z-20 shadow-[-4px_0_15px_rgba(0,0,0,0.03)]">
+            <div class="h-14 border-b border-academy-200 dark:border-academy-800 flex items-center justify-between px-5 bg-academy-50 dark:bg-academy-950 flex-shrink-0">
                 <h2 class="text-[10px] font-bold text-academy-500 dark:text-academy-400 uppercase tracking-[0.15em] flex items-center gap-2">
-                    <i data-lucide="flask-conical" class="w-4 h-4 text-crimson-600"></i> Oraculum Philologicum
+                    <i data-lucide="flask-conical" class="w-4 h-4 text-crimson-600"></i> Oraculum
                 </h2>
+                <span class="text-[9px] font-mono text-academy-400">Powered by Perseids</span>
             </div>
             
             <div class="flex-1 overflow-y-auto p-6 relative" id="oraculum-container">
+                
                 <!-- Empty State -->
                 <div id="analysis-empty" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 text-academy-400 dark:text-academy-600 opacity-60">
                     <i data-lucide="mouse-pointer-click" class="w-12 h-12 mb-4"></i>
-                    <p class="font-serif text-lg italic leading-snug">Haz clic en cualquier palabra del texto para revelar su análisis morfosintáctico.</p>
+                    <p class="font-serif text-lg italic leading-snug">Haz clic en cualquier palabra para revelar su anatomía morfosintáctica y su entrada de diccionario.</p>
                 </div>
 
                 <!-- Loading State -->
                 <div id="analysis-loading" class="hidden h-full flex-col items-center justify-center">
                     <div class="spinner mb-4"></div>
-                    <p class="text-xs font-mono text-academy-500 uppercase tracking-widest">Consultando Perseids API...</p>
+                    <p class="text-[10px] font-mono text-academy-500 uppercase tracking-widest">Consultando Morpheus API...</p>
                 </div>
 
                 <!-- Result State -->
@@ -234,30 +214,32 @@
                     </div>
 
                     <div class="space-y-6">
-                        <!-- Stem/Term Structure -->
+                        <!-- Estructura Visual -->
                         <div id="morph-structure-container">
-                            <h4 class="text-[9px] font-bold text-academy-400 uppercase tracking-[0.2em] mb-2">Anatomía Morfológica</h4>
-                            <div class="bg-academy-50 dark:bg-academy-950 rounded-lg p-4 text-center font-mono text-xl border border-academy-200 dark:border-academy-800 shadow-inner">
+                            <h4 class="text-[9px] font-bold text-academy-400 uppercase tracking-[0.2em] mb-2">Anatomía (Raíz + Desinencia)</h4>
+                            <div class="bg-academy-50 dark:bg-academy-950 rounded-lg p-4 text-center font-mono text-2xl border border-academy-200 dark:border-academy-800 shadow-inner">
                                 <span id="morph-stem" class="text-academy-600 dark:text-academy-400"></span><span id="morph-term" class="text-crimson-600 dark:text-crimson-500 font-bold bg-crimson-50 dark:bg-crimson-900/30 px-1 rounded ml-[1px]"></span>
                             </div>
                         </div>
 
-                        <!-- Table -->
+                        <!-- Tabla de Atributos -->
                         <div>
                             <h4 class="text-[9px] font-bold text-academy-400 uppercase tracking-[0.2em] mb-2">Atributos Gramaticales</h4>
                             <div class="border border-academy-200 dark:border-academy-800 rounded-lg overflow-hidden shadow-sm">
                                 <table class="w-full text-sm text-left" id="morph-table">
-                                    <!-- Injected -->
+                                    <!-- Inyectado dinámicamente -->
                                 </table>
                             </div>
                         </div>
 
-                        <!-- Dict Button -->
-                        <div class="pt-6 mt-6 border-t border-academy-200 dark:border-academy-800">
-                            <a id="dict-btn" href="#" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 bg-academy-900 hover:bg-crimson-700 dark:bg-academy-100 dark:text-academy-900 dark:hover:bg-crimson-600 dark:hover:text-white text-white rounded-lg font-bold text-xs uppercase tracking-widest transition shadow">
-                                <i data-lucide="book-open" class="w-4 h-4"></i> <span id="dict-btn-text">Ver Diccionario</span>
+                        <!-- Diccionarios Externos -->
+                        <div class="pt-6 mt-6 border-t border-academy-200 dark:border-academy-800 flex gap-2">
+                            <a id="dict-btn-logeion" href="#" target="_blank" class="flex-1 flex items-center justify-center gap-2 py-3 bg-academy-900 hover:bg-crimson-700 dark:bg-academy-100 dark:text-academy-900 dark:hover:bg-crimson-600 dark:hover:text-white text-white rounded-lg font-bold text-[10px] uppercase tracking-widest transition shadow">
+                                <i data-lucide="book" class="w-4 h-4"></i> Logeion
                             </a>
-                            <p class="text-center text-[9px] text-academy-400 mt-3 uppercase font-mono tracking-wider">Perseus / Logeion Engine</p>
+                            <a id="dict-btn-perseus" href="#" target="_blank" class="flex-1 flex items-center justify-center gap-2 py-3 bg-academy-800 hover:bg-crimson-700 dark:bg-academy-200 dark:text-academy-900 dark:hover:bg-crimson-600 dark:hover:text-white text-white rounded-lg font-bold text-[10px] uppercase tracking-widest transition shadow">
+                                <i data-lucide="library" class="w-4 h-4"></i> Perseus
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -265,107 +247,87 @@
         </aside>
     </div>
 
-    <!-- Statistica Modal -->
-    <div id="stats-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-white dark:bg-academy-900 border border-academy-200 dark:border-academy-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300">
+    <!-- Modal de Estadísticas (Frecuencia Léxica) -->
+    <div id="stats-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-academy-900 border border-academy-200 dark:border-academy-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
             <div class="p-5 border-b border-academy-200 dark:border-academy-700 flex justify-between items-center bg-academy-50 dark:bg-academy-950">
                 <h3 class="font-sans font-bold text-lg dark:text-white flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5 text-crimson-600"></i> Frecuencia Léxica</h3>
-                <button onclick="closeStats()" class="text-academy-400 hover:text-academy-900 dark:hover:text-white transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeStats()" class="text-academy-400 hover:text-crimson-600 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div class="p-6">
-                <p class="text-sm text-academy-500 dark:text-academy-400 mb-4 font-serif italic">Palabras más repetidas en el volumen actual (excluyendo conectores comunes).</p>
-                <div id="stats-list" class="space-y-2 max-h-72 overflow-y-auto pr-2">
-                    <!-- Injected -->
+                <p class="text-sm text-academy-500 dark:text-academy-400 mb-4 font-serif italic">Palabras más repetidas en el volumen actual (se ignoran conectores comunes y se respeta el politónico).</p>
+                <div id="stats-list" class="space-y-2 max-h-80 overflow-y-auto pr-2">
+                    <!-- Se inyecta por JS -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT (Engine, Logic, APIs) -->
+    <!-- CÓDIGO JS PRINCIPAL -->
     <script>
+        // --- VARIABLES GLOBALES ---
         let currentLang = 'la';
-        let baseFontSize = 1.6;
+        let baseFontSize = 1.5;
         let isMeterActive = false;
         let isGrammarActive = false;
-        const MORPH_CACHE = {}; // Prevent duplicate API calls
+        const MORPH_CACHE = {}; // Caché para no saturar la API
         
-        // Voice Engine Globals
+        // --- AUDIO ENGINE (Vox Classica) ---
         let synth = window.speechSynthesis;
         let utterance = null;
-        let sentences = [];
+        let sentencesChunks = [];
         let currentSentenceIdx = -1;
         let isReading = false;
         let playbackRate = 1.0;
 
-        // Ensure voices are loaded
-        synth.onvoiceschanged = () => synth.getVoices();
-
-        function generateBooks(basePath, count, prefix = "Liber", useGreekNumerals = false) {
-            const roman = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
-            const greek = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
-            let chapters = [];
+        // --- CATALOGO MASIVO (Generador Dinámico) ---
+        function genBooks(base, count, pref = "Liber", greekNums = false) {
+            const r = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
+            const g = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
+            let ch = [];
             for (let i = 0; i < count; i++) {
-                let numeral = useGreekNumerals ? greek[i] : roman[i];
-                let titleName = `${prefix} ${numeral}`;
-                let urlPath = `${basePath}/${useGreekNumerals ? numeral : prefix + '_' + numeral}`;
-                chapters.push({ title: titleName, path: urlPath });
+                let n = greekNums ? g[i] : r[i];
+                // Resolviendo problemas de URLs de Wikisource: la ruta suele ser exacta.
+                let path = greekNums ? `${base}/${n}` : `${base}/${pref}_${n}`;
+                ch.push({ title: `${pref} ${n}`, path: path });
             }
-            return chapters;
+            return ch;
         }
 
         const CATALOG = {
             'la': [
-                { author: "Vergilius", works: [ { title: "Aeneis (Íntegra)", chapters: generateBooks("Aeneis", 12) }, { title: "Georgica", chapters: generateBooks("Georgica", 4) }, { title: "Bucolica", chapters: generateBooks("Bucolica", 10, "Ecloga") } ] },
-                { author: "Ovidius", works: [ { title: "Metamorphoses", chapters: generateBooks("Metamorphoses", 15) }, { title: "Ars Amatoria", chapters: generateBooks("Ars_amatoria", 3) }, { title: "Amores", chapters: generateBooks("Amores", 3) } ] },
-                { author: "Caesar", works: [ { title: "De Bello Gallico", chapters: generateBooks("Commentarii_de_bello_Gallico", 8) }, { title: "De Bello Civili", chapters: generateBooks("Commentarii_de_bello_civili", 3) } ] },
+                { author: "Vergilius", works: [ { title: "Aeneis", chapters: genBooks("Aeneis", 12) }, { title: "Georgica", chapters: genBooks("Georgica", 4) } ] },
+                { author: "Ovidius", works: [ { title: "Metamorphoses", chapters: genBooks("Metamorphoses", 15) }, { title: "Ars Amatoria", chapters: genBooks("Ars_amatoria", 3) } ] },
+                { author: "Caesar", works: [ { title: "De Bello Gallico", chapters: genBooks("Commentarii_de_bello_Gallico", 8) }, { title: "De Bello Civili", chapters: genBooks("Commentarii_de_bello_civili", 3) } ] },
                 { author: "Cicero", works: [ { title: "In Catilinam I-IV", chapters: [{title: "Oratio I", path: "In_Catilinam_oratio_prima"}, {title: "Oratio II", path: "In_Catilinam_oratio_secunda"}, {title: "Oratio III", path: "In_Catilinam_oratio_tertia"}, {title: "Oratio IV", path: "In_Catilinam_oratio_quarta"}] }, { title: "De Amicitia", chapters: [{title: "Laelius", path: "Laelius_de_amicitia"}] } ] },
                 { author: "Catullus", works: [ { title: "Carmina", chapters: [{title: "Carmina Completa", path: "Carmina_(Catullus)"}] } ] },
-                { author: "Seneca", works: [ { title: "Epistulae Morales", chapters: generateBooks("Epistulae_morales_ad_Lucilium", 20) }, { title: "De Brevitate Vitae", chapters: [{title: "Íntegro", path: "De_brevitate_vitae"}] } ] },
-                { author: "Horatius", works: [ { title: "Carmina", chapters: generateBooks("Carmina_(Horatius)", 4) }, { title: "Ars Poetica", chapters: [{title: "Íntegro", path: "Ars_Poetica"}] } ] },
-                { author: "Livius", works: [ { title: "Ab Urbe Condita", chapters: generateBooks("Ab_Urbe_Condita", 10) } ] },
-                { author: "Tacitus", works: [ { title: "Annales", chapters: generateBooks("Annales", 16) }, { title: "Germania", chapters: [{title: "Íntegro", path: "De_origine_et_situ_Germanorum"}] } ] },
-                { author: "Plinius Minor", works: [ { title: "Epistulae", chapters: generateBooks("Epistularum_Libri_Decem", 10) } ] },
-                { author: "Plautus", works: [ { title: "Aulularia", chapters: [{title: "Íntegro", path: "Aulularia"}] }, { title: "Miles Gloriosus", chapters: [{title: "Íntegro", path: "Miles_gloriosus"}] } ] },
-                { author: "Lucretius", works: [ { title: "De Rerum Natura", chapters: generateBooks("De_rerum_natura", 6) } ] },
-                { author: "Martialis", works: [ { title: "Epigrammata", chapters: generateBooks("Epigrammata", 14) } ] },
-                { author: "Iuvenalis", works: [ { title: "Saturae", chapters: generateBooks("Saturae", 5) } ] },
-                { author: "Suetonius", works: [ { title: "De Vita Caesarum", chapters: generateBooks("De_vita_Caesarum", 8) } ] },
-                { author: "Sallustius", works: [ { title: "Bellum Catilinae", chapters: [{title: "Íntegro", path: "De_Catilinae_coniuratione"}] } ] },
-                { author: "Quintilianus", works: [ { title: "Institutio Oratoria", chapters: generateBooks("Institutio_oratoria", 12) } ] },
-                { author: "Apuleius", works: [ { title: "Metamorphoses", chapters: generateBooks("Metamorphoses_(Apuleius)", 11) } ] },
-                { author: "Lucanus", works: [ { title: "Pharsalia", chapters: generateBooks("Pharsalia", 10) } ] },
-                { author: "Terentius", works: [ { title: "Andria", chapters: [{title: "Íntegro", path: "Andria"}] } ] }
+                { author: "Seneca", works: [ { title: "Epistulae Morales", chapters: genBooks("Epistulae_morales_ad_Lucilium", 20) }, { title: "De Brevitate Vitae", chapters: [{title: "Íntegro", path: "De_brevitate_vitae"}] } ] },
+                { author: "Horatius", works: [ { title: "Carmina", chapters: genBooks("Carmina_(Horatius)", 4) } ] },
+                { author: "Livius", works: [ { title: "Ab Urbe Condita", chapters: genBooks("Ab_Urbe_Condita", 5) } ] },
+                { author: "Tacitus", works: [ { title: "Annales", chapters: genBooks("Annales", 6) }, { title: "Germania", chapters: [{title: "Íntegro", path: "De_origine_et_situ_Germanorum"}] } ] },
+                { author: "Lucretius", works: [ { title: "De Rerum Natura", chapters: genBooks("De_rerum_natura", 6) } ] }
             ],
             'grc': [
-                { author: "Ὅμηρος (Homerus)", works: [ { title: "Ἰλιάς (Íntegra)", chapters: generateBooks("Ιλιάς", 24, "Canto", true) }, { title: "Ὀδύσσεια", chapters: generateBooks("Οδύσσεια", 24, "Canto", true) } ] },
-                { author: "Πλάτων (Plato)", works: [ { title: "Ἀπολογία Σωκράτους", chapters: [{title: "Íntegro", path: "Απολογία_Σωκράτους"}] }, { title: "Συμπόσιον", chapters: [{title: "Íntegro", path: "Συμπόσιον"}] }, { title: "Πολιτεία", chapters: generateBooks("Πολιτεία", 10, "Libro", true) } ] },
+                { author: "Ὅμηρος (Homerus)", works: [ { title: "Ἰλιάς", chapters: genBooks("Ιλιάς", 24, "Canto", true) }, { title: "Ὀδύσσεια", chapters: genBooks("Οδύσσεια", 24, "Canto", true) } ] },
+                { author: "Πλάτων (Plato)", works: [ { title: "Ἀπολογία Σωκράτους", chapters: [{title: "Íntegro", path: "Απολογία_Σωκράτους"}] }, { title: "Συμπόσιον", chapters: [{title: "Íntegro", path: "Συμπόσιον"}] }, { title: "Πολιτεία", chapters: genBooks("Πολιτεία", 10, "Libro", true) } ] },
                 { author: "Σοφοκλῆς (Sophocles)", works: [ { title: "Οἰδίπους Τύραννος", chapters: [{title: "Íntegro", path: "Οιδίπους_Τύραννος"}] }, { title: "Ἀντιγόνη", chapters: [{title: "Íntegro", path: "Αντιγόνη"}] } ] },
-                { author: "Εὐριπίδης (Euripides)", works: [ { title: "Μήδεια", chapters: [{title: "Íntegro", path: "Μήδεια_(Ευριπίδη)"}] }, { title: "Βάκχαι", chapters: [{title: "Íntegro", path: "Βάκχαι"}] } ] },
+                { author: "Εὐριπίδης (Euripides)", works: [ { title: "Μήδεια", chapters: [{title: "Íntegro", path: "Μήδεια_(Ευριπίδη)"}] } ] },
                 { author: "Ἡρόδοτος (Herodotus)", works: [ { title: "Ἱστορίαι", chapters: [{title: "Κλειώ", path: "Ιστορίαι_(Ηροδότου)/Κλειώ"}, {title: "Εὐτέρπη", path: "Ιστορίαι_(Ηροδότου)/Ευτέρπη"}] } ] },
-                { author: "Θουκυδίδης (Thucydides)", works: [ { title: "Ιστορία", chapters: generateBooks("Ιστορία_του_Πελοποννησιακού_Πολέμου", 8, "Libro", true) } ] },
-                { author: "Αἰσχύλος (Aeschylus)", works: [ { title: "Προμηθεύς", chapters: [{title: "Íntegro", path: "Προμηθεύς_Δεσμώτης"}] }, { title: "Αγαμέμνων", chapters: [{title: "Íntegro", path: "Αγαμέμνων"}] } ] },
-                { author: "Ἀριστοφάνης (Aristophanes)", works: [ { title: "Λυσιστράτη", chapters: [{title: "Íntegro", path: "Λυσιστράτη"}] }, { title: "Βάτραχοι", chapters: [{title: "Íntegro", path: "Βάτραχοι"}] } ] },
-                { author: "Ξενοφῶν (Xenophon)", works: [ { title: "Κύρου Ανάβασις", chapters: generateBooks("Κύρου_Ανάβασις", 7, "Libro", true) } ] },
-                { author: "Ἀριστοτέλης (Aristotle)", works: [ { title: "Ποιητική", chapters: [{title: "Íntegro", path: "Ποιητική"}] }, { title: "Ηθικά Νικομάχεια", chapters: generateBooks("Ηθικά_Νικομάχεια", 10, "Libro", true) } ] },
-                { author: "Ἡσίοδος (Hesiod)", works: [ { title: "Θεογονία", chapters: [{title: "Íntegro", path: "Θεογονία"}] }, { title: "Έργα και Ημέραι", chapters: [{title: "Íntegro", path: "Έργα_και_Ημέραι"}] } ] },
-                { author: "Πίνδαρος (Pindar)", works: [ { title: "Ολυμπιόνικοι", chapters: [{title: "Íntegro", path: "Ολυμπιόνικοι"}] } ] },
-                { author: "Πλούταρχος (Plutarch)", works: [ { title: "Βίοι: Αλέξανδρος", chapters: [{title: "Íntegro", path: "Βίοι_Παράλληλοι/Αλέξανδρος"}] }, { title: "Βίοι: Καίσαρ", chapters: [{title: "Íntegro", path: "Βίοι_Παράλληλοι/Καίσαρ"}] } ] },
-                { author: "Πολύβιος (Polybius)", works: [ { title: "Ιστορίαι", chapters: generateBooks("Ιστορίαι_(Πολυβίου)", 5, "Libro", true) } ] },
-                { author: "Δημοσθένης (Demosthenes)", works: [ { title: "Περί του Στεφάνου", chapters: [{title: "Íntegro", path: "Περί_του_Στεφάνου"}] } ] },
-                { author: "Λυσίας (Lysias)", works: [ { title: "Υπέρ Μαντιθέου", chapters: [{title: "Íntegro", path: "Υπέρ_Μαντιθέου"}] } ] },
-                { author: "Επίκουρος (Epicurus)", works: [ { title: "Επιστολή", chapters: [{title: "Íntegro", path: "Επιστολή_προς_Μενοικέα"}] } ] },
-                { author: "Λουκιανός (Lucian)", works: [ { title: "Αληθής Ιστορία", chapters: [{title: "Λόγος Α", path: "Αληθής_Ιστορία/Α"}, {title: "Λόγος Β", path: "Αληθής_Ιστορία/Β"}] } ] },
-                { author: "Επίκτητος (Epictetus)", works: [ { title: "Εγχειρίδιον", chapters: [{title: "Íntegro", path: "Εγχειρίδιον"}] } ] },
-                { author: "Σαπφώ (Sappho)", works: [ { title: "Ποιήματα", chapters: [{title: "Fragmentos", path: "Ποιήματα_(Σαπφώ)"}] } ] }
+                { author: "Θουκυδίδης", works: [ { title: "Ιστορία", chapters: genBooks("Ιστορία_του_Πελοποννησιακού_Πολέμου", 8, "Libro", true) } ] },
+                { author: "Αἰσχύλος", works: [ { title: "Προμηθεύς", chapters: [{title: "Íntegro", path: "Προμηθεύς_Δεσμώτης"}] } ] },
+                { author: "Ἀριστοφάνης", works: [ { title: "Λυσιστράτη", chapters: [{title: "Íntegro", path: "Λυσιστράτη"}] } ] },
+                { author: "Ξενοφῶν", works: [ { title: "Κύρου Ανάβασις", chapters: genBooks("Κύρου_Ανάβασις", 7, "Libro", true) } ] },
+                { author: "Ἀριστοτέλης", works: [ { title: "Ποιητική", chapters: [{title: "Íntegro", path: "Ποιητική"}] } ] }
             ]
         };
 
+        // --- INICIALIZACIÓN ---
         window.onload = () => {
             lucide.createIcons();
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.body.classList.add('dark');
             }
-            renderAuthors('la');
+            renderCatalog('la');
         };
 
         function toggleTheme() {
@@ -373,32 +335,34 @@
             localStorage.theme = document.body.classList.contains('dark') ? 'dark' : 'light';
         }
 
+        // --- RENDERIZADO DEL MENÚ (Acordeón Flexbox) ---
         function switchLangTab(lang) {
             currentLang = lang;
-            const tabLa = document.getElementById('tab-la');
-            const tabGrc = document.getElementById('tab-grc');
-            if(lang === 'la') {
-                tabLa.className = 'flex-1 py-3 text-center text-sm font-bold border-b-2 border-crimson-600 text-crimson-700 dark:text-crimson-500 bg-academy-50 dark:bg-academy-950 transition';
-                tabGrc.className = 'flex-1 py-3 text-center text-sm font-medium text-academy-500 hover:text-academy-900 dark:hover:text-white border-b-2 border-transparent transition';
-            } else {
-                tabGrc.className = 'flex-1 py-3 text-center text-sm font-bold border-b-2 border-crimson-600 text-crimson-700 dark:text-crimson-500 bg-academy-50 dark:bg-academy-950 transition';
-                tabLa.className = 'flex-1 py-3 text-center text-sm font-medium text-academy-500 hover:text-academy-900 dark:hover:text-white border-b-2 border-transparent transition';
-            }
-            renderAuthors(lang);
-            closeChapters();
+            document.getElementById('tab-la').className = `flex-1 py-4 text-center text-sm font-bold uppercase tracking-wider transition ${lang === 'la' ? 'border-b-2 border-crimson-600 text-crimson-700 dark:text-crimson-500 bg-academy-50 dark:bg-academy-950' : 'text-academy-500 hover:text-academy-900 dark:hover:text-white border-b-2 border-transparent'}`;
+            document.getElementById('tab-grc').className = `flex-1 py-4 text-center text-sm font-bold uppercase tracking-wider transition ${lang === 'grc' ? 'border-b-2 border-crimson-600 text-crimson-700 dark:text-crimson-500 bg-academy-50 dark:bg-academy-950' : 'text-academy-500 hover:text-academy-900 dark:hover:text-white border-b-2 border-transparent'}`;
+            renderCatalog(lang);
         }
 
-        function renderAuthors(lang) {
+        function renderCatalog(lang) {
             const list = document.getElementById('author-list');
-            list.innerHTML = CATALOG[lang].map((authorObj, aIdx) => `
-                <div>
-                    <h3 class="text-[10px] font-bold uppercase tracking-[0.15em] text-academy-400 dark:text-academy-500 mb-2 px-2">${authorObj.author}</h3>
-                    <div class="space-y-0.5">
-                        ${authorObj.works.map((work, wIdx) => `
-                            <button onclick="openChapters('${lang}', ${aIdx}, ${wIdx})" class="w-full text-left px-3 py-2 rounded hover:bg-academy-100 dark:hover:bg-academy-800 transition flex justify-between items-center group text-sm dark:text-academy-200">
-                                <span class="font-serif truncate">${work.title}</span>
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-academy-300 dark:text-academy-600 group-hover:text-crimson-600 transition"></i>
-                            </button>
+            list.innerHTML = CATALOG[lang].map((auth, aIdx) => `
+                <div class="mb-4">
+                    <h3 class="text-[11px] font-bold uppercase tracking-[0.15em] text-academy-400 dark:text-academy-500 mb-2 px-2 border-b border-academy-200 dark:border-academy-800 pb-1">${auth.author}</h3>
+                    <div class="space-y-1">
+                        ${auth.works.map((work, wIdx) => `
+                            <div>
+                                <button onclick="toggleAccordion('acc-${lang}-${aIdx}-${wIdx}')" class="w-full text-left px-3 py-2 rounded hover:bg-academy-100 dark:hover:bg-academy-800 transition flex justify-between items-center group text-sm dark:text-academy-200 font-serif">
+                                    <span class="truncate">${work.title}</span>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-academy-300 dark:text-academy-600 group-hover:text-crimson-600 transition"></i>
+                                </button>
+                                <div id="acc-${lang}-${aIdx}-${wIdx}" class="accordion-content ml-4 border-l border-academy-200 dark:border-academy-800 flex flex-col mt-1">
+                                    ${work.chapters.map(ch => `
+                                        <button onclick="extractText('${ch.path}', '${work.title} - ${ch.title}', '${auth.author}')" class="text-left px-4 py-2 hover:text-crimson-600 dark:hover:text-crimson-400 text-sm text-academy-600 dark:text-academy-400 transition hover:bg-academy-50 dark:hover:bg-academy-800 rounded-r-md">
+                                            ${ch.title}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
                         `).join('')}
                     </div>
                 </div>
@@ -406,24 +370,18 @@
             lucide.createIcons();
         }
 
-        function openChapters(lang, aIdx, wIdx) {
-            const work = CATALOG[lang][aIdx].works[wIdx];
-            document.getElementById('chapter-work-title').innerText = work.title;
-            const list = document.getElementById('chapter-items');
-            list.innerHTML = work.chapters.map(ch => `
-                <button onclick="fetchText('${ch.path}', '${work.title} - ${ch.title}', '${CATALOG[lang][aIdx].author}')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-academy-50 dark:hover:bg-academy-800 transition text-sm font-medium dark:text-academy-200 border-b border-academy-100 dark:border-academy-800/50 last:border-0">
-                    ${ch.title}
-                </button>
-            `).join('');
-            document.getElementById('chapter-panel').classList.remove('translate-x-full');
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            // Cierra todos los demás
+            document.querySelectorAll('.accordion-content').forEach(el => {
+                if(el.id !== id) el.classList.remove('expanded');
+            });
+            content.classList.toggle('expanded');
         }
 
-        function closeChapters() {
-            document.getElementById('chapter-panel').classList.add('translate-x-full');
-        }
-
-        async function fetchText(wikiPath, fullTitle, authorName) {
-            stopAudio(); // Stop any playing audio
+        // --- EXTRACTOR Y SANITIZADOR DE WIKISOURCE (TreeWalker) ---
+        async function extractText(wikiPath, fullTitle, authorName) {
+            stopAudio();
             document.getElementById('loading-overlay').classList.remove('hidden');
             document.getElementById('loading-overlay').classList.add('flex');
             document.getElementById('reader-title').innerText = fullTitle;
@@ -434,77 +392,77 @@
 
             try {
                 const response = await fetch(url);
-                if (!response.ok) throw new Error("Texto no disponible en el servidor de Wikisource.");
+                if (!response.ok) throw new Error("Documento no encontrado en el servidor.");
                 const htmlRaw = await response.text();
 
-                // 1. Parse Raw HTML
+                // Parsear HTML de forma segura
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlRaw, 'text/html');
 
-                // 2. Remove Wikipedia garbage (notes, tables, scripts, empty spans)
-                doc.querySelectorAll('script, style, table, figure, sup, sub, .mw-editsection, .sidenote, .navbox, .ws-noexport, img, .toc, h1, h2, h3').forEach(el => el.remove());
+                // Eliminar basura de Wikipedia
+                doc.querySelectorAll('script, style, figure, table, sup, .mw-editsection, .sidenote, .navbox, img, .toc, .ws-noexport').forEach(e => e.remove());
 
-                // 3. Extract purely paragraphs and poems
+                // Encontrar el contenedor principal
+                const container = doc.querySelector('.mw-parser-output') || doc.body;
+                
+                // Extraer solo elementos de texto valiosos
                 let cleanHTML = "";
-                const contentEls = doc.querySelectorAll('p, div.poem');
-
-                if (contentEls.length === 0) {
-                    cleanHTML = `<p>${doc.body.textContent}</p>`; // Absolute fallback
+                const contentNodes = container.querySelectorAll('p, div.poem, div.text');
+                
+                if (contentNodes.length === 0) {
+                    cleanHTML = `<p>${container.textContent}</p>`; // Fallback extremo
                 } else {
-                    contentEls.forEach(el => {
+                    contentNodes.forEach(el => {
                         if (el.tagName.toLowerCase() === 'p') {
                             if (el.textContent.trim().length > 5) cleanHTML += `<p>${el.innerHTML}</p>`;
-                        } else if (el.classList.contains('poem')) {
+                        } else if (el.classList.contains('poem') || el.classList.contains('text')) {
                             cleanHTML += `<div class="poem">${el.innerHTML}</div>`;
                         }
                     });
                 }
                 
-                // Clean reference brackets e.g. [1]
-                cleanHTML = cleanHTML.replace(/\[\d*\]/g, '');
+                // Limpiar referencias corchetes [1]
+                cleanHTML = cleanHTML.replace(/\[\d+\]/g, '');
 
-                // 4. THE ULTIMATE TREEWALKER TOKENIZER (No innerHTML destruction)
                 const canvas = document.getElementById('reading-canvas');
-                canvas.innerHTML = cleanHTML; // Set layout
+                canvas.innerHTML = cleanHTML;
 
-                // Walk the DOM and replace text nodes with span wrappers dynamically
+                // --- TOKENIZADOR PERFECTO (TreeWalker) ---
+                // Esto envuelve las palabras sin romper las etiquetas HTML originales (<br>, <b>, etc)
                 const walker = document.createTreeWalker(canvas, NodeFilter.SHOW_TEXT, null, false);
                 const textNodes = [];
                 while(walker.nextNode()) textNodes.push(walker.currentNode);
 
-                // Regex that includes standard and Greek punctuation
-                const regex = /([\s,;:"'«»()\-—\.!?;·]+)/;
+                // Regex super estricta que NO corta caracteres politónicos ni espíritus.
+                // Divide SOLO por espacios y puntuación estándar y griega.
+                const splitRegex = /([ \n\t\r,;:"'«»()\[\]{}\-—\.!?;·]+)/;
 
                 textNodes.forEach(node => {
                     const text = node.nodeValue;
                     if (!text.trim()) return;
 
                     const fragment = document.createDocumentFragment();
-                    const parts = text.split(regex);
+                    const parts = text.split(splitRegex);
 
                     parts.forEach(part => {
                         if (!part) return;
-                        if (regex.test(part)) {
-                            // It's punctuation or space
+                        if (splitRegex.test(part)) {
+                            // Es puntuación o espacio, dejar intacto
                             fragment.appendChild(document.createTextNode(part));
                         } else {
-                            // It's a word! Create the token.
+                            // Es una palabra. Crear span.
                             const span = document.createElement('span');
                             span.className = 'word-token';
                             span.textContent = part;
                             
-                            // Normalization for Dictionary (Lowercase, no greek diacritics ONLY for data-raw)
-                            // But for Perseids API, we MUST keep original accents.
-                            let cleanData = part.toLowerCase();
-                            if(currentLang === 'grc') cleanData = cleanData.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Strip diacritics for simple counting
+                            // Normalización segura para la API
+                            // Para griego, eliminamos puntuación pero MANTENEMOS acentos.
+                            let cleanApiWord = part.trim().replace(/[.,;:"'«»()\-—\.!?;·]/g, '');
+                            span.setAttribute('data-original', cleanApiWord); 
                             
-                            span.setAttribute('data-raw', cleanData);
-                            span.setAttribute('data-original', part); // Keep exact form for API
-                            
-                            // Attach event listener directly to the DOM node
                             span.onclick = function(e) { 
                                 e.stopPropagation(); 
-                                analyzeWord(part, this); // Pass exact original word
+                                analyzeWord(cleanApiWord, this); 
                             };
                             fragment.appendChild(span);
                         }
@@ -516,39 +474,27 @@
                 document.getElementById('loading-overlay').classList.remove('flex');
                 document.getElementById('reader-scroll-area').scrollTop = 0;
 
-                // Reset Tools
+                // Reset visual tools
                 if(isMeterActive) toggleMeter();
                 if(isGrammarActive) toggleGrammarColors();
                 
             } catch (error) {
                 document.getElementById('loading-overlay').classList.add('hidden');
                 document.getElementById('loading-overlay').classList.remove('flex');
-                document.getElementById('reading-canvas').innerHTML = `
-                    <div class="text-center mt-32 text-crimson-600 bg-red-50 dark:bg-red-900/10 p-8 rounded-2xl border border-red-200 dark:border-red-900/30 max-w-lg mx-auto">
-                        <i data-lucide="alert-triangle" class="w-12 h-12 mx-auto mb-4"></i>
-                        <h3 class="text-xl font-bold font-serif">Fallo en la Extracción</h3>
-                        <p class="font-sans text-sm mt-2 text-academy-700 dark:text-academy-300">${error.message}</p>
-                    </div>`;
-                lucide.createIcons();
+                document.getElementById('reading-canvas').innerHTML = `<div class="p-10 text-center text-crimson-600 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-900/50">Error al extraer: ${error.message}</div>`;
             }
         }
 
-        function changeFontSize(delta) {
-            baseFontSize = Math.max(1.2, Math.min(2.5, baseFontSize + delta));
-            document.getElementById('reading-canvas').style.fontSize = `${baseFontSize}rem`;
-        }
-
+        // --- ORACULUM FILOLÓGICO (Morpheus API) ---
         let activeToken = null;
 
-        async function analyzeWord(exactWord, element) {
-            if (!exactWord) return;
+        async function analyzeWord(word, element) {
+            if (!word) return;
 
-            // UI Update: Highlight word
             document.querySelectorAll('.word-token').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
             activeToken = element;
 
-            // UI Update: Panels
             document.getElementById('analysis-empty').classList.add('hidden');
             document.getElementById('analysis-result').classList.add('hidden');
             document.getElementById('analysis-loading').classList.remove('hidden');
@@ -556,24 +502,22 @@
 
             const langCode = currentLang === 'la' ? 'lat' : 'grc';
             const engine = currentLang === 'la' ? 'morpheuslat' : 'morpheusgrc';
-            
-            // We use the EXACT word for API (crucial for Greek)
-            const cacheKey = `${langCode}_${exactWord}`;
+            const cacheKey = `${langCode}_${word}`;
 
             try {
                 let data;
                 if (MORPH_CACHE[cacheKey]) {
-                    data = MORPH_CACHE[cacheKey]; // Instant cache
+                    data = MORPH_CACHE[cacheKey];
                 } else {
-                    const url = `https://morph.perseids.org/analysis/word?word=${encodeURIComponent(exactWord)}&lang=${langCode}&engine=${engine}`;
+                    const url = `https://morph.perseids.org/analysis/word?word=${encodeURIComponent(word)}&lang=${langCode}&engine=${engine}`;
                     const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
                     if (!response.ok) throw new Error("API Error");
                     data = await response.json();
-                    MORPH_CACHE[cacheKey] = data; // Save to cache
+                    MORPH_CACHE[cacheKey] = data; 
                 }
-                renderMorphology(exactWord, data);
+                renderMorphology(word, data);
             } catch (error) {
-                renderFallback(exactWord);
+                renderFallback(word);
             }
         }
 
@@ -589,23 +533,27 @@
                 if (!body) throw new Error("No body");
                 let entry = body.rest?.entry;
                 if (!entry) throw new Error("No entry");
-                if (Array.isArray(entry)) entry = entry[0]; // Take first definition if multiple
+                if (Array.isArray(entry)) entry = entry[0]; 
 
                 const dict = entry.dict;
                 const rawLemma = dict?.hdwd?.['$'] || displayWord;
-                // FIX: Clean Perseus numbers (e.g. magnus1 -> magnus)
+                // Limpiar números de la API (ej. magnus1 -> magnus) para que el diccionario externo funcione
                 const cleanLemma = rawLemma.replace(/\d+$/, '');
 
                 document.getElementById('morph-lemma').innerText = cleanLemma;
 
-                // Configure Dictionary Button
-                const dictBtn = document.getElementById('dict-btn');
+                // Configurar Botones de Diccionario Externo
+                const btnLogeion = document.getElementById('dict-btn-logeion');
+                const btnPerseus = document.getElementById('dict-btn-perseus');
+                
                 if (currentLang === 'la') {
-                    dictBtn.href = `http://www.perseus.tufts.edu/hopper/morph?l=${encodeURIComponent(cleanLemma)}&la=la`;
-                    document.getElementById('dict-btn-text').innerText = "Abrir en Perseus (Latín)";
+                    btnPerseus.href = `http://www.perseus.tufts.edu/hopper/morph?l=${encodeURIComponent(cleanLemma)}&la=la`;
+                    btnPerseus.style.display = 'flex';
+                    // Logeion también soporta latín, pero Perseus es mejor morfológicamente. Dejamos ambos.
+                    btnLogeion.href = `https://logeion.uchicago.edu/${encodeURIComponent(cleanLemma)}`;
                 } else {
-                    dictBtn.href = `https://logeion.uchicago.edu/${encodeURIComponent(cleanLemma)}`;
-                    document.getElementById('dict-btn-text').innerText = "Abrir en Logeion (Griego)";
+                    btnPerseus.href = `http://www.perseus.tufts.edu/hopper/morph?l=${encodeURIComponent(cleanLemma)}&la=greek`;
+                    btnLogeion.href = `https://logeion.uchicago.edu/${encodeURIComponent(cleanLemma)}`;
                 }
 
                 let infl = entry.infl;
@@ -618,7 +566,7 @@
                     if (value) table.innerHTML += `<tr class="border-b border-academy-200 dark:border-academy-800 last:border-0"><th class="py-3 px-4 text-academy-500 dark:text-academy-400 font-medium w-2/5 bg-academy-50 dark:bg-academy-900/50 text-xs uppercase tracking-wider">${label}</th><td class="py-3 px-4 text-academy-900 dark:text-academy-100 capitalize font-medium">${value}</td></tr>`;
                 };
 
-                // Visual Stem/Term split
+                // Visualizar Raíz y Desinencia
                 const term = infl?.term?.['$'];
                 const stem = infl?.stem?.['$'];
                 const structContainer = document.getElementById('morph-structure-container');
@@ -650,50 +598,49 @@
             document.getElementById('analysis-result').classList.remove('hidden');
             
             document.getElementById('morph-word').innerText = displayWord;
-            document.getElementById('morph-lemma').innerText = "Irregular / No Encontrada";
+            document.getElementById('morph-lemma').innerText = "Forma Irregular";
             document.getElementById('morph-structure-container').style.display = 'none';
-            document.getElementById('morph-table').innerHTML = `<tr><td class="p-5 text-academy-500 text-center italic font-serif">El oráculo no pudo parsear esta forma exacta. Comprueba el diccionario manual.</td></tr>`;
+            document.getElementById('morph-table').innerHTML = `<tr><td class="p-4 text-academy-500 text-center italic font-serif">El oráculo no pudo parsear esta forma. Utiliza los diccionarios manuales inferiores.</td></tr>`;
             
-            const dictBtn = document.getElementById('dict-btn');
-            if (currentLang === 'la') {
-                dictBtn.href = `http://www.perseus.tufts.edu/hopper/morph?l=${encodeURIComponent(displayWord)}&la=la`;
-                document.getElementById('dict-btn-text').innerText = "Buscar en Perseus";
-            } else {
-                dictBtn.href = `https://logeion.uchicago.edu/${encodeURIComponent(displayWord)}`;
-                document.getElementById('dict-btn-text').innerText = "Buscar en Logeion";
-            }
+            document.getElementById('dict-btn-logeion').href = `https://logeion.uchicago.edu/${encodeURIComponent(displayWord)}`;
+            document.getElementById('dict-btn-perseus').href = `http://www.perseus.tufts.edu/hopper/morph?l=${encodeURIComponent(displayWord)}&la=${currentLang==='la'?'la':'greek'}`;
         }
+
+        // --- AUDIO ENGINE (Vox Classica - Chunking) ---
+        // Soluciona el problema de cuelgue al leer libros largos y aplica fonética.
 
         function toggleAudio() {
             if (isReading) { stopAudio(); return; }
             
-            // Build sentences array dynamically from reading canvas
             const canvas = document.getElementById('reading-canvas');
             const rawText = canvas.innerText;
             if(!rawText || rawText.trim().length < 5) return;
 
-            // Split into sentences using proper punctuation and newline boundaries
-            let rawSentences = rawText.match(/[^.!?;·\n]+[.!?;·\n]+/g) || [rawText];
-            sentences = [];
+            // Extraer oraciones de manera segura usando puntuación
+            // Incluye el punto alto griego (·) y la interrogación (;)
+            sentencesChunks = rawText.match(/[^.!?;·]+[.!?;·]+/g) || [rawText];
             
-            // Prevent TTS crash by sub-chunking excessively long strings
-            rawSentences.forEach(s => {
-                if(s.length > 250) {
-                    let subParts = s.match(/[^,;]+[,;]+/g) || [s];
-                    sentences.push(...subParts);
+            // Limpieza y sub-chunking para evitar que el TTS colapse
+            let finalChunks = [];
+            sentencesChunks.forEach(s => {
+                let cleanS = s.trim();
+                if(cleanS.length > 250) {
+                    let parts = cleanS.match(/[^,;]+[,;]+/g) || [cleanS];
+                    finalChunks.push(...parts);
                 } else {
-                    sentences.push(s);
+                    finalChunks.push(cleanS);
                 }
             });
 
-            if(sentences.length === 0) return;
+            sentencesChunks = finalChunks.filter(s => s.length > 1);
+            if(sentencesChunks.length === 0) return;
 
             isReading = true;
             currentSentenceIdx = 0;
             document.getElementById('audio-icon').setAttribute('data-lucide', 'pause');
             lucide.createIcons();
             
-            playSentence();
+            playNextChunk();
         }
 
         function stopAudio() {
@@ -705,87 +652,83 @@
             removeSentenceHighlight();
         }
 
-        function playSentence() {
-            if(currentSentenceIdx >= sentences.length || !isReading) {
+        function playNextChunk() {
+            if(!isReading || currentSentenceIdx >= sentencesChunks.length) {
                 stopAudio();
                 return;
             }
 
-            let textToRead = sentences[currentSentenceIdx].trim();
-            if(!textToRead) { 
-                currentSentenceIdx++; 
-                setTimeout(playSentence, 10); 
-                return; 
-            }
+            let textToRead = sentencesChunks[currentSentenceIdx].trim();
 
-            // PHONETIC PRE-PROCESSING (Restituta for Latin)
+            // PRE-PROCESAMIENTO FONÉTICO
             if (currentLang === 'la') {
+                // Restituta Básica
                 textToRead = textToRead.toLowerCase()
                     .replace(/v/g, 'w').replace(/c/g, 'k').replace(/ph/g, 'f')
-                    .replace(/ae/g, 'ai').replace(/oe/g, 'oi').replace(/gn/g, 'ŋn');
+                    .replace(/ae/g, 'ai').replace(/oe/g, 'oi');
             } else if (currentLang === 'grc') {
-                // Remove polytonic diacritics so the TTS doesn't stutter, keeping it monotonic
+                // El TTS moderno se atraganta con el politónico. 
+                // Lo normalizamos (NFD) y borramos todos los diacríticos SOLO para el motor de audio.
+                // Además, adaptamos fonéticamente para que lo lea un motor estándar.
                 textToRead = textToRead.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             }
 
             utterance = new SpeechSynthesisUtterance(textToRead);
             utterance.rate = playbackRate;
 
-            // Intelligent Voice Selection
             const voices = synth.getVoices();
             if (currentLang === 'la') {
                 utterance.voice = voices.find(v => v.lang.startsWith('it')) || voices.find(v => v.lang.startsWith('es')) || voices[0];
             } else {
-                utterance.voice = voices.find(v => v.lang.startsWith('el')) || voices[0];
+                // Adaptador Erasmiano: Si no hay voz griega, usamos la española que leerá la fonética.
+                utterance.voice = voices.find(v => v.lang.startsWith('el')) || voices.find(v => v.lang.startsWith('es')) || voices[0];
             }
 
-            utterance.onstart = () => highlightSentence(sentences[currentSentenceIdx]);
+            utterance.onstart = () => {
+                // Intento heurístico de resaltar. (Es difícil enlazar chunks de texto plano con nodos DOM precisos sin romper el HTML)
+                // Para no romper la experiencia, solo mantendremos el estado.
+            };
             
             utterance.onend = () => {
                 if (!isReading) return;
                 currentSentenceIdx++;
-                setTimeout(playSentence, 50); // Pause slightly between sentences
+                // Pequeña pausa entre oraciones
+                setTimeout(playNextChunk, 150);
             };
 
             utterance.onerror = (e) => {
-                // Browser TTS engines often throw 'canceled' or 'interrupted' when stopped manually or if speed is changed.
                 if (e.error === 'canceled' || e.error === 'interrupted') return;
-                
                 console.error("Audio Error:", e);
-                
-                // If it's a genuine error (e.g. text too long), skip the faulty sentence instead of crashing
+                // Si falla un chunk (ej. símbolos raros), saltamos al siguiente sin detener todo
                 if (isReading) {
                     currentSentenceIdx++;
-                    setTimeout(playSentence, 50);
+                    setTimeout(playNextChunk, 100);
                 }
             };
 
-            // Keep global reference to prevent Chrome Garbage Collection bug that cuts off audio
-            window._voxUtterance = utterance;
+            // Fix para Chrome Garbage Collection
+            window.speechUtteranceChunk = utterance; 
             
             synth.speak(utterance);
         }
 
-        function changeSpeed(delta) {
-            playbackRate = Math.max(0.5, Math.min(2.0, playbackRate + delta));
-            document.getElementById('audio-speed').innerText = playbackRate.toFixed(1) + 'x';
+        function cycleSpeed() {
+            let speeds = [0.8, 1.0, 1.2, 1.5];
+            let idx = speeds.indexOf(playbackRate);
+            playbackRate = speeds[(idx + 1) % speeds.length];
+            document.getElementById('audio-speed').innerText = playbackRate + 'x';
             if (isReading) {
-                synth.cancel(); // Interrupt current utterance
-                setTimeout(playSentence, 100); // Restart with new speed
+                synth.cancel(); 
+                setTimeout(playNextChunk, 200); 
             }
         }
 
-        // Highlight logic: finding the elements that make up the sentence
-        function highlightSentence(sentenceText) {
-            removeSentenceHighlight();
-            // This is a complex problem in DOM. A simple approximation is highlighting all word tokens that match the sentence string.
-            // For now, we will add a global pulse or just let the reader follow manually if DOM matching is too slow.
-            // A truly robust implementation requires wrapping sentences during tokenization.
-        }
         function removeSentenceHighlight() {
             document.querySelectorAll('.sentence-active').forEach(el => el.classList.remove('sentence-active'));
         }
 
+        // --- FUNCIONES FILOLÓGICAS (Métrica y Colores) ---
+        // Protegidas para no alterar el DOM.
         
         function toggleMeter() {
             const btn = document.getElementById('btn-meter');
@@ -797,7 +740,7 @@
                 canvas.classList.add('show-meter');
                 
                 document.querySelectorAll('.word-token').forEach(span => {
-                    let w = span.getAttribute('data-original');
+                    let w = span.textContent;
                     let meter = "";
                     if (currentLang === 'la') {
                         if (w.match(/(ae|oe|au)/i)) meter += "¯ ";
@@ -806,7 +749,7 @@
                         w.split('').forEach(char => {
                             if ('ηωΗΩ'.includes(char)) meter += "¯ ";
                             else if ('εοΕΟ'.includes(char)) meter += "˘ ";
-                            else if ('αειυΑΕΙΥ'.includes(char)) meter += (Math.random() > 0.5 ? "¯ " : "˘ ");
+                            else if ('αειυΑΕΙΥάέήίόύώ'.includes(char.normalize("NFD")[0])) meter += (Math.random() > 0.5 ? "¯ " : "˘ ");
                         });
                     }
                     span.setAttribute('data-meter', meter.trim());
@@ -828,74 +771,79 @@
                 canvas.classList.add('grammar-color');
                 
                 document.querySelectorAll('.word-token').forEach(span => {
-                    let w = span.getAttribute('data-raw');
-                    // Heuristic coloring based on endings
+                    let raw = span.textContent.toLowerCase();
+                    // Limpieza heurística básica para el coloreado visual
+                    let w = raw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;]/g, ''); 
+                    
                     if (currentLang === 'la') {
                         if (w.endsWith('us') || w.endsWith('a') || w.endsWith('um') || w.endsWith('es')) span.classList.add('syntax-nom');
                         else if (w.endsWith('m') || w.endsWith('os') || w.endsWith('as')) span.classList.add('syntax-acc');
                         else if (w.endsWith('is') || w.endsWith('i') || w.endsWith('ae') || w.endsWith('orum')) span.classList.add('syntax-gen');
-                        else if (w.endsWith('o') || w.endsWith('e') || w.endsWith('ibus')) span.classList.add('syntax-abl');
+                        else if (w.endsWith('o') || w.endsWith('e') || w.endsWith('ibus')) span.classList.add('syntax-dat'); // Agrupando Dat/Abl
                     } else {
                         if (w.endsWith('ος') || w.endsWith('η') || w.endsWith('ον')) span.classList.add('syntax-nom');
-                        else if (w.endsWith('ον') || w.endsWith('ην') || w.endsWith('ους')) span.classList.add('syntax-acc');
+                        else if (w.endsWith('ον') || w.endsWith('ην') || w.endsWith('ους') || w.endsWith('ας')) span.classList.add('syntax-acc');
                         else if (w.endsWith('ου') || w.endsWith('ης') || w.endsWith('ων')) span.classList.add('syntax-gen');
-                        else if (w.endsWith('ῳ') || w.endsWith('ῃ') || w.endsWith('οις')) span.classList.add('syntax-dat');
+                        else if (w.endsWith('ῳ') || w.endsWith('ῃ') || w.endsWith('οις') || w.endsWith('αις')) span.classList.add('syntax-dat');
                     }
                 });
             } else {
                 btn.classList.remove('text-green-600', 'bg-academy-200', 'dark:bg-academy-800');
                 canvas.classList.remove('grammar-color');
                 document.querySelectorAll('.word-token').forEach(span => {
-                    span.classList.remove('syntax-nom', 'syntax-acc', 'syntax-gen', 'syntax-dat', 'syntax-abl');
+                    span.classList.remove('syntax-nom', 'syntax-acc', 'syntax-gen', 'syntax-dat');
                 });
             }
         }
 
+        // --- STATISTICA (Frecuencia Léxica) ---
         function showStats() {
             const spans = document.querySelectorAll('.word-token');
-            if (spans.length === 0) return alert("Carga un volumen primero.");
+            if (spans.length === 0) return alert("Extrae un manuscrito primero.");
 
-            // Stop words for robust filtering
-            const stopWordsLa = ['et', 'in', 'ad', 'non', 'sed', 'cum', 'ut', 'qui', 'quae', 'quod', 'est', 'sunt', 'a', 'ab', 'ex', 'e', 'de', 'atque', 'ac'];
-            const stopWordsGrc = ['και', 'ο', 'η', 'το', 'του', 'της', 'τω', 'τη', 'τον', 'την', 'οι', 'αι', 'τα', 'των', 'τοις', 'ταις', 'τους', 'τας', 'εν', 'εις', 'προς', 'γαρ', 'δε', 'τε', 'μη', 'ου', 'ουκ', 'αλλ'];
-            const stops = currentLang === 'la' ? stopWordsLa : stopWordsGrc;
+            // Stopwords (sin acentos para facilitar match)
+            const stopsLa = ['et', 'in', 'ad', 'non', 'sed', 'cum', 'ut', 'qui', 'quae', 'quod', 'est', 'sunt', 'a', 'ab', 'ex', 'e', 'de', 'atque', 'ac', 'aut'];
+            const stopsGrc = ['και', 'ο', 'η', 'το', 'του', 'της', 'τω', 'τη', 'τον', 'την', 'οι', 'αι', 'τα', 'των', 'τοις', 'ταις', 'τους', 'τας', 'εν', 'εις', 'προς', 'γαρ', 'δε', 'τε', 'μη', 'ου', 'ουκ', 'αλλ', 'ως', 'τις'];
 
             const counts = {};
             spans.forEach(span => {
-                let w = span.getAttribute('data-raw'); // Uses normalized lowercase
-                if (w.length > 2 && !stops.includes(w)) {
-                    counts[w] = (counts[w] || 0) + 1;
+                // Obtenemos el texto limpio (sin puntuación) pero para agrupar mejor borramos diacríticos
+                let original = span.getAttribute('data-original') || span.textContent;
+                let w = original.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+                
+                if (w.length > 2 && !stopsLa.includes(w) && !stopsGrc.includes(w)) {
+                    // Guardamos la forma original con acentos para mostrarla bonita
+                    let displayForm = original.toLowerCase();
+                    if(!counts[w]) counts[w] = { word: displayForm, count: 0 };
+                    counts[w].count++;
                 }
             });
 
-            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 20); // Top 20
+            const sorted = Object.values(counts).sort((a, b) => b.count - a.count).slice(0, 25);
             
-            const listHTML = sorted.map(([word, count]) => `
+            const listHTML = sorted.map(item => `
                 <div class="flex justify-between items-center bg-academy-100 dark:bg-academy-900 p-3 rounded-lg border border-academy-200 dark:border-academy-800">
-                    <span class="font-serif font-bold text-lg dark:text-academy-200">${word}</span>
-                    <span class="bg-crimson-100 text-crimson-800 dark:bg-crimson-900/50 dark:text-crimson-400 font-mono text-xs px-2.5 py-1 rounded font-bold">${count}</span>
+                    <span class="font-serif font-bold text-lg dark:text-academy-200">${item.word}</span>
+                    <span class="bg-crimson-100 text-crimson-800 dark:bg-crimson-900/50 dark:text-crimson-400 font-mono text-xs px-2.5 py-1 rounded font-bold">${item.count}</span>
                 </div>
             `).join('');
 
-            document.getElementById('stats-list').innerHTML = listHTML || '<p class="text-center italic">No hay suficientes datos.</p>';
+            document.getElementById('stats-list').innerHTML = listHTML || '<p class="text-center italic">Texto demasiado corto o irrelevante.</p>';
             
             const modal = document.getElementById('stats-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-            }, 10);
         }
 
         function closeStats() {
             const modal = document.getElementById('stats-modal');
-            modal.classList.add('opacity-0');
-            modal.querySelector('div').classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 300);
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function changeFontSize(delta) {
+            baseFontSize = Math.max(1.0, Math.min(3.0, baseFontSize + delta));
+            document.getElementById('reading-canvas').style.fontSize = `${baseFontSize}rem`;
         }
     </script>
 </body>

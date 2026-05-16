@@ -20,7 +20,8 @@
                     },
                     colors: {
                         academy: { 50: '#FDFCF8', 100: '#F3F0E6', 200: '#E5DFCD', 300: '#D6CDB2', 800: '#2C2A26', 900: '#1A1917', 950: '#0F0E0C' },
-                        crimson: { 500: '#DC2626', 600: '#B91C1C', 700: '#991B1B', 800: '#7F1D1D' }
+                        crimson: { 500: '#DC2626', 600: '#B91C1C', 700: '#991B1B', 800: '#7F1D1D' },
+                        indigo: { 600: '#4F46E5', 700: '#4338CA' }
                     }
                 }
             }
@@ -38,7 +39,7 @@
         .poem { margin-left: 2rem; margin-bottom: 2rem; border-left: 2px solid rgba(185, 28, 28, 0.2); padding-left: 1.5rem; }
         .poem p { margin-bottom: 0.2rem !important; }
 
-        /* Estilos de token interactivo */
+        /* Estilos de token interactivo - Seguros para Polítonico */
         .word-token {
             display: inline;
             cursor: pointer;
@@ -119,13 +120,12 @@
                 <button onclick="switchLangTab('la')" id="tab-la" class="flex-1 py-4 text-center text-sm font-bold border-b-2 border-crimson-600 text-crimson-700 dark:text-crimson-500 bg-academy-50 dark:bg-academy-950 transition uppercase tracking-wider">Latinitas</button>
                 <button onclick="switchLangTab('grc')" id="tab-grc" class="flex-1 py-4 text-center text-sm font-medium text-academy-500 hover:text-academy-900 dark:hover:text-white border-b-2 border-transparent transition uppercase tracking-wider">Graeca</button>
             </div>
-            <!-- -->
             <div id="author-list" class="flex-1 overflow-y-auto p-4 space-y-2">
                 <!-- Inyectado por JS -->
             </div>
         </aside>
 
-        <!-- COLUMNA 2: LECTOR -->
+        <!-- COLUMNA 2: LECTOR Y TRADUCCIÓN -->
         <main class="flex-1 flex flex-col relative min-w-0 bg-academy-50 dark:bg-academy-950">
             <header class="h-14 bg-white/90 dark:bg-academy-900/90 backdrop-blur-sm border-b border-academy-200 dark:border-academy-800 flex items-center justify-between px-6 flex-shrink-0 z-10">
                 <div class="flex flex-col min-w-0 max-w-[50%]">
@@ -134,6 +134,14 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
+                    <!-- Control de Traducción (NUEVO) -->
+                    <div class="flex items-center bg-indigo-50 dark:bg-indigo-900/30 p-1 rounded-lg border border-indigo-200 dark:border-indigo-800 shadow-sm mr-2">
+                        <button onclick="toggleTranslation()" id="btn-translate" class="p-1.5 text-indigo-700 dark:text-indigo-400 hover:bg-white dark:hover:bg-academy-800 rounded transition flex items-center gap-1" title="Traducción Simultánea al Español">
+                            <i data-lucide="languages" class="w-4 h-4"></i> <span class="text-xs font-bold uppercase tracking-wider hidden xl:inline">Traducir</span>
+                        </button>
+                    </div>
+
+                    <!-- Control de Audio (INTACTO) -->
                     <div class="flex items-center bg-academy-100 dark:bg-academy-800 p-1 rounded-lg border border-academy-200 dark:border-academy-700 shadow-sm">
                         <button onclick="toggleAudio()" id="btn-audio" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-crimson-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Lectura Asistida Fonética"><i data-lucide="play" id="audio-icon" class="w-4 h-4"></i></button>
                         <button onclick="stopAudio()" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-crimson-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Detener"><i data-lucide="square" class="w-4 h-4"></i></button>
@@ -141,6 +149,7 @@
                         <span id="audio-speed" class="text-[10px] font-mono font-bold text-academy-500 w-6 text-center cursor-pointer hover:text-crimson-600" onclick="cycleSpeed()" title="Velocidad">1x</span>
                     </div>
 
+                    <!-- Herramientas Filológicas -->
                     <div class="flex items-center bg-academy-100 dark:bg-academy-800 p-1 rounded-lg border border-academy-200 dark:border-academy-700 shadow-sm">
                         <button onclick="toggleMeter()" id="btn-meter" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-blue-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Escansión Métrica"><i data-lucide="music" class="w-4 h-4"></i></button>
                         <button onclick="toggleGrammarColors()" id="btn-grammar" class="p-1.5 text-academy-700 dark:text-academy-300 hover:text-green-600 hover:bg-white dark:hover:bg-academy-900 rounded transition" title="Sintaxis Visual"><i data-lucide="palette" class="w-4 h-4"></i></button>
@@ -155,20 +164,40 @@
             <div id="loading-overlay" class="absolute inset-0 bg-academy-50/90 dark:bg-academy-950/90 backdrop-blur-sm z-30 hidden flex-col items-center justify-center">
                 <div class="spinner mb-4"></div>
                 <p class="font-serif text-2xl font-bold dark:text-white">Extrayendo Documento...</p>
-                <p class="text-xs text-academy-500 mt-2 font-mono uppercase tracking-widest" id="loading-subtext">Limpiando Nodos HTML</p>
+                <p class="text-xs text-academy-500 mt-2 font-mono uppercase tracking-widest" id="loading-subtext">Conectando a Wikisource API</p>
             </div>
 
-            <!-- -->
-            <div class="flex-1 overflow-y-auto scroll-smooth pb-32" id="reader-scroll-area">
-                <div class="max-w-3xl mx-auto px-8 py-16">
-                    <div id="reading-canvas" class="text-classic transition-colors duration-300 text-academy-900 dark:text-academy-100">
-                        <div class="h-full flex flex-col items-center justify-center text-academy-400 dark:text-academy-600 mt-32 text-center opacity-50">
-                            <i data-lucide="library-big" class="w-20 h-20 mb-6"></i>
-                            <h3 class="font-sans text-xl uppercase tracking-[0.3em] font-bold mb-3">Corpus Classicum</h3>
-                            <p class="font-serif italic text-xl">Selecciona un volumen del catálogo para extraer su contenido íntegro.</p>
+            <!-- Contenedor Flex para Vista Dividida (Texto + Traducción) -->
+            <div class="flex-1 flex flex-row overflow-hidden w-full relative">
+                
+                <!-- Lienzo de Lectura Principal -->
+                <div class="flex-1 overflow-y-auto scroll-smooth pb-32" id="reader-scroll-area">
+                    <div class="max-w-3xl mx-auto px-8 py-16">
+                        <div id="reading-canvas" class="text-classic transition-colors duration-300 text-academy-900 dark:text-academy-100">
+                            <div class="h-full flex flex-col items-center justify-center text-academy-400 dark:text-academy-600 mt-32 text-center opacity-50">
+                                <i data-lucide="library-big" class="w-20 h-20 mb-6"></i>
+                                <h3 class="font-sans text-xl uppercase tracking-[0.3em] font-bold mb-3">Corpus Classicum</h3>
+                                <p class="font-serif italic text-xl">Selecciona un volumen del catálogo para extraer su contenido íntegro.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Panel de Traducción Simultánea (NUEVO) -->
+                <div id="translation-panel" class="hidden w-1/3 bg-white dark:bg-academy-900 border-l border-academy-200 dark:border-academy-800 flex-col shadow-[-10px_0_20px_rgba(0,0,0,0.02)] transition-all">
+                    <div class="p-4 border-b border-academy-200 dark:border-academy-800 bg-academy-50 dark:bg-academy-950 flex justify-between items-center shadow-sm">
+                        <h3 class="font-serif font-bold text-lg text-academy-900 dark:text-white flex items-center gap-2">
+                            <i data-lucide="languages" class="w-5 h-5 text-indigo-600 dark:text-indigo-400"></i> Traducción
+                        </h3>
+                        <button onclick="toggleTranslation()" class="text-academy-400 hover:text-crimson-600 transition p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-6 scroll-smooth">
+                        <div id="translation-content" class="text-classic text-academy-700 dark:text-academy-300 leading-relaxed font-serif text-base">
+                            <!-- El texto traducido se inyectará aquí -->
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
 
@@ -199,7 +228,6 @@
                     </div>
 
                     <div class="space-y-6">
-                        <!-- -->
                         <div id="morph-structure-container">
                             <h4 class="text-[9px] font-bold text-academy-400 uppercase tracking-[0.2em] mb-2">Anatomía (Raíz + Desinencia)</h4>
                             <div class="bg-academy-50 dark:bg-academy-950 rounded-lg p-4 text-center font-mono text-2xl border border-academy-200 dark:border-academy-800 shadow-inner">
@@ -237,21 +265,23 @@
                 <button onclick="closeStats()" class="text-academy-400 hover:text-crimson-600 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div class="p-6">
-                <p class="text-sm text-academy-500 dark:text-academy-400 mb-4 font-serif italic">Palabras más repetidas en el volumen actual (se agrupan limpiando acentos y signos).</p>
+                <p class="text-sm text-academy-500 dark:text-academy-400 mb-4 font-serif italic">Palabras más repetidas en el volumen actual.</p>
                 <div id="stats-list" class="space-y-2 max-h-80 overflow-y-auto pr-2">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- -->
+    <!-- SCRIPT PRINCIPAL -->
     <script>
+        // ESTADO GLOBAL
         let currentLang = 'la';
         let baseFontSize = 1.5;
         let isMeterActive = false;
         let isGrammarActive = false;
         const MORPH_CACHE = {}; 
         
+        // ESTADO DE AUDIO (MANTENIDO INTACTO)
         let synth = window.speechSynthesis;
         let utterance = null;
         let sentencesChunks = [];
@@ -259,7 +289,9 @@
         let isReading = false;
         let playbackRate = 1.0;
 
-        // --- CATALOGO MASIVO (Generador Dinámico) ---
+        // ==========================================
+        // CATÁLOGO DINÁMICO CORREGIDO PARA WIKISOURCE
+        // ==========================================
         function genBooks(base, count, pref = "Liber", isGreek = false) {
             const r = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
             const gUpper = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
@@ -293,9 +325,9 @@
             ],
             'grc': [
                 { author: "Ὅμηρος (Homerus)", works: [ { title: "Ἰλιάς", chapters: genBooks("Ιλιάς", 24, "upper", true) }, { title: "Ὀδύσσεια", chapters: genBooks("Οδύσσεια", 24, "lower", true) } ] },
-                { author: "Πλάτων (Plato)", works: [ { title: "Ἀπολογία Σωκράτους", chapters: [{title: "Íntegro", path: "Απολογία_Σωκράτους"}] }, { title: "Συμπόσιον", chapters: [{title: "Íntegro", path: "Συμπόσιον_(Πλάτων)"}] }, { title: "Πολιτεία", chapters: genBooks("Πολιτεία_(Πλάτων)", 10, "upper", true) } ] },
-                { author: "Σοφοκλῆς (Sophocles)", works: [ { title: "Οἰδίπους Τύραννος", chapters: [{title: "Íntegro", path: "Οιδίπους_Τύραννος"}] }, { title: "Ἀντιγόνη", chapters: [{title: "Íntegro", path: "Αντιγόνη_(Σοφοκλή)"}] }, { title: "Αἴας", chapters: [{title: "Íntegro", path: "Αίας_(Σοφοκλή)"}] } ] },
-                { author: "Εὐριπίδης (Euripides)", works: [ { title: "Μήδεια", chapters: [{title: "Íntegro", path: "Μήδεια_(Ευριπίδη)"}] }, { title: "Βάκχαι", chapters: [{title: "Íntegro", path: "Βάκχαι"}] } ] },
+                { author: "Πλάτων (Plato)", works: [ { title: "Ἀπολογία Σωκράτους", chapters: [{title: "Íntegro", path: "Απολογία_Σωκράτους_(Πλάτων)"}] }, { title: "Συμπόσιον", chapters: [{title: "Íntegro", path: "Συμπόσιον_(Πλάτων)"}] }, { title: "Πολιτεία", chapters: genBooks("Πολιτεία_(Πλάτων)", 10, "upper", true) } ] },
+                { author: "Σοφοκλῆς (Sophocles)", works: [ { title: "Οἰδίπους Τύραννος", chapters: [{title: "Íntegro", path: "Οιδίπους_Τύραννος"}] }, { title: "Ἀντιγόνη", chapters: [{title: "Íntegro", path: "Αντιγόνη_(Σοφοκλής)"}] }, { title: "Αἴας", chapters: [{title: "Íntegro", path: "Αίας_(Σοφοκλής)"}] } ] },
+                { author: "Εὐριπίδης (Euripides)", works: [ { title: "Μήδεια", chapters: [{title: "Íntegro", path: "Μήδεια_(Ευριπίδης)"}] }, { title: "Βάκχαι", chapters: [{title: "Íntegro", path: "Βάκχαι_(Ευριπίδης)"}] } ] },
                 { author: "Ἡρόδοτος (Herodotus)", works: [ { title: "Ἱστορίαι", chapters: [{title: "Κλειώ", path: "Ιστορίαι_(Ηροδότου)/Κλειώ"}, {title: "Εὐτέρπη", path: "Ιστορίαι_(Ηροδότου)/Ευτέρπη"}] } ] }
             ]
         };
@@ -355,6 +387,9 @@
             content.classList.toggle('expanded');
         }
 
+        // ==========================================
+        // EXTRACTOR BLINDADO + SANITIZADOR INVERSO
+        // ==========================================
         async function extractText(wikiPath, fullTitle, authorName) {
             stopAudio();
             document.getElementById('loading-overlay').classList.remove('hidden');
@@ -362,14 +397,20 @@
             document.getElementById('reader-title').innerText = fullTitle;
             document.getElementById('reader-author').innerText = authorName;
             
+            // Si el panel de traducción estaba abierto, lo cerramos y limpiamos al cargar nueva obra
+            const transPanel = document.getElementById('translation-panel');
+            if (!transPanel.classList.contains('hidden')) toggleTranslation();
+            document.getElementById('translation-content').innerHTML = 'Presiona "Traducir" para procesar el texto actual.';
+            
             const subdomain = currentLang === 'la' ? 'la' : 'el';
-            const url = `https://${subdomain}.wikisource.org/w/api.php?action=parse&format=json&page=${encodeURIComponent(wikiPath)}&prop=text&origin=*`;
+            // IMPORTANTE: &redirects=1 añadido para arreglar 404s en Apología y otros.
+            const url = `https://${subdomain}.wikisource.org/w/api.php?action=parse&format=json&page=${encodeURIComponent(wikiPath)}&prop=text&redirects=1&origin=*`;
 
             try {
                 const response = await fetch(url);
                 const data = await response.json();
                 
-                if (data.error) throw new Error("Documento no encontrado. Ruta de Wikisource inválida o no digitalizada.");
+                if (data.error) throw new Error("Documento no encontrado. Ruta de Wikisource inválida.");
                 
                 const htmlRaw = data.parse.text['*'];
                 const parser = new DOMParser();
@@ -378,41 +419,42 @@
                 const container = doc.querySelector('.mw-parser-output');
                 if (!container) throw new Error("Formato de página no reconocido.");
 
-                // 1. ESTRATEGIA DE BORRADO INVERSO:
-                // Eliminamos agresivamente todo lo que es "basura", conservando así CUALQUIER estructura de texto legítima.
+                // SANITIZACIÓN AGRESIVA (Borrado inverso)
                 const selectorsToRemove = [
                     'script', 'style', 'figure', 'table', 'sup', 
                     '.mw-editsection', '.sidenote', '.navbox', 'img', 
                     '.toc', '.ws-noexport', '.header', '.footer', 
                     '.dropinitial', '.prp-page-quality', '.reference',
                     'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '.pagenum',
-                    'ol', 'ul', '#toc'
+                    'ol', 'ul', '#toc', '.noprint', '.ambox'
                 ];
                 
                 container.querySelectorAll(selectorsToRemove.join(', ')).forEach(e => e.remove());
 
-                // Limpiar contenedores vacíos residuales
                 container.querySelectorAll('div, span, p').forEach(el => {
                     if (el.textContent.trim() === '') el.remove();
                 });
 
-                // 2. Extracción del HTML resultante
                 let cleanHTML = container.innerHTML;
 
-                // 3. Limpieza de números de línea entre corchetes o paréntesis (muy común en Wikisource)
+                // Limpieza de números de Wikisource sueltos
                 cleanHTML = cleanHTML.replace(/\[\d+[a-z]?\]/gi, '');
                 cleanHTML = cleanHTML.replace(/\(\d+[a-z]?\)/gi, '');
 
                 const canvas = document.getElementById('reading-canvas');
                 canvas.innerHTML = cleanHTML;
 
-                //                // 4. TOKENIZACIÓN: Usando TreeWalker para no romper las etiquetas de poesía de Wikisource
+                // ==========================================
+                // TOKENIZADOR UNICODE SEGURO (Mantiene Griego Intacto)
+                // ==========================================
                 const walker = document.createTreeWalker(canvas, NodeFilter.SHOW_TEXT, null, false);
                 const textNodes = [];
                 while(walker.nextNode()) textNodes.push(walker.currentNode);
 
-                // Regex super avanzado que no rompe el griego politónico
-                const splitRegex = /([^\p{L}\p{M}]+)/gu;
+                // Expresión regular que define QUÉ ES PUNTUACIÓN.
+                // Todo lo demás (incluido el griego politónico \u1F00-\u1FFF) lo mantendrá intacto.
+                const splitRegex = /([\s.,;:"'«»()\[\]{}\-—\.!?;·\u2014]+)/g;
+                const isPunctuation = /^[\s.,;:"'«»()\[\]{}\-—\.!?;·\u2014]+$/;
 
                 textNodes.forEach(node => {
                     const text = node.nodeValue;
@@ -423,15 +465,15 @@
 
                     parts.forEach(part => {
                         if (!part) return;
-                        if (splitRegex.test(part)) {
+                        if (isPunctuation.test(part)) {
                             fragment.appendChild(document.createTextNode(part)); 
                         } else {
+                            // Es una palabra. Se envuelve sin cortar acentos.
                             const span = document.createElement('span');
                             span.className = 'word-token';
                             span.textContent = part; 
                             
-                            // Guardamos la forma limpia de signos, pero MANTENIENDO acentos para la API
-                            let cleanApiWord = part.trim().replace(/[.,;:"'«»()\-—\.!?;·]/g, '');
+                            let cleanApiWord = part.trim();
                             span.setAttribute('data-original', cleanApiWord); 
                             
                             span.onclick = function(e) { 
@@ -458,6 +500,50 @@
             }
         }
 
+        // ==========================================
+        // TRADUCCIÓN SIMULTÁNEA (Split-Screen) NUEVO
+        // ==========================================
+        async function toggleTranslation() {
+            const panel = document.getElementById('translation-panel');
+            const btn = document.getElementById('btn-translate');
+            
+            if (panel.classList.contains('hidden')) {
+                // Abrir panel
+                panel.classList.remove('hidden');
+                panel.classList.add('flex');
+                btn.classList.add('bg-indigo-200', 'dark:bg-indigo-800');
+                
+                const rawText = document.getElementById('reading-canvas').innerText;
+                if(rawText.trim().length < 5 || rawText.includes("Selecciona un volumen")) return;
+                
+                document.getElementById('translation-content').innerHTML = '<div class="spinner mx-auto mt-10"></div><p class="text-center mt-4 font-mono text-xs uppercase tracking-widest text-academy-500">Traduciendo manuscrito...</p>';
+                
+                try {
+                    // Dividimos el texto en chunks seguros para la API gratuita
+                    const chunks = rawText.match(/[\s\S]{1,1000}(?!\S)/g) || [rawText];
+                    let translatedText = '';
+                    
+                    for(let chunk of chunks) {
+                        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=es&dt=t&q=${encodeURIComponent(chunk)}`);
+                        const data = await res.json();
+                        translatedText += data[0].map(item => item[0]).join('') + ' ';
+                    }
+                    
+                    document.getElementById('translation-content').innerHTML = translatedText.replace(/\n/g, '<br><br>');
+                } catch (e) {
+                    document.getElementById('translation-content').innerHTML = '<p class="text-red-500 text-center italic mt-10">Error al conectar con el oráculo de traducción. Comprueba tu conexión a internet.</p>';
+                }
+            } else {
+                // Cerrar panel
+                panel.classList.add('hidden');
+                panel.classList.remove('flex');
+                btn.classList.remove('bg-indigo-200', 'dark:bg-indigo-800');
+            }
+        }
+
+        // ==========================================
+        // ORÁCULO MORFOLÓGICO (API Perseids)
+        // ==========================================
         let activeToken = null;
 
         async function analyzeWord(word, element) {
@@ -509,8 +595,7 @@
 
                 const dict = entry.dict;
                 const rawLemma = dict?.hdwd?.['$'] || displayWord;
-                // Limpieza del número del lema para que el enlace a Logeion no se rompa (ej. magnus1 -> magnus)
-                const cleanLemma = rawLemma.replace(/\d+$/, '');
+                const cleanLemma = rawLemma.replace(/\d+$/, ''); // Limpieza del número para enlace Logeion
 
                 document.getElementById('morph-lemma').innerText = cleanLemma;
 
@@ -575,13 +660,12 @@
             document.getElementById('dict-btn-perseus').href = `http://www.perseus.tufts.edu/hopper/morph?l=${encodeURIComponent(displayWord)}&la=${currentLang==='la'?'la':'greek'}`;
         }
 
-        //        // Transliterador Fonético: Convierte Griego Antiguo a Sílabas Latinas (Pronunciación Erasmiana)
+        // ==========================================
+        // MOTOR DE AUDIO MANTENIDO INTACTO
+        // ==========================================
         function transliterateGreekToPhonetic(text) {
-            let t = text.normalize("NFD"); // Separa acentos y espíritus
-            
-            // Diptongos básicos
+            let t = text.normalize("NFD"); 
             t = t.replace(/ου/ig, "u").replace(/αυ/ig, "au").replace(/ευ/ig, "eu");
-            
             const map = {
                 'α':'a', 'β':'b', 'γ':'g', 'δ':'d', 'ε':'e', 'ζ':'ds', 'η':'e', 'θ':'z',
                 'ι':'i', 'κ':'k', 'λ':'l', 'μ':'m', 'ν':'n', 'ξ':'ks', 'ο':'o', 'π':'p',
@@ -590,12 +674,11 @@
                 'Ι':'I', 'Κ':'K', 'Λ':'L', 'Μ':'M', 'Ν':'N', 'Ξ':'Ks', 'Ο':'O', 'Π':'P',
                 'Ρ':'R', 'Σ':'S', 'Τ':'T', 'Υ':'I', 'Φ':'F', 'Χ':'J', 'Ψ':'Ps', 'Ω':'O'
             };
-
             let result = "";
             for(let i=0; i<t.length; i++) {
                 let char = t[i];
-                if (char === '\u0314') { result += 'j'; continue; } // Espíritu áspero -> H aspirada (J)
-                if (char >= '\u0300' && char <= '\u036f') continue; // Limpiar los demás diacríticos para evitar tartamudeo del TTS
+                if (char === '\u0314') { result += 'j'; continue; } 
+                if (char >= '\u0300' && char <= '\u036f') continue; 
                 result += map[char] || char;
             }
             return result;
@@ -608,13 +691,11 @@
             const rawText = canvas.innerText;
             if(!rawText || rawText.trim().length < 5) return;
 
-            // Extraer oraciones usando puntuación estándar y griega
             sentencesChunks = rawText.match(/[^.!?;·]+[.!?;·]+/g) || [rawText];
             
             let finalChunks = [];
             sentencesChunks.forEach(s => {
                 let cleanS = s.trim();
-                // Si la oración es inmensa, la partimos por comas para no ahogar la API de voz
                 if(cleanS.length > 200) {
                     let parts = cleanS.match(/[^,;]+[,;]+/g) || [cleanS];
                     finalChunks.push(...parts);
@@ -651,18 +732,15 @@
 
             let textToRead = sentencesChunks[currentSentenceIdx].trim();
 
-            // NUEVA ESTRATEGIA: Filtrar números, números romanos, letras sueltas y paginación
-            // Evita que la voz lea "17a", "IV", "A", etc.
             textToRead = textToRead
-                .replace(/\b\d+[a-z]?\b/gi, ' ') // 1, 2, 17a, 17b
-                .replace(/\b[IVXLCDM]+\b/g, ' ') // Números romanos (I, II, IV)
-                .replace(/\b[Α-Ωα-ω]\b/g, ' ')   // Letras griegas sueltas
-                .replace(/\b[A-Za-z]\b/g, ' ')   // Letras latinas sueltas
-                .replace(/[\[\]()]/g, ' ')       // Corchetes
-                .replace(/\s+/g, ' ')            // Limpiar espacios dobles
+                .replace(/\b\d+[a-z]?\b/gi, ' ') 
+                .replace(/\b[IVXLCDM]+\b/g, ' ') 
+                .replace(/\b[Α-Ωα-ω]\b/g, ' ')   
+                .replace(/\b[A-Za-z]\b/g, ' ')   
+                .replace(/[\[\]()]/g, ' ')       
+                .replace(/\s+/g, ' ')            
                 .trim();
 
-            // Si tras limpiar la "oración" resulta que está vacía, saltamos silenciosamente a la siguiente
             if (textToRead.length < 2) {
                 currentSentenceIdx++;
                 setTimeout(playNextChunk, 10);
@@ -670,12 +748,10 @@
             }
 
             if (currentLang === 'la') {
-                // Latín: Pronunciación Restituta
                 textToRead = textToRead.toLowerCase()
                     .replace(/v/g, 'w').replace(/c/g, 'k').replace(/ph/g, 'f')
                     .replace(/ae/g, 'ai').replace(/oe/g, 'oi');
             } else if (currentLang === 'grc') {
-                // Griego: Transliteración fonética
                 textToRead = transliterateGreekToPhonetic(textToRead);
             }
 
@@ -683,7 +759,6 @@
             utterance.rate = playbackRate;
 
             const voices = synth.getVoices();
-            // Al estar transliterado, la voz española/italiana lo leerá perfectamente
             utterance.voice = voices.find(v => v.lang.startsWith('es')) || voices.find(v => v.lang.startsWith('it')) || voices[0];
 
             utterance.onend = () => {
@@ -692,9 +767,8 @@
                 setTimeout(playNextChunk, 150);
             };
 
-            // Solución al problema de interrupción / GC Bug de Chrome
             utterance.onerror = (e) => {
-                if (e.error === 'canceled' || e.error === 'interrupted') return; // Cancelaciones intencionadas no son fallos
+                if (e.error === 'canceled' || e.error === 'interrupted') return; 
                 console.error("Audio Fallo:", e);
                 if (isReading) {
                     currentSentenceIdx++;
@@ -702,8 +776,7 @@
                 }
             };
 
-            window.speechUtteranceChunk = utterance; // GC fix
-            
+            window.speechUtteranceChunk = utterance; 
             synth.speak(utterance);
         }
 
@@ -722,6 +795,9 @@
             document.querySelectorAll('.sentence-active').forEach(el => el.classList.remove('sentence-active'));
         }
 
+        // ==========================================
+        // HERRAMIENTAS FILOLÓGICAS MANTENIDAS INTACTAS
+        // ==========================================
         function toggleMeter() {
             const btn = document.getElementById('btn-meter');
             const canvas = document.getElementById('reading-canvas');
@@ -797,7 +873,6 @@
             const counts = {};
             spans.forEach(span => {
                 let original = span.getAttribute('data-original') || span.textContent;
-                // Normalizamos quitando acentos SOLO para que el algoritmo pueda agrupar la misma palabra
                 let w = original.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
                 
                 if (w.length > 2 && !stopsLa.includes(w) && !stopsGrc.includes(w)) {

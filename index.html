@@ -183,11 +183,6 @@
                     <p class="font-cinzel text-sm uppercase tracking-widest text-gray-300">Alineando Traducción Oficial...</p>
                 </div>
                 <div id="trans-content" class="w-full h-full pb-10 hidden">
-                    <!-- AVISO ACADÉMICO PARA CONTEXTUALIZAR LAS VARIACIONES DE TRADUCCIÓN -->
-                    <div class="bg-[#111] border border-[#333] border-l-4 border-l-[#D4AF37] p-4 mb-8 rounded shadow-sm">
-                        <p class="font-cinzel text-[#D4AF37] text-xs font-bold uppercase tracking-widest mb-1">Nota Filológica</p>
-                        <p class="text-gray-400 text-sm">El texto mostrado es una traducción literaria de archivo. Su disposición en párrafos y métrica no tiene correspondencia interlineal estricta con la morfología del texto clásico.</p>
-                    </div>
                     <div id="trans-text-body"></div>
                 </div>
             </div>
@@ -278,7 +273,6 @@
             return list;
         };
 
-        // CATÁLOGO BLINDADO CON RUTAS EXACTAS Y NOMBRES EN ESPAÑOL PARA EL BUSCADOR
         const CATALOG = {
             latin: [
                 { author: "Vergilius", authorEs: "Virgilio", works: [
@@ -312,6 +306,10 @@
                 ]},
                 { author: "Catullus", authorEs: "Catulo", works: [
                     { baseTitle: "Carmina", books: [
+                        { title: "Carmen I", search: "Carmen 1", arabic: 1, path: "Carmina_(Catullus)/Carmen_1", esPath: "Poemas_(Catulo)" },
+                        { title: "Carmen II", search: "Carmen 2", arabic: 2, path: "Carmina_(Catullus)/Carmen_2", esPath: "Poemas_(Catulo)" },
+                        { title: "Carmen III", search: "Carmen 3", arabic: 3, path: "Carmina_(Catullus)/Carmen_3", esPath: "Poemas_(Catulo)" },
+                        { title: "Carmen V", search: "Carmen 5", arabic: 5, path: "Carmina_(Catullus)/Carmen_5", esPath: "Poemas_(Catulo)" },
                         { title: "Omnia", search: "Carmina", arabic: 1, path: "Carmina_(Catullus)", esPath: "Poemas_(Catulo)" }
                     ]}
                 ]},
@@ -574,7 +572,7 @@
         }
 
         async function loadText(langCat, aIndex, wIndex, bIndex) {
-            const taskId = ++STATE.currentTaskId; // Seguro anti-cuelgues
+            const taskId = ++STATE.currentTaskId; 
             
             stopAudio();
             closeRightPanel();
@@ -606,17 +604,19 @@
                 
                 if (STATE.currentTaskId !== taskId) return; 
 
+                // SI LA RUTA EXACTA FALLA, BUSCADOR DE RESCATE (RESTAURADO A VERSIÓN FLEXIBLE)
                 if (!htmlContent) {
                     setFetchState('fetching', "Ruta base fallida. Escaneando la biblioteca...");
                     const wikiLang = STATE.lang === 'grc' ? 'el' : STATE.lang;
                     const cleanBaseTitle = work.baseTitle.replace(/\s*\(.*?\)\s*/g, '').replace(/_/g, ' ');
-                    const searchStr = `${author.author} ${cleanBaseTitle} ${book.search || ''}`.trim();
+                    const searchStr = `${cleanBaseTitle} ${book.search || ''}`.trim();
                     
                     const searchUrl = `https://${wikiLang}.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchStr)}&utf8=&format=json&origin=*`;
                     try {
                         const sRes = await fetch(searchUrl);
                         const sData = await sRes.json();
                         if (sData.query && sData.query.search && sData.query.search.length > 0) {
+                            // Filtramos solo el espacio de nombres principal (artículos) para evitar ruido
                             const bestHits = sData.query.search.filter(r => r.ns === 0);
                             if(bestHits.length > 0) {
                                 htmlContent = await fetchWikisourceAPI(STATE.lang, bestHits[0].title);
@@ -625,13 +625,12 @@
                     } catch(e) {}
                 }
 
-                if (!htmlContent) throw new Error("El manuscrito original no se encuentra digitalizado con esa ruta.");
+                if (!htmlContent) throw new Error("El manuscrito original no se encuentra digitalizado en Wikisource.");
 
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlContent, 'text/html');
                 
                 let contentNode = doc.querySelector('.mw-parser-output') || doc.body;
-                if (!contentNode.textContent.trim()) throw new Error("El documento existe pero su contenido está vacío.");
                 
                 const garbage = ['.mw-editsection', '.sidenote', '.noprint', '#toc', '.navbox', '.infobox', '.ws-noexport', '.prp-pages-output > br', '.wst-navbox', '.metadata', '.ambox', '.navbox-title', '.navbox-abovebelow'];
                 garbage.forEach(sel => contentNode.querySelectorAll(sel).forEach(e => e.remove()));
@@ -702,24 +701,9 @@
 
                 if (!htmlContent) {
                     const cleanWork = STATE.currentWorkStr.replace(/\s*\(.*?\)\s*/g, '').trim();
-                    const searchQ = `${STATE.authorEs} ${cleanWork} ${STATE.work.arabic || ''}`.trim();
+                    const searchQ = `${cleanWork} ${STATE.work.arabic || ''}`.trim();
                     
                     const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQ)}&utf8=&format=json&origin=*`;
-                    const sRes = await fetch(searchUrl);
-                    const sData = await sRes.json();
-                    
-                    if (sData.query && sData.query.search && sData.query.search.length > 0) {
-                        const bestHits = sData.query.search.filter(r => r.ns === 0 && !r.title.includes("Wikisource:"));
-                        if(bestHits.length > 0) {
-                            htmlContent = await fetchWikisourceAPI('es', bestHits[0].title);
-                        }
-                    }
-                }
-
-                if (!htmlContent) {
-                    const cleanWork = STATE.currentWorkStr.replace(/\s*\(.*?\)\s*/g, '').trim();
-                    const looseQ = `${STATE.authorEs} ${cleanWork}`;
-                    const searchUrl = `https://es.wikisource.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(looseQ)}&utf8=&format=json&origin=*`;
                     const sRes = await fetch(searchUrl);
                     const sData = await sRes.json();
                     
